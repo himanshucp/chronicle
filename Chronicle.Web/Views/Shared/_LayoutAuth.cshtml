@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Trinity.AuditApproval.Web</title>
+    <partial name="_Css" />
+    <partial name="_Js" />
+</head>
+
+<body class="hold-transition login-page">
+    <div class="login-box">
+        @Html.Partial("_Alert")
+
+        @RenderBody()
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(function () {
+
+        });
+
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // optional
+        });
+    </script>
+</body>
+
+</html>

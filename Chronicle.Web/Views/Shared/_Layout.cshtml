@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Chronicle.Web</title>
+    <partial name="_Css" />
+    <partial name="_Js" />
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <partial name="_Header" />
+        <partial name="_Sidebar" />
+
+
+        <div class="content-wrapper">
+            <div class="container">
+                @Html.Partial("_Alert")
+            </div>
+          
+            @RenderBody()
+
+
+        </div>
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 2.3.0
+            </div>
+            <strong>Copyright &copy; 2014-2015 <a href="www.trinity.ae">Trinty Solution</a>.</strong> All rights reserved.
+        </footer>
+        @Html.Partial("_Delete")
+
+    </div>
+
+
+
+
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(function () {
+
+
+        });
+
+        $(document).ready(function () {
+            // alert("hi start");
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+
+            $(".select2").select2();
+
+            //alert("hi");
+
+            // Datepicker
+            $(".datepicker").datepicker({
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            });
+
+            // Timepicker
+            $(".timepicker").timepicker({
+                showInputs: false,
+                showMeridian: false,
+                defaultTime: false
+            });
+        });
+
+        //         // alert("hi start");
+        //     $('input').iCheck({
+        //         checkboxClass: 'icheckbox_square-blue',
+        //         radioClass: 'iradio_square-blue',
+        //         increaseArea: '20%' // optional
+        //     });
+
+        //   $(".select2").select2();
+
+        // alert("hi");
+
+        // //Datepicker
+        // $(".datepicker").datepicker({
+        //   autoclose: true,
+        //   format: 'yyyy-mm-dd'
+        // });
+
+
+
+        // //Timepicker
+        // $(".timepicker").timepicker({
+        //   showInputs: false,
+        //   showMeridian: false,
+        //   defaultTime: false
+        // });
+        // alert("hi end");
+        $('.datepicker').datepicker({
+            autoclose: true,
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            orientation: "bottom auto"
+        });
+        //alert("hi");
+    </script>
+</body>
+</html>

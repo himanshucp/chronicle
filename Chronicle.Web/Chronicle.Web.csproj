@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chronicle.Infrastructure\Chronicle.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Controllers\" />
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Auth\Controllers\" />
+    <Folder Include="Areas\Auth\Data\" />
+    <Folder Include="Areas\Auth\Models\" />
+    <Folder Include="Areas\Contract\Controllers\" />
+    <Folder Include="Areas\Contract\Data\" />
+    <Folder Include="Areas\Contract\Models\" />
+    <Folder Include="Areas\DashBoard\Controllers\" />
+    <Folder Include="Areas\DashBoard\Data\" />
+    <Folder Include="Areas\DashBoard\Models\" />
+    <Folder Include="Areas\Disciplines\Controllers\" />
+    <Folder Include="Areas\Disciplines\Data\" />
+    <Folder Include="Areas\Disciplines\Models\" />
+    <Folder Include="Areas\Users\Controllers\" />
+    <Folder Include="Areas\Users\Data\" />
+    <Folder Include="Areas\Users\Models\" />
+    <Folder Include="Code\Caching\" />
+  </ItemGroup>
+
+</Project>

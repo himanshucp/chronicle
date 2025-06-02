@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Chronicle.Repositories</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chronicle.Data\Chronicle.Data.csproj" />
+    <ProjectReference Include="..\Chronicle.Entities\Chronicle.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

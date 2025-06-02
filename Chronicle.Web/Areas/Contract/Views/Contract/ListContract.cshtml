@@ -1,0 +1,206 @@
+﻿@model Chronicle.Web.PagedViewModel<Contract>
+@using Chronicle.Entities
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only">Home</span>
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Contract 
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <div class="pull-right">
+                <a href="/Contract/Create" class="btn btn-primary pull-right">
+                    Create New Contract
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Contract List</h3>
+                   
+
+                    <!-- Contract Employees Section -->
+                @*     <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">
+                                        <i class="fa fa-users"></i> Assigned People
+                                    </h3>
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-info btn-sm" id="addPersonBtn">
+                                            <i class="fa fa-plus"></i> Add Person
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="contractEmployeesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th width="30%">Employee</th>
+                                                    <th width="25%">Role</th>
+                                                    <th width="15%">Start Date</th>
+                                                    <th width="15%">End Date</th>
+                                                    <th width="10%">Active</th>
+                                                    <th width="5%">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="contractEmployeesBody">
+                                                <!-- Employee rows will be added dynamically -->
+                                            </tbody>
+                                        </table>
+                                        <div class="text-muted" id="noEmployeesMessage" style="display: none;">
+                                            <i class="fa fa-info-circle"></i> No people assigned to this contract yet. Click "Add Person" to assign people.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> *@
+                </div>
+
+                <div class="box-body">
+                    <!-- Search and Filter -->
+                    <div class="row margin-bottom">
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search contracts...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="searchBtn">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" asp-items="Lookup.StatusItems"  id="statusFilter">
+                            
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" id="projectFilter">
+                                <option value="">All Projects</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-default btn-block" id="clearFilters">
+                                <i class="fa fa-refresh"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Contracts Table -->
+                    <table id="contractsTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Contract ID</th>
+                                <th>External ID</th>
+                                <th>Title</th>
+                                <th>Company</th>
+                                <th>Project</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractsTableBody">
+                          @*   <!-- Sample data - will be populated via AJAX -->
+                            @foreach(var contract in Model.Items)
+                            {
+                                
+                            } *@
+
+                            <tr>
+                                <td>001</td>
+                                <td>EXT-2024-001</td>
+                                <td>Main Construction Contract</td>
+                                <td>ABC Construction Ltd</td>
+                                <td>Downtown Office Building</td>
+                                <td>Main Contract</td>
+                                <td>$2,500,000.00</td>
+                                <td><span class="contract-status-active"><i class="fa fa-check-circle"></i> Active</span></td>
+                                <td>2024-01-15</td>
+                                <td>2024-12-15</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info edit-contract" data-id="1">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-xs btn-warning view-contract" data-id="1">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-xs btn-danger delete-contract" data-id="1">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>002</td>
+                                <td>EXT-2024-002</td>
+                                <td>Electrical Works Subcontract</td>
+                                <td>PowerTech Solutions</td>
+                                <td>Downtown Office Building</td>
+                                <td>Subcontract</td>
+                                <td>$350,000.00</td>
+                                <td><span class="contract-status-pending"><i class="fa fa-clock-o"></i> Pending</span></td>
+                                <td>2024-03-01</td>
+                                <td>2024-10-30</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info edit-contract" data-id="2">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-xs btn-warning view-contract" data-id="2">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-xs btn-danger delete-contract" data-id="2">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

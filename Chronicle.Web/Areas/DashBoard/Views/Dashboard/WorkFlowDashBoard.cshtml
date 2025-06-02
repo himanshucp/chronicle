@@ -1,0 +1,593 @@
+﻿<section class="content-header">
+    <h1>
+        Dashboard
+        <small>Workflow Management System</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <!-- Info boxes -->
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-tasks"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Active Workflows</span>
+                    <span class="info-box-number">35</span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 70%"></div>
+                    </div>
+                    <span class="progress-description">
+                        70% completion rate
+                    </span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red"><i class="fa fa-exclamation-circle"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Pending Approvals</span>
+                    <span class="info-box-number">12</span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 25%"></div>
+                    </div>
+                    <span class="progress-description">
+                        5 are high priority
+                    </span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="fa fa-check-circle"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Completed Today</span>
+                    <span class="info-box-number">7</span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="progress-description">
+                        +20% from yesterday
+                    </span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="fa fa-clock-o"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Avg. Completion Time</span>
+                    <span class="info-box-number">5.2 <small>days</small></span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 85%"></div>
+                    </div>
+                    <span class="progress-description">
+                        -15% from last month
+                    </span>
+                </div><!-- /.info-box-content -->
+            </div><!-- /.info-box -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+    <!-- Main row -->
+    <div class="row">
+        <!-- Left col -->
+        <div class="col-md-8">
+            <!-- MAP & BOX PANE -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Workflow Activity</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="workflowActivityChart" height="300"></canvas>
+                        </div>
+                    </div><!-- /.row -->
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- USERS LIST -->
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Top Workflows by Volume</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div><!-- /.box-header -->
+                        <div class="box-body no-padding">
+                            <ul class="users-list clearfix">
+                                <li>
+                                    <div style="width: 80px; height: 80px; background-color: #3c8dbc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; margin: 0 auto;">
+                                        <i class="fa fa-file-text-o"></i>
+                                    </div>
+                                    <a class="users-list-name" href="#">Purchase Orders</a>
+                                    <span class="users-list-date">42 active</span>
+                                </li>
+                                <li>
+                                    <div style="width: 80px; height: 80px; background-color: #00a65a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; margin: 0 auto;">
+                                        <i class="fa fa-search"></i>
+                                    </div>
+                                    <a class="users-list-name" href="#">Inspection Requests</a>
+                                    <span class="users-list-date">28 active</span>
+                                </li>
+                                <li>
+                                    <div style="width: 80px; height: 80px; background-color: #f39c12; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; margin: 0 auto;">
+                                        <i class="fa fa-truck"></i>
+                                    </div>
+                                    <a class="users-list-name" href="#">Delivery Orders</a>
+                                    <span class="users-list-date">18 active</span>
+                                </li>
+                                <li>
+                                    <div style="width: 80px; height: 80px; background-color: #dd4b39; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; margin: 0 auto;">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <a class="users-list-name" href="#">Maintenance Schedules</a>
+                                    <span class="users-list-date">11 active</span>
+                                </li>
+                            </ul><!-- /.users-list -->
+                        </div><!-- /.box-body -->
+                        <div class="box-footer text-center">
+                            <a href="javascript:void(0)" class="uppercase">View All Workflows</a>
+                        </div><!-- /.box-footer -->
+                    </div><!--/.box -->
+                </div><!-- /.col -->
+
+                <div class="col-md-6">
+                    <!-- DONUT CHART -->
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Workflow Status Distribution</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <canvas id="workflowStatusChart" height="230"></canvas>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+            <!-- TABLE: LATEST ORDERS -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">My Pending Tasks</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table no-margin">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Module</th>
+                                    <th>Workflow</th>
+                                    <th>Current Step</th>
+                                    <th>Due Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="#">PO-2025-0056</a></td>
+                                    <td><span class="label label-primary">Purchase Order</span></td>
+                                    <td>Purchase Approval</td>
+                                    <td><span class="label label-warning">Manager Approval</span></td>
+                                    <td>May 31, 2025</td>
+                                    <td>
+                                        <button class="btn btn-xs btn-success action-btn"><i class="fa fa-check"></i> Approve</button>
+                                        <button class="btn btn-xs btn-danger action-btn"><i class="fa fa-times"></i> Reject</button>
+                                        <button class="btn btn-xs btn-default action-btn"><i class="fa fa-user"></i> Delegate</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#">IR-2025-0081</a></td>
+                                    <td><span class="label label-success">Inspection Request</span></td>
+                                    <td>Quality Inspection</td>
+                                    <td><span class="label label-info">Technical Review</span></td>
+                                    <td>Jun 2, 2025</td>
+                                    <td>
+                                        <button class="btn btn-xs btn-success action-btn"><i class="fa fa-check"></i> Approve</button>
+                                        <button class="btn btn-xs btn-danger action-btn"><i class="fa fa-times"></i> Reject</button>
+                                        <button class="btn btn-xs btn-default action-btn"><i class="fa fa-comments"></i> Comment</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#">DO-2025-0032</a></td>
+                                    <td><span class="label label-warning">Delivery Order</span></td>
+                                    <td>Delivery Scheduling</td>
+                                    <td><span class="label label-danger">Final Verification</span></td>
+                                    <td><span class="text-danger">May 29, 2025</span></td>
+                                    <td>
+                                        <button class="btn btn-xs btn-success action-btn"><i class="fa fa-check"></i> Approve</button>
+                                        <button class="btn btn-xs btn-info action-btn"><i class="fa fa-pencil"></i> Update</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#">MS-2025-0016</a></td>
+                                    <td><span class="label label-danger">Maintenance</span></td>
+                                    <td>Preventive Maintenance</td>
+                                    <td><span class="label label-default">Schedule Confirmation</span></td>
+                                    <td>Jun 5, 2025</td>
+                                    <td>
+                                        <button class="btn btn-xs btn-success action-btn"><i class="fa fa-check"></i> Confirm</button>
+                                        <button class="btn btn-xs btn-warning action-btn"><i class="fa fa-calendar"></i> Reschedule</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!-- /.table-responsive -->
+                </div><!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Tasks</a>
+                </div><!-- /.box-footer -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+
+        <div class="col-md-4">
+            <!-- PRODUCT LIST -->
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Recently Completed</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <ul class="products-list product-list-in-box">
+                        <li class="item">
+                            <div class="product-img">
+                                <i class="fa fa-check-circle fa-2x text-green"></i>
+                            </div>
+                            <div class="product-info">
+                                <a href="javascript:void(0)" class="product-title">
+                                    Purchase Order #PO-2025-0042
+                                    <span class="label label-success pull-right">Completed</span>
+                                </a>
+                                <span class="product-description">
+                                    Completed by: Sarah Johnson on May 29, 2025
+                                </span>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="product-img">
+                                <i class="fa fa-check-circle fa-2x text-green"></i>
+                            </div>
+                            <div class="product-info">
+                                <a href="javascript:void(0)" class="product-title">
+                                    Inspection Request #IR-2025-0075
+                                    <span class="label label-success pull-right">Completed</span>
+                                </a>
+                                <span class="product-description">
+                                    Completed by: Mike Williams on May 28, 2025
+                                </span>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="product-img">
+                                <i class="fa fa-check-circle fa-2x text-green"></i>
+                            </div>
+                            <div class="product-info">
+                                <a href="javascript:void(0)" class="product-title">
+                                    Delivery Order #DO-2025-0029
+                                    <span class="label label-success pull-right">Completed</span>
+                                </a>
+                                <span class="product-description">
+                                    Completed by: John Smith on May 28, 2025
+                                </span>
+                            </div>
+                        </li><!-- /.item -->
+                        <li class="item">
+                            <div class="product-img">
+                                <i class="fa fa-check-circle fa-2x text-green"></i>
+                            </div>
+                            <div class="product-info">
+                                <a href="javascript:void(0)" class="product-title">
+                                    Maintenance Schedule #MS-2025-0012
+                                    <span class="label label-success pull-right">Completed</span>
+                                </a>
+                                <span class="product-description">
+                                    Completed by: Emily Chen on May 27, 2025
+                                </span>
+                            </div>
+                        </li><!-- /.item -->
+                    </ul>
+                </div><!-- /.box-body -->
+                <div class="box-footer text-center">
+                    <a href="javascript:void(0)" class="uppercase">View All Completed Workflows</a>
+                </div><!-- /.box-footer -->
+            </div><!-- /.box -->
+            <!-- TIMELINE -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Process Performance</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <canvas id="processPerformanceChart" height="270"></canvas>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+            <!-- RECENTLY ADDED -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Recent Activity</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <ul class="timeline-sm">
+                        <li class="timeline-item-sm">
+                            <i class="fa fa-plus text-blue"></i> <strong>Sarah</strong> created Purchase Order <a href="#">#PO-2025-0057</a>
+                            <span class="time pull-right"><i class="fa fa-clock-o"></i> 10 mins ago</span>
+                        </li>
+                        <li class="timeline-item-sm">
+                            <i class="fa fa-check text-green"></i> <strong>Mike</strong> approved Inspection Request <a href="#">#IR-2025-0081</a>
+                            <span class="time pull-right"><i class="fa fa-clock-o"></i> 25 mins ago</span>
+                        </li>
+                        <li class="timeline-item-sm">
+                            <i class="fa fa-comments text-yellow"></i> <strong>John</strong> commented on Delivery Order <a href="#">#DO-2025-0032</a>
+                            <span class="time pull-right"><i class="fa fa-clock-o"></i> 1 hour ago</span>
+                        </li>
+                        <li class="timeline-item-sm">
+                            <i class="fa fa-times text-red"></i> <strong>Emily</strong> rejected Purchase Order <a href="#">#PO-2025-0055</a>
+                            <span class="time pull-right"><i class="fa fa-clock-o"></i> 2 hours ago</span>
+                        </li>
+                        <li class="timeline-item-sm">
+                            <i class="fa fa-user text-purple"></i> <strong>Alex</strong> delegated Maintenance Schedule <a href="#">#MS-2025-0016</a> to <strong>David</strong>
+                            <span class="time pull-right"><i class="fa fa-clock-o"></i> 3 hours ago</span>
+                        </li>
+                    </ul>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</section><!-- /.content -->
+
+
+<script>
+    $(function () {
+        // Workflow Activity Chart (Line Chart)
+        var activityChartCanvas = $("#workflowActivityChart").get(0).getContext("2d");
+        var activityChart = new Chart(activityChartCanvas, {
+            type: 'line',
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                datasets: [
+                    {
+                        label: "New Workflows",
+                        backgroundColor: "rgba(60,141,188,0.2)",
+                        borderColor: "rgba(60,141,188,1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(60,141,188,1)",
+                        pointBorderColor: "#fff",
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#fff",
+                        pointHoverBorderColor: "rgba(60,141,188,1)",
+                        data: [42, 38, 45, 53, 58, 62, 65, 59, 68, 74, 82, 78]
+                    },
+                    {
+                        label: "Completed Workflows",
+                        backgroundColor: "rgba(0,166,90,0.2)",
+                        borderColor: "rgba(0,166,90,1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(0,166,90,1)",
+                        pointBorderColor: "#fff",
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#fff",
+                        pointHoverBorderColor: "rgba(0,166,90,1)",
+                        data: [35, 32, 40, 49, 52, 57, 60, 55, 63, 67, 73, 71]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            display: true
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 20
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'Workflow Activity Trends (2025)',
+                    fontSize: 14
+                }
+            }
+        });
+
+        // Workflow Status Distribution Chart (Doughnut)
+        var statusChartCanvas = $("#workflowStatusChart").get(0).getContext("2d");
+        var statusChart = new Chart(statusChartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: ["Active", "Pending Approval", "Completed", "Rejected", "On Hold"],
+                datasets: [
+                    {
+                        data: [35, 12, 25, 8, 5],
+                        backgroundColor: [
+                            "#00c0ef", // Aqua (Active)
+                            "#f39c12", // Yellow (Pending)
+                            "#00a65a", // Green (Completed)
+                            "#dd4b39", // Red (Rejected)
+                            "#d2d6de"  // Gray (On Hold)
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                title: {
+                    display: true,
+                    text: 'Current Workflow Status Distribution',
+                    fontSize: 14
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                },
+                cutoutPercentage: 60
+            }
+        });
+
+        // Process Performance Chart (Bar)
+        var performanceChartCanvas = $("#processPerformanceChart").get(0).getContext("2d");
+        var performanceChart = new Chart(performanceChartCanvas, {
+            type: 'horizontalBar',
+            data: {
+                labels: ["Purchase Orders", "Inspection Requests", "Delivery Orders", "Maintenance Schedules"],
+                datasets: [
+                    {
+                        label: "Avg. Completion Time (Days)",
+                        backgroundColor: [
+                            "rgba(60,141,188,0.8)",
+                            "rgba(0,166,90,0.8)",
+                            "rgba(243,156,18,0.8)",
+                            "rgba(221,75,57,0.8)"
+                        ],
+                        borderColor: [
+                            "rgba(60,141,188,1)",
+                            "rgba(0,166,90,1)",
+                            "rgba(243,156,18,1)",
+                            "rgba(221,75,57,1)"
+                        ],
+                        borderWidth: 1,
+                        data: [4.5, 3.2, 6.8, 5.4]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: true
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'Average Processing Time by Workflow Type',
+                    fontSize: 14
+                }
+            }
+        });
+
+        // DataTables initialization
+        $('table.dataTable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "pageLength": 5
+        });
+
+        // Event Handlers for Dashboard Interactions
+        $('.btn-success').click(function () {
+            alert('Action performed: Approve/Confirm');
+        });
+
+        $('.btn-danger').click(function () {
+            alert('Action performed: Reject');
+        });
+
+        $('.btn-default').click(function () {
+            alert('Action performed: Delegate/Other');
+        });
+
+        $('.btn-info').click(function () {
+            alert('Action performed: Update/Edit');
+        });
+
+        $('.btn-warning').click(function () {
+            alert('Action performed: Reschedule');
+        });
+
+        // Refresh data every 5 minutes
+        setInterval(function () {
+            console.log("Dashboard data refreshed");
+            // In a real implementation, this would make AJAX calls to refresh the data
+        }, 300000); // 5 minutes
+    });
+
+    // Helper functions for a real implementation
+    function loadUserTasks() {
+        // This would load the current user's pending tasks via AJAX
+        console.log("Loading user tasks...");
+    }
+
+    function loadWorkflowStats() {
+        // This would load workflow statistics via AJAX
+        console.log("Loading workflow statistics...");
+    }
+
+    function updateCharts() {
+        // This would update all charts with fresh data
+        console.log("Updating charts...");
+    }
+
+    function completeWorkflowAction(workflowId, actionCode, comments) {
+        // This would submit a workflow action via AJAX
+        console.log("Completing workflow action: " + actionCode + " for workflow: " + workflowId);
+        console.log("Comments: " + comments);
+        return true;
+    }
+
+    function delegateTask(workflowId, userId) {
+        // This would delegate a task to another user via AJAX
+        console.log("Delegating workflow: " + workflowId + " to user: " + userId);
+        return true;
+    }
+</script>

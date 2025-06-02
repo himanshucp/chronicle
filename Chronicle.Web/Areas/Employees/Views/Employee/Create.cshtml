@@ -1,0 +1,189 @@
+﻿@model Chronicle.Web.Areas.Employees.EmployeeViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string action = "";
+   
+}
+
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only"></span>
+                        </a>
+                        @*   <i class="fas fa-angle-right" aria-hidden="true"></i> *@
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/Employee">
+                            Employee
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Create New Employee
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <a style="padding-left: 5px; font-size: 15px;" class="text-dark-gray hidden-print" data-trigger="focus" tabindex="0" role="button" data-toggle="popover" title="" data-placement="right" data-html="true" data-content="Companies can be used as a simple identifier field, or can be used to limit visibility of assets, users, etc if full company support is enabled in your Admin settings." data-original-title="More Info">
+                <i class="far fa-life-ring" style="padding-top: 9px;" aria-hidden="true"></i>    <span class="sr-only">More Info</span>
+            </a>
+            <div class="pull-right">
+                <a href="/Employee" class="btn btn-primary pull-right">
+                    Back
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <!-- col-md-8 -->
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
+
+            <form id="create-form" class="form-horizontal" method="post" action="/Employee/Edit/@Model.EmployeeID" autocomplete="off" role="form" enctype="multipart/form-data" novalidate="novalidate">
+                <input type="hidden" asp-for="EmployeeID" name="EmployeeID" aria-label="name" id="EmployeeID" value="@Model.EmployeeID">
+                <input type="hidden" asp-for="TenantID" name="TenantID" aria-label="name" id="TenantID" value="@Model.TenantID">
+                <!-- box -->
+                <div class="box box-default">
+                    <!-- box-header -->
+                    <div class="box-header with-border">
+
+
+                        <!-- box-body -->
+                        <div class="box-body">
+
+                            <div style="padding-top: 30px;">
+
+                                <!-- CSRF Token -->
+                                <input type="hidden" name="_token" value="CbzxZWFMTu4jPu5cawm2TiEDgINArBf87v9wmDL1" autocomplete="off">
+
+                                <!-- Name -->
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">First Name</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="FirstName" style=" width:100%;" type="text" name="FirstName" aria-label="name" id="FirstName" value="@Model.FirstName" required maxlength="191">
+                                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Last Name</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="LastName" style=" width:100%;" type="text" name="LastName" aria-label="name" id="LastName" value="@Model.LastName" required maxlength="191">
+                                        <span asp-validation-for="LastName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="CompanyID" class="required-field col-md-3 control-label">Company</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <select asp-for="CompanyID" asp-items="Lookup.GetActiveCompanyItems()" id="CompanyID" name="CompanyID" class="form-control" value="@Model.CompanyID" required>
+                                        </select>
+                                        <span asp-validation-for="CompanyID" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            
+
+                           
+
+                                <div class="form-group">
+                                    <label asp-for="DepartmentID" class="required-field col-md-3 control-label">Discipline</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <select asp-for="DepartmentID" asp-items="Lookup.GetDisciplineItems()" id="DepartmentID" name="DepartmentID" class="form-control" value="@Model.DepartmentID" required>
+                                        </select>
+                                        <span asp-validation-for="DepartmentID" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="email" class="required-field col-md-3 col-xs-12 control-label">Email</label>
+                                    <div class="col-md-8 col-xs-12">
+                                        <input type="text" asp-for="Email" name="Email" id="Email" class="form-control" value="@Model.Email" maxlength="191" style="width:100%; display:flex;">
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="phone" class="col-md-3 control-label">Phone</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control" asp-for="Phone" aria-label="phone" maxlength="191" name="Phone" type="text" id="Phone" value="@Model.Phone">
+                                        <span asp-validation-for="Phone" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="Position" class="required-field col-md-3 control-label">Position</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="Position" style=" width:100%;" type="text" name="Position" aria-label="name" id="Position" value="@Model.Position" required maxlength="191">
+                                        <span asp-validation-for="Position" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="IsActive" class="required-field col-md-3 control-label">Active</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <div class="icheck-danger d-inline">
+                                            <input type="checkbox" asp-for="IsActive" id="IsActive" name="IsActive" value="true">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- end redirect submit options -->
+                            </div>
+
+                        </div> <!-- ./box-body -->
+                        <div class="box-footer">
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <a class="btn btn-link" href="/Discipline">Cancel</a>
+                                </div>
+
+                                <div class="col-md-9 text-right">
+                                    <div class="btn-group text-left">
+
+
+                                        <button type="submit" class="btn btn-primary pull-right" style="margin-left:5px; border-radius: 3px;">
+                                            <i class="fas fa-check icon-white" aria-hidden="true"></i>                    Save
+                                        </button>
+
+                                    </div><!-- /.btn-group -->
+                                </div><!-- /.col-md-9 -->
+                            </div><!-- /.row -->
+                        </div> <!-- /.box-footer -->
+                    </div> <!-- box -->
+
+                </div>
+            </form> <!-- col-md-8 -->
+
+
+        </div><!-- ./row -->
+
+    </div>
+
+
+
+</section>
+
+

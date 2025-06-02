@@ -1,0 +1,178 @@
+﻿@model Chronicle.Web.Areas.Projects.ProjectViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string action = "";
+    if (Model.ProjectID > 0)
+    {
+        action = $"/Project/Edit/{Model.ProjectID}";
+    } else
+    {
+        action = $"/Project/Create";
+    }
+}
+
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only"></span>
+                        </a>
+                        @*   <i class="fas fa-angle-right" aria-hidden="true"></i> *@
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/Project">
+                            Project
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Create New Project
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <a style="padding-left: 5px; font-size: 15px;" class="text-dark-gray hidden-print" data-trigger="focus" tabindex="0" role="button" data-toggle="popover" title="" data-placement="right" data-html="true" data-content="Companies can be used as a simple identifier field, or can be used to limit visibility of assets, users, etc if full company support is enabled in your Admin settings." data-original-title="More Info">
+                <i class="far fa-life-ring" style="padding-top: 9px;" aria-hidden="true"></i>    <span class="sr-only">More Info</span>
+            </a>
+            <div class="pull-right">
+                <a href="/Project" class="btn btn-primary pull-right">
+                    Back
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <!-- col-md-8 -->
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
+
+            <form id="create-form" class="form-horizontal" method="post" action="@action" autocomplete="off" role="form" enctype="multipart/form-data" novalidate="novalidate">
+                <input type="hidden" asp-for="ProjectID" name="ProjectID" aria-label="name" id="ProjectID" value="@Model.ProjectID">
+                <input type="hidden" asp-for="TenantID" name="TenantID" aria-label="name" id="TenantID" value="@Model.TenantID">
+                <!-- box -->
+                <div class="box box-default">
+                    <!-- box-header -->
+                    <div class="box-header with-border">
+
+
+                        <!-- box-body -->
+                        <div class="box-body">
+
+                            <div style="padding-top: 30px;">
+
+                                <!-- CSRF Token -->
+                                <input type="hidden" name="_token" value="CbzxZWFMTu4jPu5cawm2TiEDgINArBf87v9wmDL1" autocomplete="off">
+
+                                <!-- Name -->
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Project Name</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="ProjectName" style=" width:100%;" type="text" name="ProjectName" aria-label="name" id="ProjectName" value="@Model.ProjectName" required maxlength="191">
+                                        <span asp-validation-for="ProjectName" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name" class="col-md-3 control-label">Description:</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <textarea class="form-control valid" asp-for="Description" name="Description" id="Description" value="@Model.Description" placeholder="Add a description"
+                                                  aria-label="notes" rows="5" aria-invalid="false">@Model.Description</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="OwnerCompanyID" class="required-field col-md-3 control-label">Owner Company</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <select asp-for="OwnerCompanyID" asp-items="Lookup.GetActiveCompanyItems()" id="OwnerCompanyID" name="OwnerCompanyID" class="form-control" value="@Model.OwnerCompanyID" required>
+                                         </select>
+                                        <span asp-validation-for="OwnerCompanyID" class="text-danger"></span>
+                                    </div>
+                                  
+                                </div>
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Start Date</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="ActualStartDate" style=" width:100%;" type="date" name="ActualStartDate" aria-label="name" id="StartDate"
+                                               value="@(Model.ActualStartDate.HasValue ? Model.ActualStartDate.Value.ToString("yyyy-MM-dd") : "")" required maxlength="191" />
+                            
+                                        <span asp-validation-for="ActualStartDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">End Date</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="ActualEndDate" style=" width:100%;" type="date" name="ActualEndDate" aria-label="ActualEndDate" id="ActualEndDate"
+                                               value="@(Model.ActualEndDate.HasValue ? Model.ActualEndDate.Value.ToString("yyyy-MM-dd") : "")" required maxlength="191">
+                                        <span asp-validation-for="ActualEndDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Active</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <div class="icheck-danger d-inline">
+                                            <input type="checkbox" asp-for="IsActive" id="IsActive" name="IsActive"  value="true">
+                                        </div>
+                                    </div>
+                                </div>
+                          
+                                <!-- end redirect submit options -->
+                            </div>
+
+                        </div> <!-- ./box-body -->
+                        <div class="box-footer">
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <a class="btn btn-link" href="/Company">Cancel</a>
+                                </div>
+
+                                <div class="col-md-9 text-right">
+                                    <div class="btn-group text-left">
+
+
+                                        <button type="submit" class="btn btn-primary pull-right" style="margin-left:5px; border-radius: 3px;">
+                                            <i class="fas fa-check icon-white" aria-hidden="true"></i>                    Save
+                                        </button>
+
+                                    </div><!-- /.btn-group -->
+                                </div><!-- /.col-md-9 -->
+                            </div><!-- /.row -->
+                        </div> <!-- /.box-footer -->
+                    </div> <!-- box -->
+
+                </div>
+            </form> <!-- col-md-8 -->
+
+
+        </div><!-- ./row -->
+
+    </div>
+
+
+
+</section>
+

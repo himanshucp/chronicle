@@ -1,0 +1,241 @@
+﻿@model Chronicle.Web.Areas.Contract.ContractViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string action = "";
+
+}
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only"></span>
+                        </a>
+                        @*   <i class="fas fa-angle-right" aria-hidden="true"></i> *@
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/Contract">
+                            Contract
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Create New Contract
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <a style="padding-left: 5px; font-size: 15px;" class="text-dark-gray hidden-print" data-trigger="focus" tabindex="0" role="button" data-toggle="popover" title="" data-placement="right" data-html="true" data-content="Companies can be used as a simple identifier field, or can be used to limit visibility of assets, users, etc if full company support is enabled in your Admin settings." data-original-title="More Info">
+                <i class="far fa-life-ring" style="padding-top: 9px;" aria-hidden="true"></i>    <span class="sr-only">More Info</span>
+            </a>
+            <div class="pull-right">
+                <a href="/Contract" class="btn btn-primary pull-right">
+                    Back
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <!-- col-md-8 -->
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0">
+
+            <form id="create-form" class="form-horizontal" method="post" action="/Contract/Edit/@Model.ContractID" autocomplete="off" role="form" enctype="multipart/form-data" novalidate="novalidate">
+                <input type="hidden" asp-for="ContractID" name="ContractID" aria-label="name" id="ContractID" value="@Model.ContractID">
+                <input type="hidden" asp-for="TenantID" name="TenantID" aria-label="name" id="TenantID" value="@Model.TenantID">
+                <!-- box -->
+                <div class="box box-default">
+                    <!-- box-header -->
+                    <div class="box-header with-border">
+
+
+                        <!-- box-body -->
+                        <div class="box-body">
+
+                            <div style="padding-top: 30px;">
+
+                                <!-- CSRF Token -->
+                                <input type="hidden" name="_token" value="CbzxZWFMTu4jPu5cawm2TiEDgINArBf87v9wmDL1" autocomplete="off">
+
+                                <!-- Name -->
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Contract Title</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="ContractTitle" style=" width:100%;" type="text" name="ContractTitle" aria-label="name" id="FirstName" value="@Model.ContractTitle" required maxlength="191">
+                                        <span asp-validation-for="ContractTitle" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Contract ID</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="ContractExternalID" style=" width:100%;" type="text" name="ContractExternalID" aria-label="name" id="ContractExternalID" value="@Model.ContractExternalID" required maxlength="191">
+                                        <span asp-validation-for="ContractExternalID" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="CompanyID" class="required-field col-md-3 control-label">Company</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <select asp-for="CompanyID" asp-items="Lookup.GetActiveCompanyItems()" id="CompanyID" name="CompanyID" class="form-control" value="@Model.CompanyID" required>
+                                        </select>
+                                        <span asp-validation-for="CompanyID" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="CompanyRoleID" class="required-field col-md-3 control-label">Company Role</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <select asp-for="CompanyRoleID" asp-items="Lookup.GetCompanyRoleItems()" id="CompanyRoleID" name="CompanyRoleID" class="form-control" value="@Model.CompanyRoleID" required>
+                                        </select>
+                                        <span asp-validation-for="CompanyRoleID" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="HierarchyLevelID" class="required-field col-md-3 control-label">Contract Hierarchy level</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <select asp-for="HierarchyLevelID" asp-items="Lookup.GetHierarchyLevelsItems()" id="HierarchyLevelID" name="HierarchyLevelID" class="form-control" value="@Model.HierarchyLevelID" required>
+                                        </select>
+                                        <span asp-validation-for="HierarchyLevelID" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="HierarchyLevelID" class="required-field col-md-3 control-label">Line Manager</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <select asp-for="ContractManagerID" id="ContractManagerID" name="ContractManagerID" class="form-control" value="@Model.ContractManagerID">
+                                        </select>
+                                        <span asp-validation-for="ContractManagerID" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Date Activated</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="StartDate" style=" width:100%;" type="date" name="StartDate" aria-label="name" id="StartDate"
+                                               value="@(Model.StartDate.HasValue ? Model.StartDate.Value.ToString("yyyy-MM-dd") : "")" maxlength="191" />
+
+                                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="name" class="required-field col-md-3 control-label">Date Deactivated</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="EndDate" style=" width:100%;" type="date" name="EndDate" aria-label="EndDate" id="EndDate"
+                                               value="@(Model.EndDate.HasValue ? Model.EndDate.Value.ToString("yyyy-MM-dd") : "")"  maxlength="191">
+                                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- end redirect submit options -->
+                            </div>
+
+                        </div> <!-- ./box-body -->
+                        <div class="box-footer">
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <a class="btn btn-link" href="/Discipline">Cancel</a>
+                                </div>
+
+                                <div class="col-md-9 text-right">
+                                    <div class="btn-group text-left">
+
+
+                                        <button type="submit" class="btn btn-primary pull-right" style="margin-left:5px; border-radius: 3px;">
+                                            <i class="fas fa-check icon-white" aria-hidden="true"></i>                    Save
+                                        </button>
+
+                                    </div><!-- /.btn-group -->
+                                </div><!-- /.col-md-9 -->
+                            </div><!-- /.row -->
+                        </div> <!-- /.box-footer -->
+                    </div> <!-- box -->
+
+                </div>
+            </form> <!-- col-md-8 -->
+
+
+        </div><!-- ./row -->
+
+    </div>
+
+
+
+</section>
+
+
+<script>
+
+    $('#CompanyID').change(function () {
+        var companyId = $(this).val();
+        var contractManagerSelect = $('#ContractManagerID');
+        var initialContractManagerId = '@Model.ContractManagerID';
+        // Clear existing options
+        contractManagerSelect.empty();
+        contractManagerSelect.append('<option value="">-- Select Line Manager --</option>');
+
+        if (companyId && companyId !== '') {
+            // Show loading indicator
+            contractManagerSelect.prop('disabled', true);
+            contractManagerSelect.append('<option value="">Loading...</option>');
+            // alert("hi in companyId");
+            $.ajax({
+                url: '/Contract/GetEmployeeByCompany/' + companyId, // Replace with your actual controller/action
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Clear loading indicator
+                    contractManagerSelect.empty();
+                    contractManagerSelect.append('<option value="">-- Select Line Manager --</option>');
+                   
+                    // Populate dropdown with returned data
+                    $.each(data, function (index, item) {
+                        // alert(JSON.stringify(item));
+                        var isSelected = (initialContractManagerId && item.employeeID == initialContractManagerId) ? 'selected' : '';
+                        contractManagerSelect.append('<option value="' + item.employeeID + '" ' + isSelected + '>' + item.firstName + " " + item.lastName + '</option>');
+                    });
+
+                    // Enable the dropdown
+                    contractManagerSelect.prop('disabled', false);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading hierarchy levels:', error);
+                    contractManagerSelect.empty();
+                    contractManagerSelect.append('<option value="">-- Error loading data --</option>');
+                    contractManagerSelect.prop('disabled', false);
+                }
+            });
+        } else {
+            contractManagerSelect.prop('disabled', false);
+        }
+    });
+
+    // Trigger change event on page load if company is already selected
+    if ($('#CompanyID').val()) {
+        $('#CompanyID').trigger('change');
+    }
+         
+</script>

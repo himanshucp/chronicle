@@ -1,0 +1,143 @@
+﻿@model Chronicle.Web.Areas.Companies.CompanyListViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only">Dashboard</span>
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item">
+                        
+                        <a href="/Company">
+                           Companies
+                        </a>
+                        
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <div class="pull-right">
+                <a href="/Company/Create" class="btn btn-primary pull-right">
+                    Create New
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<section class="content">
+    <div class="box box-default color-palette-box">
+        <div class="box-header">
+            <h3>List of Companies</h3>
+            <div class="pull-right input-group input-group-sm">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="SearchTerm" value="@ViewBag.CurrentFilter" class="form-control float-right" placeholder="Search">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </span>
+
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div class="box-body">
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap table-striped table-bordered" id="tblCompanies">
+                    <thead>
+                        <tr>
+                            <th>CompanyID</th>
+                            <th>CompanyName</th>
+                            <th>Location</th>
+                            <th>Address</th>
+                            <th>email</th>
+                            <th>ContactPerson</th>
+                            <th>Phone</th>
+                            <th>Fax</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var company in Model.Companies)
+                        {
+                            <tr>
+                                <td>@company.CompanyID</td>
+                                <td>@company.Name</td>
+                                <td>@company.Location</td>
+                                <td>@company.Address</td>
+                                <td><i class="fa-regular fa-envelope" aria-hidden="true"></i> @company.Email</td>
+                                <td><i class="fa-regular fa-user" aria-hidden="true"></i> @company.ContactPerson</td>
+                                <td><i class="fa fa-phone" aria-hidden="true"></i> @company.Phone</td>
+                                <td><i class="fa fa-phone" aria-hidden="true"></i> @company.Fax</td>
+                                <td>
+                                    <nobr>
+                                        <a href="/Company/Edit/@company.CompanyID" class="btn bg-primary btn-primary">
+                                            <i class="fa fa-pencil-alt" aria-hidden="true"></i>
+                                            <span class="sr-only">Update</span>
+                                        </a>
+                                    </nobr>
+                                    <nobr>
+                                        <a class="btn btn-danger js-delete" href="/Company/Delete/@company.CompanyID" data-name="@company.Name" data-return-url="/Company" data-id="@company.CompanyID">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                            <span class="sr-only">Delete</span>
+                                        </a>
+                                    </nobr>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="box-footer">
+            <ul class="pagination pagination-sm m-0 float-right">
+                @if (Model.TotalPages > 1)
+                {
+                    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="/Company/?searchTerm=@ViewBag.CurrentFilter&page=1">&laquo;</a>
+                    </li>
+                    @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="/Company/?searchTerm=@ViewBag.CurrentFilter&page=@i">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" href="/Company/?searchTerm=@ViewBag.CurrentFilter&page=@Model.TotalPages">&raquo;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+    </div>
+</section>
+

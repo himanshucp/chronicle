@@ -1,0 +1,49 @@
+﻿@if (TempData["Success"] != null)
+{
+    <div id="alert-success" class="alert alert-success alert-dismissible alert-absolute">
+        <input type="hidden" id="Success" name="Success" value="@TempData["Success"].ToString()" />
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    TempData["Success"] = null;      // prevents redisplay following a non-redirect
+}
+
+@if (TempData["Failure"] != null)
+{
+    @*<input type="hidden" id="failure" name="failure" value="@TempData["Failure"].ToString()" />*@
+    @*<div id="alert-failure" class="alert alert-error alert-dismissible alert-absolute">
+            @TempData["Failure"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>*@
+
+    <div class="p-2">
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-ban"></i> Alert!</h5>
+            @TempData["Failure"].ToString()
+        </div>
+    </div>
+
+
+    TempData["Failure"] = null;      // prevents redisplay following a non-redirect
+}
+<script>
+    toastr.options = {
+        "closeButton": true, "debug": true, "newestOnTop": false, "progressBar": false, "positionClass": "toast-top-right", "preventDuplicates": false, "onclick": null, "showDuration": "300", "hideDuration": "1000", "timeOut": "5000", "extendedTimeOut": "1000", "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut"
+
+
+    }
+
+    var Failure = $('#failure').val();
+    var Success = $('#Success').val();
+
+    if (Success != null) {
+        toastr.success(Success);
+    }
+
+    if (Failure != null) {
+         toastr.error(Failure);
+    }
+
+</script>

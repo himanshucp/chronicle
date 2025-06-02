@@ -1,0 +1,157 @@
+﻿@model Chronicle.Web.PagedViewModel<Employee>
+@using Chronicle.Entities
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only">Home</span>
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Employee
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <div class="pull-right">
+                <a href="/Employee/Create" class="btn btn-primary pull-right">
+                    Create New
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+<section class="content">
+    <div class="box box-default color-palette-box">
+        <div class="box-header ui-sortable-handle with-border" style="cursor: move;">
+            <i class="ion ion-clipboard"></i>
+            <h3 class="box-title">List of Employee</h3>
+            <div class="pull-right input-group input-group-sm">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="SearchTerm" value="@ViewBag.CurrentFilter" class="form-control float-right" placeholder="Search">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </span>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee Name</th>
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Items.Any())
+                        {
+                            foreach (var employee in Model.Items)
+                            {
+                                string companyName = Cache.Companies[employee.CompanyID].Name;
+                                <tr>
+                                    <td>@employee.EmployeeID</td>
+                                    <td>@employee.FirstName @employee.LastName</td>
+                                    <td>@(companyName ?? "N/A")</td>
+                                    <td><i class="fa-regular fa-envelope" aria-hidden="true"></i> @employee.Email</td>
+                                    <td><i class="fa fa-phone" aria-hidden="true"></i> @employee.Phone</td>
+                                    <td>
+                                        @if ((bool)employee.IsActive)
+                                        {
+                                            <span class="badge badge-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+
+                                            <norb>
+                                                <a href="/Employee/Edit/@employee.EmployeeID" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </norb>
+                                            <norb>
+                                                <a class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </norb>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">No projects found</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+                <ul class="pagination pagination-sm m-0 float-right">
+                    @if (Model.TotalPages > 1)
+                    {
+                        <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" href="/Employee/?searchTerm=@ViewBag.CurrentFilter&page=1">&laquo;</a>
+                        </li>
+                        @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="/Employee/?searchTerm=@ViewBag.CurrentFilter&page=@i">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                            <a class="page-link" href="/Employee/?searchTerm=@ViewBag.CurrentFilter&page=@Model.TotalPages">&raquo;</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+

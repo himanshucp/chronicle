@@ -134,9 +134,9 @@
                                 <th>External ID</th>
                                 <th>Title</th>
                                 <th>Company</th>
-                                <th>Project</th>
+                                <th>Location</th>
                                 <th>Type</th>
-                                <th>Amount</th>
+                                <th>Hierarchy Level</th>
                                 <th>Status</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -144,58 +144,61 @@
                             </tr>
                         </thead>
                         <tbody id="contractsTableBody">
-                          @*   <!-- Sample data - will be populated via AJAX -->
-                            @foreach(var contract in Model.Items)
-                            {
-                                
-                            } *@
 
-                            <tr>
-                                <td>001</td>
-                                <td>EXT-2024-001</td>
-                                <td>Main Construction Contract</td>
-                                <td>ABC Construction Ltd</td>
-                                <td>Downtown Office Building</td>
-                                <td>Main Contract</td>
-                                <td>$2,500,000.00</td>
-                                <td><span class="contract-status-active"><i class="fa fa-check-circle"></i> Active</span></td>
-                                <td>2024-01-15</td>
-                                <td>2024-12-15</td>
-                                <td>
-                                    <button class="btn btn-xs btn-info edit-contract" data-id="1">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-xs btn-warning view-contract" data-id="1">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-xs btn-danger delete-contract" data-id="1">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>002</td>
-                                <td>EXT-2024-002</td>
-                                <td>Electrical Works Subcontract</td>
-                                <td>PowerTech Solutions</td>
-                                <td>Downtown Office Building</td>
-                                <td>Subcontract</td>
-                                <td>$350,000.00</td>
-                                <td><span class="contract-status-pending"><i class="fa fa-clock-o"></i> Pending</span></td>
-                                <td>2024-03-01</td>
-                                <td>2024-10-30</td>
-                                <td>
-                                    <button class="btn btn-xs btn-info edit-contract" data-id="2">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-xs btn-warning view-contract" data-id="2">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-xs btn-danger delete-contract" data-id="2">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            @if (Model.Items.Any())
+                            {
+
+                                <!-- Sample data - will be populated via AJAX -->
+                                @foreach (var contract in Model.Items)
+                                {
+
+                                    string companyName = Cache.Companies[contract.CompanyID].Name;
+                                    string companyRole = Cache.CompanyRoles[contract.CompanyRoleID].RoleName;
+                                    string hierarchylevel = Cache.HierarchyLevels[contract.HierarchyLevelID].LevelName;
+                                    <tr>
+                                        <td>@contract.ContractID</td>
+                                        <td>@contract.ContractExternalID</td>
+                                        <td>@contract.ContractType</td>
+                                        <td>@companyName</td>
+                                        <td>@contract.Location</td>
+                                        <td>@companyRole</td>
+                                        <td>@hierarchylevel</td>
+                                        <td>
+                                            @if ((bool)contract.IsActive)
+                                            {
+                                                <span class="badge badge-success">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-secondary">Inactive</span>
+                                            }
+
+                                            @*  <span class="contract-status-active"><i class="fa fa-check-circle"></i> Active</span> *@
+                                        </td>
+                                        <td>@(contract.StartDate?.ToString("MM/dd/yyyy") ?? "Not set")</td>
+                                        <td>@(contract.EndDate?.ToString("MM/dd/yyyy") ?? "Not set")</td>
+                                        <td>
+                                            <button class="btn btn-xs btn-info edit-contract" data-id="1">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-xs btn-warning view-contract" data-id="1">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-xs btn-danger delete-contract" data-id="1">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="11" class="text-center">No contract found</td>
+                                </tr>
+                            }
+
+                          
                         </tbody>
                     </table>
                 </div>

@@ -149,6 +149,31 @@
                                     </div>
                                 </div>
 
+                                <!-- Employee Assignment Section -->
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Assigned Employees</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <div class="box box-info">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Employee Assignments</h3>
+                                                <div class="box-tools pull-right">
+                                                    <button type="button" class="btn btn-sm btn-success" id="addEmployeeBtn">
+                                                        <i class="fa fa-plus"></i> Add Employee
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body">
+                                                <div id="employeeAssignments">
+                                                    <!-- Employee assignments will be added here dynamically -->
+                                                </div>
+                                                <div id="noEmployeesMessage" class="text-muted" style="text-align: center; padding: 20px;">
+                                                    No employees assigned yet. Click "Add Employee" to assign employees to this contract.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- end redirect submit options -->
                             </div>
 
@@ -186,13 +211,67 @@
 
 </section>
 
+<!-- Employee Assignment Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="employeeModalLabel">Assign Employee</h4>
+            </div>
+            <div class="modal-body">
+                <form id="employeeForm">
+                    <div class="form-group">
+                        <label for="modalEmployeeID" class="required-field">Employee</label>
+                        <select id="modalEmployeeID" name="employeeID" class="form-control" required>
+                            <option value="">-- Select Employee --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalRoleID">Role</label>
+                        <select id="modalRoleID" name="roleID" class="form-control">
+                            <option value="">-- Select Role --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalLineManagerID">Line Manager</label>
+                        <select id="modalLineManagerID" name="lineManagerID" class="form-control">
+                            <option value="">-- Select Line Manager --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalDateActivated">Date Activated</label>
+                        <input type="date" id="modalDateActivated" name="dateActivated" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalDateDeactivated">Date Deactivated</label>
+                        <input type="date" id="modalDateDeactivated" name="dateDeactivated" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalNotes">Notes</label>
+                        <textarea id="modalNotes" name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveEmployeeBtn">Save Employee</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
+    var employeeCounter = 0;
+    var assignedEmployees = [];
 
     $('#CompanyID').change(function () {
         var companyId = $(this).val();
         var contractManagerSelect = $('#ContractManagerID');
         var initialContractManagerId = '@Model.ContractManagerID';
+        
         // Clear existing options
         contractManagerSelect.empty();
         contractManagerSelect.append('<option value="">-- Select Line Manager --</option>');
@@ -201,9 +280,9 @@
             // Show loading indicator
             contractManagerSelect.prop('disabled', true);
             contractManagerSelect.append('<option value="">Loading...</option>');
-            // alert("hi in companyId");
+            
             $.ajax({
-                url: '/Contract/GetEmployeeByCompany/' + companyId, // Replace with your actual controller/action
+                url: '/Contract/GetEmployeeByCompany/' + companyId,
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -213,16 +292,18 @@
                    
                     // Populate dropdown with returned data
                     $.each(data, function (index, item) {
-                        // alert(JSON.stringify(item));
                         var isSelected = (initialContractManagerId && item.employeeID == initialContractManagerId) ? 'selected' : '';
                         contractManagerSelect.append('<option value="' + item.employeeID + '" ' + isSelected + '>' + item.firstName + " " + item.lastName + '</option>');
                     });
 
                     // Enable the dropdown
                     contractManagerSelect.prop('disabled', false);
+                    
+                    // Also populate the modal employee dropdown
+                    populateModalEmployeeDropdown(data);
                 },
                 error: function (xhr, status, error) {
-                    console.error('Error loading hierarchy levels:', error);
+                    console.error('Error loading employees:', error);
                     contractManagerSelect.empty();
                     contractManagerSelect.append('<option value="">-- Error loading data --</option>');
                     contractManagerSelect.prop('disabled', false);
@@ -237,5 +318,140 @@
     if ($('#CompanyID').val()) {
         $('#CompanyID').trigger('change');
     }
+
+    function populateModalEmployeeDropdown(employees) {
+        var modalEmployeeSelect = $('#modalEmployeeID');
+        modalEmployeeSelect.empty();
+        modalEmployeeSelect.append('<option value="">-- Select Employee --</option>');
+        
+        $.each(employees, function (index, item) {
+            modalEmployeeSelect.append('<option value="' + item.employeeID + '">' + item.firstName + " " + item.lastName + '</option>');
+        });
+    }
+
+    // Add Employee Button Click
+    $('#addEmployeeBtn').click(function() {
+        var companyId = $('#CompanyID').val();
+        if (!companyId) {
+            alert('Please select a company first.');
+            return;
+        }
+        
+        // Reset modal form
+        $('#employeeForm')[0].reset();
+        $('#employeeModal').modal('show');
+    });
+
+    // Save Employee Button Click
+    $('#saveEmployeeBtn').click(function() {
+        var employeeID = $('#modalEmployeeID').val();
+        var employeeName = $('#modalEmployeeID option:selected').text();
+        var roleID = $('#modalRoleID').val();
+        var roleName = $('#modalRoleID option:selected').text();
+        var lineManagerID = $('#modalLineManagerID').val();
+        var lineManagerName = $('#modalLineManagerID option:selected').text();
+        var dateActivated = $('#modalDateActivated').val();
+        var dateDeactivated = $('#modalDateDeactivated').val();
+        var notes = $('#modalNotes').val();
+
+        if (!employeeID) {
+            alert('Please select an employee.');
+            return;
+        }
+
+        // Check if employee is already assigned
+        if (assignedEmployees.some(emp => emp.employeeID == employeeID)) {
+            alert('This employee is already assigned to the contract.');
+            return;
+        }
+
+        // Add to assigned employees array
+        var employeeData = {
+            employeeID: employeeID,
+            employeeName: employeeName,
+            roleID: roleID,
+            roleName: roleName,
+            lineManagerID: lineManagerID,
+            lineManagerName: lineManagerName,
+            dateActivated: dateActivated,
+            dateDeactivated: dateDeactivated,
+            notes: notes,
+            counter: employeeCounter++
+        };
+
+        assignedEmployees.push(employeeData);
+        addEmployeeToDisplay(employeeData);
+        updateNoEmployeesMessage();
+        
+        $('#employeeModal').modal('hide');
+    });
+
+    function addEmployeeToDisplay(employeeData) {
+        var employeeHtml = `
+            <div class="employee-assignment" data-counter="${employeeData.counter}">
+                <div class="box box-widget widget-user-2">
+                    <div class="widget-user-header bg-blue">
+                        <div class="widget-user-image">
+                            <i class="fa fa-user bg-blue"></i>
+                        </div>
+                        <h3 class="widget-user-username">${employeeData.employeeName}</h3>
+                        <h5 class="widget-user-desc">${employeeData.roleName || 'No Role Assigned'}</h5>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool btn-sm remove-employee" data-counter="${employeeData.counter}">
+                                <i class="fa fa-times text-red"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Line Manager:</strong> ${employeeData.lineManagerName || 'Not Assigned'}
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Date Activated:</strong> ${employeeData.dateActivated || 'Not Set'}
+                            </div>
+                        </div>
+                        ${employeeData.dateDeactivated ? `<div class="row"><div class="col-sm-12"><strong>Date Deactivated:</strong> ${employeeData.dateDeactivated}</div></div>` : ''}
+                        ${employeeData.notes ? `<div class="row"><div class="col-sm-12"><strong>Notes:</strong> ${employeeData.notes}</div></div>` : ''}
+                        
+                        <!-- Hidden form fields for submission -->
+                        <input type="hidden" name="ContractEmployees[${employeeData.counter}].EmployeeID" value="${employeeData.employeeID}" />
+                        <input type="hidden" name="ContractEmployees[${employeeData.counter}].RoleID" value="${employeeData.roleID}" />
+                        <input type="hidden" name="ContractEmployees[${employeeData.counter}].LineManagerID" value="${employeeData.lineManagerID}" />
+                        <input type="hidden" name="ContractEmployees[${employeeData.counter}].DateActivated" value="${employeeData.dateActivated}" />
+                        <input type="hidden" name="ContractEmployees[${employeeData.counter}].DateDeactivated" value="${employeeData.dateDeactivated}" />
+                        <input type="hidden" name="ContractEmployees[${employeeData.counter}].Notes" value="${employeeData.notes}" />
+                        <input type="hidden" name="ContractEmployees[${employeeData.counter}].IsActive" value="true" />
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        $('#employeeAssignments').append(employeeHtml);
+    }
+
+    // Remove Employee
+    $(document).on('click', '.remove-employee', function() {
+        var counter = $(this).data('counter');
+        
+        // Remove from array
+        assignedEmployees = assignedEmployees.filter(emp => emp.counter !== counter);
+        
+        // Remove from display
+        $(`.employee-assignment[data-counter="${counter}"]`).remove();
+        
+        updateNoEmployeesMessage();
+    });
+
+    function updateNoEmployeesMessage() {
+        if (assignedEmployees.length === 0) {
+            $('#noEmployeesMessage').show();
+        } else {
+            $('#noEmployeesMessage').hide();
+        }
+    }
+
+    // Initialize no employees message
+    updateNoEmployeesMessage();
          
 </script>

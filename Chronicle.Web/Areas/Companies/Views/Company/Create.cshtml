@@ -95,6 +95,13 @@
                                         <span asp-validation-for="Name" class="text-danger"></span>
                                     </div>
                                 </div>
+                                <div class="form-group ">
+                                    <label for="Abbrivation" class="required-field col-md-3 control-label">Company Abbrivation</label>
+                                    <div class="col-md-8 col-sm-12">
+                                        <input class="form-control" asp-for="Abbrivation" style=" width:100%;" type="text" name="Abbrivation" aria-label="name" id="Name" value="@Model.Abbrivation" required maxlength="191">
+                                        <span asp-validation-for="Abbrivation" class="text-danger"></span>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label for="name" class="required-field col-md-3 control-label">Location:</label>
                                     <div class="col-md-8 col-sm-12">

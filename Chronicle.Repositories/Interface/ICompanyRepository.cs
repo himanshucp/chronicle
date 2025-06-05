@@ -10,6 +10,9 @@ namespace Chronicle.Repositories
     public interface ICompanyRepository : IRepository<Company, int>
     {
         Task<Company> GetByNameAsync(string companyName, int tenantId);
+
+        Task<Company> GetByAbbrivationAsync(string abbrivation, int tenantId);
+
         Task<Company> GetByEmailAsync(string email, int tenantId);
         Task<IEnumerable<Company>> GetCompaniesByProjectAsync(int projectId, int tenantId);
         Task<Company> GetByIdAsync(int id, int tenantId);

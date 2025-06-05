@@ -15,6 +15,9 @@ namespace Chronicle.Services
         Task<bool> UpdateCompanyAsync(Company company, int tenantId);
         Task<bool> DeleteCompanyAsync(int id, int tenantId);
         Task<Company> GetCompanyByNameAsync(string name, int tenantId);
+
+        Task<Company> GetByAbbrivationAsync(string abbrivation, int tenantId);
+
         Task<Company> GetCompanyByEmailAsync(string email, int tenantId);
         Task<IEnumerable<Company>> GetCompaniesByProjectAsync(int projectId, int tenantId);
         Task<PagedResult<Company>> GetPagedCompaniesAsync(int page, int pageSize, string searchTerm, int tenantId);

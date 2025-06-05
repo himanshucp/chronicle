@@ -27,6 +27,15 @@ namespace Chronicle.Repositories
                 _unitOfWork.Transaction);
         }
 
+        public async Task<Company> GetByAbbrivationAsync(string abbrivation, int tenantId)
+        {
+            const string sql = "SELECT * FROM Companies WHERE Abbrivation = @Abbrivation AND TenantID = @TenantID";
+            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Company>(
+                sql,
+                new { Abbrivation = abbrivation, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
         public async Task<Company> GetByEmailAsync(string email, int tenantId)
         {
             const string sql = "SELECT * FROM Companies WHERE Email = @Email AND TenantID = @TenantID";
@@ -90,11 +99,11 @@ namespace Chronicle.Repositories
         {
             const string sql = @"
                 INSERT INTO Companies (
-                    TenantID, Name, CompanyType, Location, Address, Email, 
+                    TenantID, Name, Abbrivation, Location, Address, Email, 
                     ContactPerson, Phone, Fax, TaxNumber, LicenseNumber, 
                     LicenseExpiryDate, InsuranceDetails, CreatedDate, LastModifiedDate, IsActive,WebSite)
                 VALUES (
-                    @TenantID, @Name, @CompanyType, @Location, @Address, @Email, 
+                    @TenantID, @Name, @Abbrivation, @Location, @Address, @Email, 
                     @ContactPerson, @Phone, @Fax, @TaxNumber, @LicenseNumber, 
                     @LicenseExpiryDate, @InsuranceDetails, @CreatedDate, @LastModifiedDate, @IsActive,@WebSite);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
@@ -124,7 +133,7 @@ namespace Chronicle.Repositories
                 UPDATE Companies
                 SET TenantID = @TenantID,
                     Name = @Name,
-                    CompanyType = @CompanyType,
+                    Abbrivation = @Abbrivation,
                     Location = @Location,
                     Address = @Address,
                     Email = @Email,
@@ -161,7 +170,7 @@ namespace Chronicle.Repositories
                 whereClause = @"
                     TenantID = @TenantID AND (
                     Name LIKE @SearchTerm OR 
-                    CompanyType LIKE @SearchTerm OR
+                    Abbrivation LIKE @SearchTerm OR
                     Location LIKE @SearchTerm OR
                     Address LIKE @SearchTerm OR
                     Email LIKE @SearchTerm OR

@@ -12,6 +12,10 @@ namespace Chronicle.Web.Areas.Companies
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 200 characters")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Abbrivation is required")]
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "Name Abbrivation be between 3 characters")]
+        public string Abbrivation { get; set; }
+
         [Required(ErrorMessage = "Location is required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Location must be between 2 and 200 characters")]
         public string? Location { get; set; }

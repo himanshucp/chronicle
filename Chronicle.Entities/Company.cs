@@ -15,7 +15,7 @@ namespace Chronicle.Entities
 
         public string Name { get; set; }
 
-        public string CompanyType { get; set; }
+        public string Abbrivation { get; set; }
 
         public string Location { get; set; }
 

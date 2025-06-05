@@ -52,6 +52,12 @@ namespace Chronicle.Services
                     throw new InvalidOperationException($"A company with name '{company.Name}' already exists");
                 }
 
+                var existingAbbrivation =await _companyRepository.GetByAbbrivationAsync(company.Abbrivation, tenantId);
+                if (existingCompany != null && existingCompany.CompanyID != company.CompanyID)
+                {
+                    throw new InvalidOperationException($"A Abbrivation with '{company.Abbrivation}' for  '{company.Name}' already exists");
+                }
+
                 // Check if company with same email already exists in this tenant
                 if (!string.IsNullOrEmpty(company.Email))
                 {
@@ -99,6 +105,7 @@ namespace Chronicle.Services
                     throw new InvalidOperationException($"Company with ID {company.CompanyID} not found");
                 }
 
+            
                 // Ensure tenant ID cannot be changed
                 company.TenantID = tenantId;
 
@@ -108,6 +115,13 @@ namespace Chronicle.Services
                 {
                     throw new InvalidOperationException($"Another company with name '{company.Name}' already exists");
                 }
+
+                var abbrivationCheck = await _companyRepository.GetByAbbrivationAsync(company.Abbrivation, tenantId);
+                if (abbrivationCheck != null && abbrivationCheck.CompanyID != company.CompanyID)
+                {
+                    throw new InvalidOperationException($"A Abbrivation with '{company.Abbrivation}' for  '{company.Name}' already exists");
+                }
+
 
                 // Check if another company with same email exists in this tenant
                 if (!string.IsNullOrEmpty(company.Email))
@@ -165,6 +179,11 @@ namespace Chronicle.Services
         public async Task<Company> GetCompanyByNameAsync(string name, int tenantId)
         {
             return await _companyRepository.GetByNameAsync(name, tenantId);
+        }
+
+        public async Task<Company> GetByAbbrivationAsync(string abbrivation, int tenantId)
+        {
+            return await _companyRepository.GetByAbbrivationAsync(abbrivation, tenantId);
         }
 
         public async Task<Company> GetCompanyByEmailAsync(string email, int tenantId)

@@ -11,5 +11,15 @@ namespace Chronicle.Web.Areas.Admin
         {
             return View();
         }
+
+        [HttpGet("ClearCache")]
+        public IActionResult ClearCache()
+        {
+            _cache.Clear();
+
+            Success = "Caches have been cleared";
+
+            return LocalRedirect("/admin");
+        }
     }
 }

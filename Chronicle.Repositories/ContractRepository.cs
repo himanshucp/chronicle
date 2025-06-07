@@ -21,6 +21,61 @@ namespace Chronicle.Repositories
         {
         }
 
+        public async Task<Contract> GetByIdWithEmployeesAsync(int id, int tenantId)
+        {
+            const string sql = @"
+                SELECT c.*, 
+                       ce.ContractEmployeeID, ce.EmployeeID, ce.RoleID, ce.LineManagerID, 
+                       ce.HourlyRate, ce.EstimatedHours, ce.ActualHours, ce.DateActivated, 
+                       ce.DateDeactivated, ce.CreatedDate as CECreatedDate, ce.ModifiedDate as CEModifiedDate, 
+                       ce.IsActive as CEIsActive, ce.TenantID as CETenantID, ce.ContractID as CEContractID,
+                       e.EmployeeID, e.FirstName, e.LastName, e.Email, e.DepartmentID,
+                       r.RoleID, r.Name as RoleName,
+                       lm.EmployeeID as LMEmployeeID, lm.FirstName as LMFirstName, lm.LastName as LMLastName
+                FROM Contracts c
+                LEFT JOIN ContractEmployees ce ON c.ContractID = ce.ContractID AND ce.TenantID = @TenantID
+                LEFT JOIN Employees e ON ce.EmployeeID = e.EmployeeID AND e.TenantID = @TenantID
+                LEFT JOIN Roles r ON ce.RoleID = r.RoleID AND r.TenantID = @TenantID
+                LEFT JOIN Employees lm ON ce.LineManagerID = lm.EmployeeID AND lm.TenantID = @TenantID
+                WHERE c.ContractID = @ContractID AND c.TenantID = @TenantID";
+
+            var contractDictionary = new Dictionary<int, Contract>();
+
+            var contracts = await _unitOfWork.Connection.QueryAsync<Contract, ContractEmployee, Employee, Role, Employee, Contract>(
+                sql,
+                (contract, contractEmployee, employee, role, lineManager) =>
+                {
+                    if (!contractDictionary.TryGetValue(contract.ContractID, out Contract contractEntry))
+                    {
+                        contractEntry = contract;
+                        contractEntry.ContractEmployees = new List<ContractEmployee>();
+                        contractDictionary.Add(contract.ContractID, contractEntry);
+                    }
+
+                    if (contractEmployee != null && contractEmployee.ContractEmployeeID > 0)
+                    {
+                        // Check if this contract employee is already added
+                        var existingContractEmployee = contractEntry.ContractEmployees
+                            .FirstOrDefault(ce => ce.ContractEmployeeID == contractEmployee.ContractEmployeeID);
+
+                        if (existingContractEmployee == null)
+                        {
+                            contractEmployee.Employee = employee;
+                            contractEmployee.Role = role;
+                            contractEmployee.LineManager = lineManager;
+                            contractEntry.ContractEmployees.Add(contractEmployee);
+                        }
+                    }
+
+                    return contractEntry;
+                },
+                new { ContractID = id, TenantID = tenantId },
+                _unitOfWork.Transaction,
+                splitOn: "ContractEmployeeID,EmployeeID,RoleID,LMEmployeeID");
+
+            return contracts.FirstOrDefault();
+        }
+
         public async Task<Contract> GetByExternalIdAsync(string contractExternalId, int tenantId)
         {
             const string sql = "SELECT * FROM Contracts WHERE ContractExternalID = @ContractExternalID AND TenantID = @TenantID";
@@ -68,11 +123,8 @@ namespace Chronicle.Repositories
 
         public async Task<Contract> GetByIdAsync(int id, int tenantId)
         {
-            const string sql = "SELECT * FROM Contracts WHERE ContractID = @ContractID AND TenantID = @TenantID";
-            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Contract>(
-                sql,
-                new { ContractID = id, TenantID = tenantId },
-                _unitOfWork.Transaction);
+            // Use the enhanced method that includes employees
+            return await GetByIdWithEmployeesAsync(id, tenantId);
         }
 
         public override async Task<int> InsertAsync(Contract contract)
@@ -180,8 +232,6 @@ namespace Chronicle.Repositories
                 _unitOfWork.Transaction);
         }
 
-     
-
         public async Task<bool> DeleteAsync(int id, int tenantId)
         {
             const string sql = "DELETE FROM Contracts WHERE ContractID = @ContractID AND TenantID = @TenantID";
@@ -193,6 +243,8 @@ namespace Chronicle.Repositories
             return rowsAffected > 0;
         }
     }
+
+
 }
 
 

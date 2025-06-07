@@ -133,6 +133,78 @@ namespace Chronicle.Web.Areas.Employees
             return model;
         }
         #endregion
+
+
+        #region Ajax Callfor Employee 
+
+        [HttpGet("/Employee/GetEmployees")]
+        public async Task<IActionResult> GetEmployees()
+        {
+            try
+            {
+                var employees = await _employeeService.GetEmployeesByCompanyAsync(6,1);
+                var result = employees.Select(e => new
+                {
+                    id = e.EmployeeID,
+                    name = e.FirstName + " " + e.LastName,  
+                }).ToList();
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("/Employee/GetEmployeeByCompany/{id}")]
+        public async Task<IActionResult> GetEmployeeByCompany(int id)
+        {
+            try
+            {
+                var employees = await _employeeService.GetEmployeesByCompanyAsync(id, 1);
+                var result = employees.Select(e => new
+                {
+                    id = e.EmployeeID,
+                    name = e.FirstName + " " + e.LastName,
+                }).ToList();
+
+                return Json(employees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("/Employee/GetEmployeeDetails/{id}")]
+        public async Task<IActionResult> GetEmployeeDetails(int id)
+        {
+            try
+            {
+                var employee = await _employeeService.GetEmployeeByIdAsync(id,1);
+
+                if (employee == null)
+                {
+                    return NotFound(new { error = "Employee not found" });
+                }
+
+                return Json(new
+                {
+                    id = employee.EmployeeID,
+                    name = employee.FirstName + " " +employee.LastName,
+                    email = employee.Email,
+                    position = employee.Position,
+                    phone = employee.Phone
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        #endregion 
     }
 
     #region mapping

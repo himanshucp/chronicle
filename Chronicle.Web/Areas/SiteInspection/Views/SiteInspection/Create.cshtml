@@ -1,0 +1,3783 @@
+﻿
+  <style>
+        /* Enhanced Header */
+        .main-header-inspection {
+            background: linear-gradient(135deg, #3c8dbc 0%, #2c6ca0 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-header-inspection::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header-title {
+            font-size: 26px;
+            font-weight: 300;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .workflow-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 400;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .workflow-selector {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            z-index: 2;
+        }
+        
+        .workflow-selector select {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            color: #2c6ca0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .workflow-selector select:hover {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Info Bar */
+        .info-bar {
+            background: white;
+            padding: 15px 25px;
+            border-left: 1px solid #e7eaec;
+            border-right: 1px solid #e7eaec;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-item i {
+            color: #3c8dbc;
+            font-size: 16px;
+        }
+        
+        .info-item .label {
+            background: #e8f4f8;
+            color: #2c6ca0;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f4f4f4;
+            padding: 10px;
+            margin: 20px 0 15px 0;
+            border-left: 4px solid #3c8dbc;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* Compact Sections */
+        .section {
+            border-bottom: 1px solid #f0f3f4;
+            padding: 20px 25px;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #e1e6ef;
+            padding-bottom: 8px;
+        }
+        
+        .section-title i {
+            color: #3c8dbc;
+            font-size: 18px;
+        }
+        
+        .section-title .badge {
+            background: #e8f4f8;
+            color: #2c6ca0;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 400;
+        }
+
+        .header-info-bar {
+            background: #ecf0f5;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .header-info-bar .info-item {
+            display: inline-block;
+            margin-right: 30px;
+        }
+
+        .header-info-bar .info-item strong {
+            color: #3c8dbc;
+        }
+        
+        /* Compact Form Groups */
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .form-group label {
+            font-size: 13px;
+            color: black;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+     /*    
+        .required-field::after {
+            content: " *";
+            color: #e74c3c;
+        } */
+        
+      /*   .form-control {
+            border: 1px solid #e1e6ef;
+            border-radius: 6px;
+            font-size: 14px;
+            padding: 8px 12px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #3c8dbc;
+            box-shadow: 0 0 0 3px rgba(60, 141, 188, 0.1);
+        }
+        
+        .form-control[readonly] {
+            background: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        } */
+        
+        select.form-control {
+            cursor: pointer;
+        }
+        
+        /* Beautiful Attachment Area */
+        .attachment-container {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .attachment-container.drag-over {
+            border-color: #3c8dbc;
+            background: #e8f4f8;
+            transform: scale(1.02);
+        }
+        
+        .attachment-dropzone {
+            text-align: center;
+            padding: 30px 20px;
+            cursor: pointer;
+        }
+        
+        .attachment-dropzone i {
+            font-size: 48px;
+            color: #adb5bd;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .attachment-container:hover .attachment-dropzone i {
+            color: #3c8dbc;
+            transform: scale(1.1);
+        }
+        
+        .attachment-dropzone h4 {
+            color: #495057;
+            font-size: 16px;
+            margin: 10px 0 5px;
+        }
+        
+        .attachment-dropzone p {
+            color: #6c757d;
+            font-size: 13px;
+            margin: 0;
+        }
+        
+        /* File List */
+        .file-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .file-item {
+            background: white;
+            border: 1px solid #e1e6ef;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+        
+        .file-item:hover {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .file-icon {
+            width: 36px;
+            height: 36px;
+            background: #e8f4f8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3c8dbc;
+        }
+        
+        .file-details {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+        
+        .file-size {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .file-actions button {
+            background: none;
+            border: none;
+            padding: 5px 8px;
+            color: #6c757d;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .file-actions .btn-view:hover {
+            background: #f8f9fa;
+            color: #3c8dbc;
+        }
+        
+        .file-actions .btn-delete:hover {
+            background: #f8f9fa;
+            color: #e74c3c;
+        }
+        
+        /* Compact Radio/Checkbox */
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        
+        .radio-inline, .checkbox-inline {
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+        
+        /* Beautiful Buttons */
+        .btn {
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 20px;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3c8dbc 0%, #2c6ca0 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #357ca5 0%, #266090 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(60, 141, 188, 0.3);
+        }
+        
+        .btn-default {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+        
+        .btn-default:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        /* GPS Button */
+        .gps-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .gps-btn:hover {
+            background: #218838;
+        }
+        
+        /* Action Footer */
+        .action-footer {
+            background: #f8f9fa;
+            padding: 20px 25px;
+            border-top: 1px solid #e1e6ef;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        /* Tooltips */
+        .tooltip-inner {
+            background: #2c3e50;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3c8dbc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Breadcrumb Styles */
+        .breadcrumb-item {
+            display: inline;
+            list-style: none;
+        }
+
+        /* Animation Styles */
+        @@keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @@keyframes pulse {
+            0% {
+                transform: scale(0.8);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .file-item {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .file-count {
+            animation: pulse 0.3s ease-out;
+        }
+        
+        .custom-alert {
+            animation: slideIn 0.3s ease-out;
+        }
+
+
+        /* Collapsible Section Styles */
+.section-header-collapse {
+    cursor: pointer;
+    position: relative;
+    padding-right: 40px;
+}
+
+.collapse-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+    background: #3c8dbc;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.collapse-toggle:hover {
+    background: #2c6ca0;
+}
+
+.section-content {
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.section-content.collapsed {
+    display: none;
+}
+
+/* Delete button for table rows */
+.btn-delete-row {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-delete-row:hover {
+    background: #c82333;
+}
+
+
+   <!--Workflow graph -->
+
+      .workflow-status-bar {
+        background: white;
+        padding: 20px 25px;
+        border-left: 1px solid #e7eaec;
+        border-right: 1px solid #e7eaec;
+        margin-bottom: -1px;
+        overflow-x: auto;
+    }
+    
+    .workflow-tags {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1400px;
+        gap: 0;
+    }
+    
+    /* Shopping tag with arrow style */
+    .tag-arrow {
+        position: relative;
+        background: #f5f5f5;
+        padding: 12px 25px 12px 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #666;
+        border: 2px solid #ddd;
+        transition: all 0.3s ease;
+        min-width: 120px;
+        text-align: center;
+        clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
+        z-index: 1;
+    }
+    
+    .tag-arrow:first-child {
+        clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
+    }
+    
+    .tag-arrow:last-child {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 15px 50%);
+    }
+    
+    /* Connecting arrow lines */
+    .arrow-connector {
+        width: 30px;
+        height: 2px;
+        background: #ddd;
+        position: relative;
+        margin: 0 -8px;
+        z-index: 0;
+    }
+    
+    .arrow-connector::after {
+        content: '';
+        position: absolute;
+        right: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid #ddd;
+        border-top: 4px solid transparent;
+        border-bottom: 4px solid transparent;
+    }
+    
+    .arrow-connector.completed {
+        background: #3c8dbc;
+    }
+    
+    .arrow-connector.completed::after {
+        border-left-color: #3c8dbc;
+    }
+    
+    .arrow-connector.active {
+        background: #f39c12;
+        animation: flowAnimation 2s infinite;
+    }
+    
+    .arrow-connector.active::after {
+        border-left-color: #f39c12;
+    }
+    
+    @@keyframes flowAnimation {
+        0% { opacity: 0.4; }
+        50% { opacity: 1; }
+        100% { opacity: 0.4; }
+    }
+    
+    /* Tag hole effect */
+    .tag-arrow::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 6px;
+        background: white;
+        border-radius: 50%;
+        border: 1px solid #ddd;
+    }
+    
+    /* Icon styling */
+    .tag-arrow i {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+    
+    /* Completed state */
+    .tag-arrow.completed {
+        background: #3c8dbc;
+        color: white;
+        border-color: #2c6ca0;
+        z-index: 2;
+    }
+    
+    .tag-arrow.completed::before {
+        border-color: #2c6ca0;
+    }
+    
+    /* Current state with animation */
+    .tag-arrow.current {
+        background: #f39c12;
+        color: white;
+        border-color: #e67e22;
+        z-index: 3;
+        animation: currentGlow 2s infinite;
+        box-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+    }
+    
+    @@keyframes currentGlow {
+        0% { box-shadow: 0 0 20px rgba(243, 156, 18, 0.5); transform: scale(1); }
+        50% { box-shadow: 0 0 30px rgba(243, 156, 18, 0.7); transform: scale(1.05); }
+        100% { box-shadow: 0 0 20px rgba(243, 156, 18, 0.5); transform: scale(1); }
+    }
+    
+    .tag-arrow.current::before {
+        border-color: #e67e22;
+        background: #fff3cd;
+    }
+    
+    /* Current indicator badge */
+    .current-indicator {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #dc3545;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 9px;
+        font-weight: bold;
+        animation: bounce 2s infinite;
+    }
+    
+    @@keyframes bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-3px); }
+    }
+    
+    .current-indicator::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+        border-top: 3px solid #dc3545;
+    }
+    
+    /* Stage text */
+    .tag-text {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+    
+    /* Hover effect */
+    .tag-arrow:hover {
+        z-index: 4;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .workflow-tags {
+            min-width: auto;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tag-arrow {
+            margin-left: 0;
+            clip-path: none;
+            border-radius: 5px;
+            min-width: 120px;
+        }
+        
+        .tag-arrow:first-child,
+        .tag-arrow:last-child {
+            clip-path: none;
+        }
+    }
+
+    </style>
+
+
+
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only"></span>
+                        </a>
+                        @*   <i class="fas fa-angle-right" aria-hidden="true"></i> *@
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/Inspection">
+                            Site Inspection
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                       Create New Inspection
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <a style="padding-left: 5px; font-size: 15px;" class="text-dark-gray hidden-print" data-trigger="focus" tabindex="0" role="button" data-toggle="popover" title="" data-placement="right" data-html="true" data-content="Companies can be used as a simple identifier field, or can be used to limit visibility of assets, users, etc if full company support is enabled in your Admin settings." data-original-title="More Info">
+                <i class="far fa-life-ring" style="padding-top: 9px;" aria-hidden="true"></i>    <span class="sr-only">More Info</span>
+            </a>
+            <div class="pull-right">
+                <a href="/Inspection" class="btn btn-primary pull-right">
+                    Back
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+   <section class="content">
+        <div class="main-header-inspection">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <i class="fa fa-file-text-o"></i>
+                    New Inspection Request
+                    <span class="workflow-badge">Issuance Mode</span>
+                </h1>
+            </div>
+            <div class="workflow-selector">
+                <select id="workflowSelect" class="form-control">
+                    <option value="standard">📋 Standard Workflow</option>
+                    <option value="snag">🔧 Snag Inspection</option>
+                    <option value="final">✅ Final Inspection</option>
+                    <option value="special">⚡ Special Inspection</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="info-bar">
+            <div class="info-item">
+                <i class="fa fa-hashtag"></i>
+                <strong>IR Number:</strong>
+                <span class="label">YYMM-XYZ-ABC-MJ-0001</span>
+            </div>
+            <div class="info-item">
+                <i class="fa fa-tasks"></i>
+                <strong>Stage:</strong>
+                <span class="label">Internal Approval</span>
+            </div>
+            <div class="info-item">
+                <i class="fa fa-user"></i>
+                <strong>Responsible:</strong>
+                <span class="label">XYZ</span>
+            </div>
+        </div>
+
+
+
+            
+
+        <div class="form-container">
+            <form id="inspectionForm">
+
+            <!-- Shopping Tag Arrow Workflow -->
+            <div class="workflow-status-bar">
+                <div class="workflow-tags">
+                    <!-- Stage 1: Draft -->
+                    <div class="tag-arrow current">
+                        <div class="current-indicator">CURRENT</div>
+                        <i class="fa fa-pencil"></i>
+                        <div class="tag-text">DRAFT</div>
+                    </div>
+
+                    <div class="arrow-connector completed"></div>
+
+                    <!-- Stage 2: Internal Approval -->
+                    <div class="tag-arrow">
+                        <i class="fa fa-check"></i>
+                        <div class="tag-text">INTERNAL<br>APPROVAL</div>
+                    </div>
+
+                    <div class="arrow-connector active"></div>
+
+                    <!-- Stage 3: Inspection Assignment (Current) -->
+                    <div class="tag-arrow ">
+                     
+                        <i class="fa fa-users"></i>
+                        <div class="tag-text">INSPECTION<br>ASSIGNMENT</div>
+                    </div>
+
+                    <div class="arrow-connector"></div>
+
+                    <!-- Stage 4: Inspection Ongoing -->
+                    <div class="tag-arrow">
+                        <i class="fa fa-clipboard"></i>
+                        <div class="tag-text">INSPECTION<br>ONGOING</div>
+                    </div>
+
+                    <div class="arrow-connector"></div>
+
+                    <!-- Stage 5: Returned to Initiator -->
+                    <div class="tag-arrow">
+                        <i class="fa fa-undo"></i>
+                        <div class="tag-text">RETURNED TO<br>INITIATOR</div>
+                    </div>
+
+                    <div class="arrow-connector"></div>
+
+                    <!-- Stage 6: Returned to Principal Inspector -->
+                    <div class="tag-arrow">
+                        <i class="fa fa-user-check"></i>
+                        <div class="tag-text">RETURNED TO<br>PRINCIPAL INSPECTOR</div>
+                    </div>
+
+                    <div class="arrow-connector"></div>
+
+                    <!-- Stage 7: Completed -->
+                    <div class="tag-arrow">
+                        <i class="fa fa-trophy"></i>
+                        <div class="tag-text">COMPLETED</div>
+                    </div>
+
+                    <div class="arrow-connector"></div>
+
+                    <!-- Stage 8: Rejected -->
+                    <div class="tag-arrow">
+                        <i class="fa fa-times-circle"></i>
+                        <div class="tag-text">REJECTED</div>
+                    </div>
+
+                    <div class="arrow-connector"></div>
+
+                    <!-- Stage 9: Canceled -->
+                    <div class="tag-arrow">
+                        <i class="fa fa-ban"></i>
+                        <div class="tag-text">CANCELED</div>
+                    </div>
+                </div>
+            </div>
+             
+                <!-- Section 1: Parties Involved -->
+                <div class="box box-default">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title">
+                            <i class="fa fa-users"></i>
+                            1.0 Parties Involved
+                            <span class="badge">Required Info</span>
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Issuer</label>
+                               
+                                <div class="input-group">
+                                    <input type="text" class="form-control" readonly value="Auto-populated">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button">Select&nbsp; 
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Issuing Organization</label>
+                                    <input type="text" class="form-control" readonly value="Auto-populated">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Project/Contract No.</label>
+                                    <input type="text" class="form-control" readonly value="Auto-populated">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Main Contractor</label>
+                                    <input type="text" class="form-control" readonly value="Auto-populated">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label class="required-field">Discipline</label>
+                                    <select class="form-control select2" id="discipline" required>
+                                        <option value="">Select Discipline</option>
+                                        <option>Civil</option>
+                                        <option>Mechanical</option>
+                                        <option>Electrical</option>
+                                        <option>Instrumentation</option>
+                                        <option>Marine</option>
+                                        <option>Mobility</option>
+                                        <option>Others</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Sub-Discipline</label>
+                                    <select class="form-control select2" id="subDiscipline">
+                                        <option value="">Select Sub-Discipline</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label class="required-field">Recipient Org</label>
+                                    <select class="form-control select2">
+                                        <option value="">Select</option>
+                                        <option>Organization A</option>
+                                        <option>Organization B</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label class="required-field">Recipient-PMC</label>
+                                    <select class="form-control select2" required>
+                                        <option value="">Select</option>
+                                        <option>PMC Company A</option>
+                                        <option>PMC Company B</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label>Recipient-Client</label>
+                                    <select class="form-control select2">
+                                        <option value="">Select</option>
+                                        <option>Client A</option>
+                                        <option>Client B</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+
+                <!-- Section 2: Work Identification -->
+                <div class="box box-default">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title">
+                            <i class="fa fa-map-marker"></i>
+                            2.0 Work Identification
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                                <label class="required-field">Location</label>
+                                <input type="text" class="form-control" placeholder="Enter location" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                                <label>Area / Unit</label>
+                                <input type="text" class="form-control" placeholder="Area/Unit">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                                <label>Chainage From / Floor</label>
+                                <input type="text" class="form-control" placeholder="From">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="form-group">
+                                <label>Chainage To / Level</label>
+                                <input type="text" class="form-control" placeholder="To">
+                            </div>
+                        </div>
+                    </div>
+               
+                    <div class="row">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Asset Tag Number</label>
+                                    <input type="text" class="form-control" placeholder="Asset tag">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>System / Room</label>
+                                    <input type="text" class="form-control" placeholder="System/Room">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Subsystem / Room</label>
+                                    <input type="text" class="form-control" placeholder="Subsystem">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>3D Location</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Select 3D">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fa fa-cube"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="row">
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label>Layer Number</label>
+                                    <input type="text" class="form-control" placeholder="Layer">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label>BOQ Reference</label>
+                                   
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="BOQ Ref">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                Select&nbsp;
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label>WBS Code</label>
+                                    
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="WBS">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                Select&nbsp;
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label>Snag Numbers</label>
+                                    <input type="text" class="form-control" placeholder="Snags">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-8">
+                                <div class="form-group">
+                                    <label>GPS Coordinates</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="gpsCoords" placeholder="Latitude, Longitude">
+                                        <span class="input-group-btn">
+                                            <button class="gps-btn" type="button" onclick="getGPSLocation()">
+                                                <i class="fa fa-location-arrow"></i> Get GPS
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+            
+
+
+                <!-- Section 3: Inspection Description -->
+                <div class="box box-warning">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title">
+                            <i class="fa fa-clipboard"></i>
+                            3.0 Inspection Description
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Is this a Snag Walkthrough? / De-snagging Inspection?</label>
+                                    <div class="radio-group">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="snagWalkthrough" value="yes"> Yes
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="snagWalkthrough" value="no" checked> No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="required-field">Inspection Description</label>
+                                    <textarea class="form-control" rows="3" placeholder="Provide detailed inspection description..." required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>ITP Number</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="ITP No.">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                Select&nbsp;
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Activity Number</label>
+                               
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Activity No.">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                Select&nbsp;
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Activity Description</label>
+                                    <input type="text" class="form-control" readonly value="Auto-populated">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Previous IR Numbers</label>
+                               
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="IR Numbers">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                Select&nbsp;
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label class="required-field">Intervention-PMC</label>
+                                    <select class="form-control select2" required>
+                                        <option value="">Select</option>
+                                        <option>Witness</option>
+                                        <option>Surveillance</option>
+                                        <option>Review</option>
+                                        <option>Hold Point</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label>Intervention-Client</label>
+                                    <select class="form-control select2">
+                                        <option value="">Select</option>
+                                        <option>Witness</option>
+                                        <option>Surveillance</option>
+                                        <option>Review</option>
+                                        <option>Hold Point</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label>Quantity</label>
+                                    <input type="number" class="form-control" placeholder="0" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <div class="form-group">
+                                    <label>Unit</label>
+                                    <select class="form-control">
+                                        <option value="">Select</option>
+                                        <option>m</option>
+                                        <option>m²</option>
+                                        <option>m³</option>
+                                        <option>kg</option>
+                                        <option>ton</option>
+                                        <option>nos</option>
+                                        <option>lot</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+
+                
+                   
+                <!-- Beautiful Attachment Areas -->
+                <div class="box box-primary">
+                <!-- box-header -->
+
+                <div class="box-header">
+                    <h3 class="section-title">
+                            <i class="fa fa-clipboard"></i>
+                                4.0  Inspection
+                            </h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                    </div>
+                </div>
+                <!-- box-body -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Reference Documents</label>
+                                <div class="attachment-container" id="refDocsContainer">
+                                    <div class="attachment-dropzone" onclick="triggerFileInput('refDocs')">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                        <h4>Drop Reference Documents</h4>
+                                        <p>or click to browse • PDF, DOC, XLS (Max 10MB)</p>
+                                    </div>
+                                    <input type="file" id="refDocs" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" style="display:none">
+                                    <div class="file-list" id="refDocsList"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Attachments</label>
+                                <div class="attachment-container" id="attachmentsContainer">
+                                    <div class="attachment-dropzone" onclick="triggerFileInput('attachments')">
+                                        <i class="fa fa-image"></i>
+                                        <h4>Drop Attachments</h4>
+                                        <p>or click to browse • JPG, PNG, PDF (Max 10MB)</p>
+                                    </div>
+                                    <input type="file" id="attachments" multiple accept=".jpg,.jpeg,.png,.pdf" style="display:none">
+                                    <div class="file-list" id="attachmentsList"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="required-field">Inspection Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" placeholder="DD/MM/YYYY" required>
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="required-field">Time</label>
+                                <div class="input-group bootstrap-timepicker">
+                                    <input type="text" class="form-control timepicker" placeholder="HH:MM" required>
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-clock-o"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="required-field">Expected Duration</label>
+                                <select class="form-control" required>
+                                    <option value="">Select Duration</option>
+                                    <option>30 minutes</option>
+                                    <option>1 hour</option>
+                                    <option>2 hours</option>
+                                    <option>3 hours</option>
+                                    <option>4 hours</option>
+                                    <option>6 hours</option>
+                                    <option>Full day</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- ./box-body -->
+
+            </div>
+
+            
+                
+                <!-- Disposition Section -->
+                <div class="box box-success">
+                <!-- box-header -->
+
+                <div class="box-header">
+                    <h3 class="section-title">
+                        <i class="fa fa-check-circle"></i>
+                        Disposition Section
+                    </h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                    </div>
+                </div>
+                <!-- box-body -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 10px;">Remarks</label>
+                                <textarea class="form-control" id="remarksTextarea" rows="4" placeholder="Enter your remarks here..." style="border: 1px solid #d0d7e5; border-radius: 6px; font-size: 14px;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 15px;">Disposition</label>
+                                <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                                    <label class="radio-inline" style="font-size: 15px; font-weight: normal; cursor: pointer; display: flex; align-items: center;">
+                                        <input type="radio" name="disposition" value="addressComments" id="addressComments" style="margin-right: 8px;">
+                                        <span style="display: flex; align-items: center;">
+                                            Address Comments
+                                        </span>
+                                    </label>
+                                    <label class="radio-inline" style="font-size: 15px; font-weight: normal; cursor: pointer; display: flex; align-items: center;">
+                                        <input type="radio" name="disposition" value="acceptable" id="acceptable" style="margin-right: 8px;">
+                                        <span style="display: flex; align-items: center;">
+                                            Acceptable, Inspection Requested
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 25px;">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-success btn-lg" onclick="sendDisposition()" style="background-color: #4caf50; border: none; padding: 10px 40px; font-size: 16px; font-weight: 600; border-radius: 6px;">
+                                SEND
+                            </button>
+                        </div>
+                    </div>
+
+                </div> <!-- ./box-body -->
+
+            </div>
+
+
+
+                  <!-- New Inspection Assignment Section -->
+                <div class="box box-danger">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title" style="color: #dc3545; margin-bottom: 25px;">
+                            <i class="fa fa-user-check"></i>
+                            Comment on Submission
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                        <div class="row" style="margin-bottom: 30px;">
+                            <div class="col-md-2">
+                                <label style="font-size: 16px; font-weight: 600; color: #dc3545; margin-top: 5px;">Remarks</label>
+                            </div>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" id="submissionRemarks" style="height: 40px;">
+                            </div>
+                            <div class="col-md-3">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <label class="radio-inline" style="font-size: 15px; font-weight: normal; cursor: pointer; display: flex; align-items: center;">
+                                        <input type="radio" name="submissionDisposition" value="addressComments" style="margin-right: 8px;">
+                                        <span style="display: flex; align-items: center;">
+                                            <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                            Address comments
+                                        </span>
+                                    </label>
+                                    <button type="button" class="btn" style="background-color: #ffc107; color: black; padding: 8px 30px; font-weight: 600;">
+                                        Return
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 style="font-size: 18px; font-weight: 600; color: #6c757d; margin-bottom: 20px; text-decoration: underline;">
+                            Inspection Assignment
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group row" style="margin-bottom: 15px;">
+                                    <label class="col-sm-4 control-label" style="text-align: right; padding-top: 7px;">Principle Inspector</label>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-success btn-block" onclick="selectInspector('principle')">
+                                            Choose
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="principleInspectorName" placeholder="Inspector name" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" style="margin-bottom: 15px;">
+                                    <label class="col-sm-4 control-label" style="text-align: right; padding-top: 7px;">Additional Inspector1</label>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-success btn-block" onclick="selectInspector('additional1')">
+                                            Choose
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="additionalInspector1Name" placeholder="Inspector name" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" style="margin-bottom: 15px;">
+                                    <label class="col-sm-4 control-label" style="text-align: right; padding-top: 7px;">WBS Verifier</label>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-success btn-block" onclick="selectVerifier('wbs')">
+                                            Choose
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="wbsVerifierName" placeholder="Verifier Name" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" style="margin-bottom: 15px;">
+                                    <label class="col-sm-4 control-label" style="text-align: right; padding-top: 7px;">BOQ Verifier</label>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-success btn-block" onclick="selectVerifier('boq')">
+                                            Choose
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="boqVerifierName" placeholder="Verifier Name" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" style="margin-bottom: 15px;">
+                                    <label class="col-sm-4 control-label" style="text-align: right; padding-top: 7px;">Final Disposition by</label>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-success btn-block" onclick="selectLead()">
+                                            Choose
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="leadName" placeholder="Lead Name" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
+                                    <h5 style="font-size: 16px; font-weight: 600; color: #6c757d; margin-bottom: 20px; text-align: center;">
+                                        Inspection Mode
+                                    </h5>
+                                    <div class="form-group">
+                                        <label class="radio-inline" style="display: block; margin-bottom: 15px; font-size: 15px;">
+                                            <input type="radio" name="inspectionMode" value="parallel" style="margin-right: 8px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #6c757d; display: inline-block; margin-right: 8px;"></span>
+                                                Parallel Inspection
+                                            </span>
+                                        </label>
+                                        <label class="radio-inline" style="display: block; font-size: 15px;">
+                                            <input type="radio" name="inspectionMode" value="sequential" style="margin-right: 8px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #6c757d; display: inline-block; margin-right: 8px;"></span>
+                                                Sequential Inspection
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div style="text-align: center; margin-top: 25px;">
+                                        <button type="button" class="btn btn-success btn-lg" onclick="sendAssignment()" style="padding: 10px 40px; font-weight: 600;">
+                                            SEND
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+
+                <!-- Inspection Proceedings Section -->
+                <div class="box box-info">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title" style="color: #4a5f8a; margin-bottom: 25px; border-bottom: 2px solid #8fa1c7; padding-bottom: 10px;">
+                            <i class="fa fa-list-alt"></i>
+                            Inspection Proceedings
+                            <span class="badge" style="background: #ff9800; color: white; font-size: 12px; margin-left: 10px;">Open to: Assigned Personnel, Principle Inspector & Recipient</span>
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+
+                        <div class="table-responsive">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" style="background-color: white;">
+                                    <thead style="background-color: #c8d4f1;">
+                                        <tr>
+                                            <th style="width: 60px; text-align: center;">SI.No</th>
+                                            <th style="width: 23%;">Comment</th>
+                                            <th style="width: 13%;">Raised by</th>
+                                            <th style="width: 28%;">Response</th>
+                                            <th style="width: 13%;">Status</th>
+                                            <th style="width: 13%;">Status updated by</th>
+                                            <th style="width: 60px; text-align: center;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="proceedingsTableBody">
+                                        <tr id="proceedingRow1">
+                                            <td style="text-align: center; padding: 8px;">
+                                                <input type="text" class="form-control" style="width: 50px; text-align: center;" value="1" readonly>
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <input type="text" class="form-control" placeholder="Enter comment">
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <input type="text" class="form-control" value="auto populate" readonly style="background-color: #f5f5f5;">
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <textarea class="form-control" rows="2" placeholder="Enter response"></textarea>
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <select class="form-control">
+                                                    <option>Open</option>
+                                                    <option>Closed</option>
+                                                </select>
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <input type="text" class="form-control" value="auto populate" readonly style="background-color: #f5f5f5;">
+                                            </td>
+                                            <td style="text-align: center; padding: 8px;">
+                                                <button type="button" class="btn-delete-row" onclick="deleteProceedingRow('proceedingRow1')">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr id="proceedingRow2">
+                                            <td style="text-align: center; padding: 8px;">
+                                                <input type="text" class="form-control" style="width: 50px; text-align: center;" value="2" readonly>
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <input type="text" class="form-control" placeholder="Enter comment">
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <input type="text" class="form-control" value="auto populate" readonly style="background-color: #f5f5f5;">
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <textarea class="form-control" rows="2" placeholder="Enter response"></textarea>
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <select class="form-control">
+                                                    <option>Open</option>
+                                                    <option>Closed</option>
+                                                </select>
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <input type="text" class="form-control" value="auto populate" readonly style="background-color: #f5f5f5;">
+                                            </td>
+                                            <td style="text-align: center; padding: 8px;">
+                                                <button type="button" class="btn-delete-row" onclick="deleteProceedingRow('proceedingRow2')">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right; margin-top: 15px;">
+                            <button type="button" class="btn btn-info" onclick="addProceedingRow()" style="background-color: #00bcd4; border: none; padding: 8px 20px;">
+                                <i class="fa fa-plus"></i> Add Entry
+                            </button>
+                        </div>
+
+                        <div class="row" style="margin-top: 30px;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-size: 16px; font-weight: 600; color: #4a5f8a;">BOQ correct?</label>
+                                    <div style="margin-top: 10px;">
+                                        <label class="radio-inline" style="margin-right: 20px;">
+                                            <input type="radio" name="boqCorrect" value="yes" style="margin-right: 5px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 14px; height: 14px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 5px;"></span>
+                                                Yes
+                                            </span>
+                                        </label>
+                                        <label class="radio-inline" style="margin-right: 20px;">
+                                            <input type="radio" name="boqCorrect" value="no" style="margin-right: 5px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 14px; height: 14px; border-radius: 50%; background-color: #f44336; display: inline-block; margin-right: 5px;"></span>
+                                                No
+                                            </span>
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="boqCorrect" value="na" style="margin-right: 5px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 14px; height: 14px; border-radius: 50%; background-color: #9e9e9e; display: inline-block; margin-right: 5px;"></span>
+                                                Not Applicable
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" id="boqNotes" style="margin-top: 10px;" placeholder="Additional notes..." disabled>
+                                    <small class="text-danger" id="boqError" style="display: none;">This field is required when 'No' is selected</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-size: 16px; font-weight: 600; color: #4a5f8a;">WBS correct?</label>
+                                    <div style="margin-top: 10px;">
+                                        <label class="radio-inline" style="margin-right: 20px;">
+                                            <input type="radio" name="wbsCorrect" value="yes" style="margin-right: 5px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 14px; height: 14px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 5px;"></span>
+                                                Yes
+                                            </span>
+                                        </label>
+                                        <label class="radio-inline" style="margin-right: 20px;">
+                                            <input type="radio" name="wbsCorrect" value="no" style="margin-right: 5px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 14px; height: 14px; border-radius: 50%; background-color: #f44336; display: inline-block; margin-right: 5px;"></span>
+                                                No
+                                            </span>
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="wbsCorrect" value="na" style="margin-right: 5px;">
+                                            <span style="display: inline-flex; align-items: center;">
+                                                <span style="width: 14px; height: 14px; border-radius: 50%; background-color: #9e9e9e; display: inline-block; margin-right: 5px;"></span>
+                                                Not Applicable
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" id="wbsNotes" style="margin-top: 10px;" placeholder="Additional notes..." disabled>
+                                    <small class="text-danger" id="wbsError" style="display: none;">This field is required when 'No' is selected</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 30px;">
+                            <button type="button" class="btn btn-success btn-lg" onclick="saveProceedingsData()" style="background-color: #4caf50; border: none; padding: 12px 50px; font-weight: 600;">
+                                SAVE
+                            </button>
+                        </div>
+
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+
+                <!-- Invite Additional Inspector Section (Optional) -->
+                <div class="box box-danger">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title" style="color: #dc3545; margin-bottom: 25px;">
+                            <i class="fa fa-user-plus"></i>
+                            Invite Additional Inspector
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                      <div class="row">
+                            <p style="font-size: 16px; color: #666; margin-bottom: 25px; text-align: center;">
+                                Please participate to complete inspection on this Inspection Request
+                            </p>
+                            <div class="row">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <div class="form-group">
+                                        <label style="font-size: 15px; font-weight: 600; color: #4a5f8a; margin-bottom: 15px;">
+                                            Additional Inspector
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success" onclick="selectAdditionalInspector()" style="background-color: #4caf50; border: none; padding: 10px 30px; font-weight: 600; border-radius: 6px 0 0 6px;">
+                                                    Choose
+                                                </button>
+                                            </span>
+                                            <input type="text" class="form-control" id="additionalInspectorNameOptional" placeholder="Inspector name" readonly style="font-size: 16px; padding: 10px 15px; color: #3c8dbc; font-weight: 500;">
+                                        </div>
+                                    </div>
+
+                                    <div id="multipleInspectorsList" style="margin-top: 20px;">
+                                        <!-- Dynamic inspector list will appear here -->
+                                    </div>
+
+                                    <div style="text-align: center; margin-top: 30px;">
+                                        <button type="button" class="btn btn-primary" onclick="addAnotherInspector()" style="background-color: #3c8dbc; border: none; padding: 8px 25px; margin-right: 10px;">
+                                            <i class="fa fa-plus"></i> Add Another Inspector
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-lg" onclick="sendInspectorInvitations()" style="background-color: #4caf50; border: none; padding: 12px 50px; font-weight: 600;">
+                                            SEND
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                      </div>
+
+                  
+
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+            
+                <!-- Principle Inspectors Page Section -->
+
+                <div class="box box-danger">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title">
+                            <i class="fa fa-user-check"></i>
+                            Principle Inspectors Page
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 20px;">Proposed Disposition</label>
+
+                                    <div class="disposition-options" style="margin-bottom: 30px;">
+                                        <!-- First row of options -->
+                                        <div class="row" style="margin-bottom: 15px;">
+                                            <div class="col-md-4">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="noComment" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        No comment, proceed further
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="addressComments" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Address comments, Proceed
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="workNotReady" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Work not ready
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Second row of options -->
+                                        <div class="row" style="margin-bottom: 15px;">
+                                            <div class="col-md-4">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="reviseResubmit" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Revise and Resubmit
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="rejected" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Rejected
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="retainedInfo" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Retained for Information
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Third row of options -->
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="resubmitTest" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Resubmit with Test Records
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                    <input type="radio" name="proposedDisposition" value="snaggingDone" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Snagging / De snagging Inspection done
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Comments section for specific dispositions -->
+                                    <div id="dispositionComments" style="display: none; margin-bottom: 20px;">
+                                        <div class="form-group">
+                                            <label style="font-size: 14px; font-weight: 600; color: #333;">Comments <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="principleInspectorComments" rows="4" placeholder="Please provide comments for this disposition..."></textarea>
+                                            <small class="text-danger" id="commentError" style="display: none;">Comments are required for this disposition</small>
+                                        </div>
+                                    </div>
+
+                                    <div style="text-align: right; margin-top: 30px;">
+                                        <button type="button" class="btn btn-success btn-lg" onclick="sendProposedDisposition()" style="background-color: #4caf50; border: none; padding: 12px 50px; font-weight: 600;">
+                                            SEND
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- ./box-body -->
+
+                </div>
+            
+
+                <!-- Additional Inspectors Page Section -->
+
+                <div class="box box-danger">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title">
+                            <i class="fa fa-user-friends"></i>
+                                Additional Inspectors Page
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 20px;">
+                                        Comments provided in Comments & Resolution section
+                                    </label>
+
+                                    <div class="response-options" style="margin-bottom: 30px;">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="radio-inline response-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 15px 0;">
+                                                    <input type="radio" name="commentsProvided" value="yes" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Yes
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="radio-inline response-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 15px 0;">
+                                                    <input type="radio" name="commentsProvided" value="noComments" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        No Comments
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="radio-inline response-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 15px 0;">
+                                                    <input type="radio" name="commentsProvided" value="notApplicable" style="margin-right: 8px;">
+                                                    <span style="display: inline-flex; align-items: center;">
+                                                        <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                        Not Applicable
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Additional comments section for "Yes" option -->
+                                    <div id="additionalInspectorComments" style="display: none; margin-bottom: 20px;">
+                                        <div class="form-group">
+                                            <label style="font-size: 14px; font-weight: 600; color: #333;">Please provide your inspection comments <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="additionalComments" rows="4" placeholder="Enter your inspection findings and comments..."></textarea>
+                                            <small class="text-danger" id="additionalCommentError" style="display: none;">Comments are required when 'Yes' is selected</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Inspector Information (Read-only) -->
+                                    <div class="row" style="margin-bottom: 20px;">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label style="font-size: 14px; color: #666;">Inspector Name</label>
+                                                <input type="text" class="form-control" value="Current Inspector Name" readonly style="background-color: #f5f5f5;">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label style="font-size: 14px; color: #666;">Inspection Date & Time</label>
+                                                <input type="text" class="form-control" id="inspectionDateTime" readonly style="background-color: #f5f5f5;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="text-align: right; margin-top: 30px;">
+                                        <button type="button" class="btn btn-success btn-lg" onclick="returnInspectorResponse()" style="background-color: #4caf50; border: none; padding: 12px 50px; font-weight: 600;">
+                                            RETURN
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+                <!-- Disposition Section -->
+
+                <div class="box box-danger">
+                    <!-- box-header -->
+
+                    <div class="box-header">
+                        <h3 class="section-title">
+                            <i class="fa fa-gavel"></i>
+                            Disposition
+                        </h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+
+                        </div>
+                    </div>
+                    <!-- box-body -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Clarification Required Option -->
+                                <div class="form-group" style="margin-bottom: 25px;">
+                                    <label class="radio-inline disposition-option" style="display: block; font-size: 16px; font-weight: normal; cursor: pointer; padding: 15px 0;">
+                                        <input type="radio" name="finalDisposition" value="clarificationRequired" style="margin-right: 8px;">
+                                        <span style="display: inline-flex; align-items: center;">
+                                            <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                            <span style="color: #dc3545; font-weight: 600;">Clarification Required</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <!-- Other Disposition Options -->
+                                <div class="disposition-options" style="margin-bottom: 30px;">
+                                    <!-- First row of options -->
+                                    <div class="row" style="margin-bottom: 15px;">
+                                        <div class="col-md-4">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="noComment" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    No comment, proceed further
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="addressComments" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    Address comments, Proceed
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="workNotReady" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    Work not ready
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Second row of options -->
+                                    <div class="row" style="margin-bottom: 15px;">
+                                        <div class="col-md-4">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="reviseResubmit" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    Revise and Resubmit
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="rejected" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    Rejected
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="retainedInfo" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    Retained for Information
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Third row of options -->
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="resubmitTest" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    Resubmit with Test Records
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="radio-inline disposition-option" style="display: block; font-size: 15px; font-weight: normal; cursor: pointer; padding: 10px 0;">
+                                                <input type="radio" name="finalDisposition" value="snaggingDone" style="margin-right: 8px;">
+                                                <span style="display: inline-flex; align-items: center;">
+                                                    <span style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 8px;"></span>
+                                                    Snagging / De snagging Inspection done
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Clarification/Comments section -->
+                                <div id="finalDispositionComments" style="display: none; margin-bottom: 20px;">
+                                    <div class="form-group">
+                                        <label style="font-size: 14px; font-weight: 600; color: #333;">
+                                            <span id="commentLabel">Comments</span> <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea class="form-control" id="finalComments" rows="4" placeholder="Please provide details..."></textarea>
+                                        <small class="text-danger" id="finalCommentError" style="display: none;">This field is required</small>
+                                    </div>
+                                </div>
+
+                                <!-- Item Closed Section -->
+                                <div class="row" style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                                    <div class="col-md-6">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label class="checkbox-inline" style="font-size: 16px; font-weight: 600; color: #dc3545; cursor: pointer;">
+                                                <input type="checkbox" id="itemClosed" style="margin-right: 8px;">
+                                                Item closed Resubmission not required
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <button type="button" class="btn btn-warning btn-lg" onclick="returnDisposition()" style="background-color: #ffc107; color: #000; border: none; padding: 10px 40px; font-weight: 600;">
+                                            Return
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- ./box-body -->
+
+                </div>
+
+                    
+                    
+                <!-- Action Footer -->
+                <div class="action-footer">
+                    <button type="button" class="btn btn-default" onclick="saveDraft()">
+                        <i class="fa fa-save"></i> Save Draft
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="submitForApproval()">
+                        <i class="fa fa-send"></i> Submit for Approval
+                    </button>
+                    <button type="button" class="btn btn-default" onclick="cancelForm()">
+                        <i class="fa fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-default" onclick="window.print()">
+                        <i class="fa fa-print"></i> Print
+                    </button>
+                </div>
+            
+            </form>
+      
+        
+            
+        
+        </div>
+    </section>
+
+ <script>
+// Initialize components
+$(function () {
+    // Select2 with custom styling
+    $('.select2').select2({
+        width: '100%',
+        minimumResultsForSearch: 10
+    });
+
+    // Datepicker
+    $('.input-group.date').datepicker({
+        autoclose: true,
+        format: 'dd/mm/yyyy',
+        todayHighlight: true,
+        todayBtn: 'linked'
+    });
+
+    // Timepicker
+    $('.timepicker').timepicker({
+        showInputs: false,
+        showMeridian: false,
+        defaultTime: false,
+        minuteStep: 15
+    });
+
+    // Sub-discipline data
+    const subDisciplineData = {
+        'Civil': ['Architectural', 'Façade', 'Geotechnical', 'Interior Design', 'Landscape', 'Plumbing & Drainage', 'Specialist Pool', 'Survey', 'Acoustic', 'Earthworks', 'Material Testing', 'Concreting', 'Blockworks', 'Roads', 'Pavement', 'Plastering and Finishing works'],
+        'Mechanical': ['Kitchen Equipment', 'Painting', 'Piping (under ground)', 'Piping (above ground)', 'Pipeline', 'Railway', 'Welding', 'HDPE lining', 'NDT', 'Material Testing', 'HVAC', 'Rotary equipment', 'Static Equipment', 'Structural Steel'],
+        'Electrical': ['Battery & UPS', 'General MEP', 'Specialist Lighting', 'Lighting', 'Earthing', 'Motors', 'HV systems', 'Equipment', 'Transformers', 'Transmission lines', 'Cabinets', 'Circuit Breakers'],
+        'Instrumentation': ['Audio Visual', 'Extra Low Voltage', 'Railway Systems', 'Security', 'Telecommunication', 'Networking', 'Control room', 'Cabinets', 'Equipment', 'Calibration', 'Loop Checking', 'SCADA', 'Signalling'],
+        'Marine': ['Navigation', 'Dredging'],
+        'Mobility': ['Transportation', 'Vertical Transportation', 'Signature and Way Finding'],
+        'Others': ['Building Maintenance', 'Environmental', 'Fire & Life Safety', 'Fire Protection', 'Laundry', 'Liveability', 'Public Health', 'Sustainability', 'Waste Management']
+    };
+
+    // Handle discipline change
+    $('#discipline').on('change', function () {
+        const selectedDiscipline = $(this).val();
+        const $subDiscipline = $('#subDiscipline');
+
+        $subDiscipline.empty().append('<option value="">Select Sub-Discipline</option>');
+
+        if (selectedDiscipline && subDisciplineData[selectedDiscipline]) {
+            subDisciplineData[selectedDiscipline].forEach(function (subDisc) {
+                $subDiscipline.append($('<option>', {
+                    value: subDisc,
+                    text: subDisc
+                }));
+            });
+        }
+
+        $subDiscipline.trigger('change');
+    });
+
+    // Beautiful tooltips
+    $('[data-toggle="tooltip"]').tooltip({
+        placement: 'top',
+        trigger: 'hover'
+    });
+});
+
+// File upload handling
+let uploadedFiles = {
+    refDocs: [],
+    attachments: []
+};
+
+function triggerFileInput(inputId) {
+    document.getElementById(inputId).click();
+}
+
+// File input change handlers
+document.getElementById('refDocs').addEventListener('change', function (e) {
+    handleFileSelect(e, 'refDocs');
+});
+
+document.getElementById('attachments').addEventListener('change', function (e) {
+    handleFileSelect(e, 'attachments');
+});
+
+function handleFileSelect(e, type) {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+        if (file.size > 10 * 1024 * 1024) {
+            showAlert('File ' + file.name + ' exceeds 10MB limit', 'warning');
+            return;
+        }
+        
+        // Add unique ID to each file
+        file.id = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        uploadedFiles[type].push(file);
+    });
+    updateFileList(type);
+    e.target.value = ''; // Reset input
+}
+
+function updateFileList(type) {
+    const listId = type === 'refDocs' ? 'refDocsList' : 'attachmentsList';
+    const fileList = document.getElementById(listId);
+    
+    if (uploadedFiles[type].length === 0) {
+        fileList.innerHTML = '';
+        updateFileCount(type);
+        return;
+    }
+    
+    fileList.innerHTML = uploadedFiles[type].map((file, index) => `
+        <div class="file-item" data-index="${index}" data-file-id="${file.id}">
+            <div class="file-info">
+                <div class="file-icon">
+                    <i class="fa ${getFileIcon(file.name)}"></i>
+                </div>
+                <div class="file-details">
+                    <p class="file-name" title="${file.name}">${file.name}</p>
+                    <span class="file-size">${formatFileSize(file.size)}</span>
+                </div>
+            </div>
+            <div class="file-actions">
+                <button type="button" onclick="viewFile('${type}', ${index})" title="View" class="btn-view">
+                    <i class="fa fa-eye"></i>
+                </button>
+                <button type="button" onclick="removeFile('${type}', ${index})" title="Delete" class="btn-delete">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    updateFileCount(type);
+}
+
+function updateFileCount(type) {
+    const count = uploadedFiles[type].length;
+    const labelText = type === 'refDocs' ? 'Reference Documents' : 'Attachments';
+    const label = document.querySelector(`#${type === 'refDocs' ? 'refDocsContainer' : 'attachmentsContainer'}`).previousElementSibling;
+    
+    // Remove existing count if any
+    const existingCount = label.querySelector('.file-count');
+    if (existingCount) {
+        existingCount.remove();
+    }
+    
+    // Add new count if files exist
+    if (count > 0) {
+        const countSpan = document.createElement('span');
+        countSpan.className = 'file-count';
+        countSpan.style.cssText = 'background: #3c8dbc; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 8px;';
+        countSpan.textContent = count;
+        label.appendChild(countSpan);
+    }
+}
+
+function removeFile(type, index) {
+    const fileName = uploadedFiles[type][index].name;
+    
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete ! " + fileName,
+        icon: 'question',
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes!',
+        cancelButtonText: 'No'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            uploadedFiles[type].splice(index, 1);
+            updateFileList(type);
+            showAlert('File removed successfully', 'success');
+        } else {
+            return false;
+        }
+    });
+}
+
+function viewFile(type, index) {
+    const file = uploadedFiles[type][index];
+    // In a real implementation, you would open a preview modal or new window
+    showAlert('Preview: ' + file.name + ' (' + formatFileSize(file.size) + ')', 'info');
+}
+
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const icons = {
+        pdf: 'fa-file-pdf-o',
+        doc: 'fa-file-word-o',
+        docx: 'fa-file-word-o',
+        xls: 'fa-file-excel-o',
+        xlsx: 'fa-file-excel-o',
+        jpg: 'fa-file-image-o',
+        jpeg: 'fa-file-image-o',
+        png: 'fa-file-image-o'
+    };
+    return icons[ext] || 'fa-file-o';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Enhanced drag and drop handling
+document.querySelectorAll('.attachment-container').forEach(container => {
+    let dragCounter = 0;
+    
+    container.addEventListener('dragenter', function (e) {
+        e.preventDefault();
+        dragCounter++;
+        this.classList.add('drag-over');
+    });
+    
+    container.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        dragCounter--;
+        if (dragCounter === 0) {
+            this.classList.remove('drag-over');
+        }
+    });
+    
+    container.addEventListener('dragover', function (e) {
+        e.preventDefault();
+    });
+    
+    container.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dragCounter = 0;
+        this.classList.remove('drag-over');
+        
+        const type = this.id === 'refDocsContainer' ? 'refDocs' : 'attachments';
+        const files = Array.from(e.dataTransfer.files);
+        
+        // Filter files based on type
+        const acceptedExtensions = type === 'refDocs' 
+            ? ['pdf', 'doc', 'docx', 'xls', 'xlsx']
+            : ['jpg', 'jpeg', 'png', 'pdf'];
+        
+        let validFiles = 0;
+        let invalidFiles = 0;
+        
+        files.forEach(file => {
+            const ext = file.name.split('.').pop().toLowerCase();
+            
+            if (!acceptedExtensions.includes(ext)) {
+                invalidFiles++;
+                showAlert('File type .' + ext + ' not allowed for ' + (type === 'refDocs' ? 'Reference Documents' : 'Attachments'), 'warning');
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                invalidFiles++;
+                showAlert('File ' + file.name + ' exceeds 10MB limit', 'warning');
+                return;
+            }
+            
+            file.id = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            uploadedFiles[type].push(file);
+            validFiles++;
+        });
+        
+        updateFileList(type);
+        
+        if (validFiles > 0) {
+            showAlert(validFiles + ' file(s) added successfully', 'success');
+        }
+    });
+});
+
+// Alert function
+function showAlert(message, type) {
+    // Remove any existing alerts
+    const existingAlerts = document.querySelectorAll('.custom-alert');
+    existingAlerts.forEach(alert => alert.remove());
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-' + (type === 'error' ? 'danger' : type) + ' alert-dismissible custom-alert';
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        max-width: 500px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    const icon = type === 'success' ? 'check-circle' : 
+                 type === 'error' ? 'exclamation-circle' : 
+                 type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+    
+    alertDiv.innerHTML = `
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="fa fa-${icon}"></i> ${message}
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        $(alertDiv).fadeOut(300, function() {
+            $(this).remove();
+        });
+    }, 4000);
+}
+
+// GPS Location
+function getGPSLocation() {
+    const btn = event.target.closest('button');
+    const originalHTML = btn.innerHTML;
+    
+    if (navigator.geolocation) {
+        btn.innerHTML = '<span class="loading"></span> Getting...';
+        btn.disabled = true;
+        
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                const lat = position.coords.latitude.toFixed(6);
+                const lng = position.coords.longitude.toFixed(6);
+                document.getElementById('gpsCoords').value = lat + ', ' + lng;
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                showAlert('GPS location captured successfully', 'success');
+            },
+            function (error) {
+                showAlert('Error getting location: ' + error.message, 'error');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        );
+    } else {
+        showAlert('Geolocation is not supported by this browser', 'error');
+    }
+}
+
+// Workflow change handler
+document.getElementById('workflowSelect').addEventListener('change', function () {
+    const workflow = this.value;
+    const badge = document.querySelector('.workflow-badge');
+
+    switch (workflow) {
+        case 'snag':
+            badge.textContent = 'Snag Mode';
+            document.querySelector('input[name="snagWalkthrough"][value="yes"]').checked = true;
+            break;
+        case 'final':
+            badge.textContent = 'Final Mode';
+            break;
+        case 'special':
+            badge.textContent = 'Special Mode';
+            break;
+        default:
+            badge.textContent = 'Issuance Mode';
+    }
+});
+
+// Form validation
+function validateForm() {
+    let isValid = true;
+    const errorFields = [];
+    
+    document.querySelectorAll('.required-field').forEach(label => {
+        const formGroup = label.closest('.form-group');
+        const input = formGroup.querySelector('input, select, textarea');
+        
+        if (input && !input.value) {
+            formGroup.classList.add('has-error');
+            isValid = false;
+            errorFields.push(label.textContent.replace(' *', ''));
+        } else {
+            formGroup.classList.remove('has-error');
+        }
+    });
+    
+    if (!isValid) {
+        showAlert('Please fill all required fields: ' + errorFields.join(', '), 'warning');
+    }
+    
+    return isValid;
+}
+
+// Form actions
+function saveDraft() {
+    const btn = event.target.closest('button');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<span class="loading"></span> Saving...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        btn.innerHTML = '<i class="fa fa-check"></i> Saved!';
+        showAlert('Draft saved successfully', 'success');
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }, 2000);
+    }, 1000);
+}
+
+function submitForApproval() {
+    if (validateForm()) {
+        if (confirm('Submit this inspection request for approval?')) {
+            showAlert('Inspection request submitted successfully!', 'success');
+            // In real implementation, you would submit the form data here
+        }
+    }
+}
+
+function cancelForm() {
+    if (confirm('Cancel this form? Unsaved changes will be lost.')) {
+        document.getElementById('inspectionForm').reset();
+        uploadedFiles = { refDocs: [], attachments: [] };
+        updateFileList('refDocs');
+        updateFileList('attachments');
+        showAlert('Form cancelled', 'info');
+    }
+}
+
+// Disposition radio button handling - FIXED VERSION
+document.addEventListener('DOMContentLoaded', function() {
+    const addressCommentsRadio = document.getElementById('addressComments');
+    const acceptableRadio = document.getElementById('acceptable');
+    const remarksTextarea = document.getElementById('remarksTextarea');
+    
+    // Function to handle radio button changes
+    function handleDispositionChange() {
+
+        alert("hi");
+        if (addressCommentsRadio.checked) {
+            // Enable remarks when "Address Comments" is selected
+            remarksTextarea.disabled = false;
+            remarksTextarea.style.backgroundColor = '#fff';
+            remarksTextarea.style.cursor = 'text';
+            remarksTextarea.placeholder = 'Enter your remarks here...';
+            remarksTextarea.focus();
+        } else {
+            // Disable remarks for "Acceptable"
+            remarksTextarea.disabled = true;
+            remarksTextarea.style.backgroundColor = '#f5f5f5';
+            remarksTextarea.style.cursor = 'not-allowed';
+            remarksTextarea.placeholder = 'Remarks are disabled for this option';
+            remarksTextarea.value = '';
+        }
+    }
+
+    // Add event listeners to radio buttons
+    addressCommentsRadio.addEventListener('change', handleDispositionChange);
+    acceptableRadio.addEventListener('change', handleDispositionChange);
+    alert("after event handler");
+
+    // Initialize state (remarks disabled by default)
+    remarksTextarea.disabled = true;
+    remarksTextarea.style.backgroundColor = '#f5f5f5';
+    remarksTextarea.style.cursor = 'not-allowed';
+    remarksTextarea.placeholder = 'Please select "Address Comments" to enable remarks';
+});
+
+// Send button functionality
+function sendDisposition() {
+    const selectedDisposition = document.querySelector('input[name="disposition"]:checked');
+    const remarksValue = document.getElementById('remarksTextarea').value.trim();
+
+    if (!selectedDisposition) {
+        showAlert('Please select a disposition option', 'warning');
+        return;
+    }
+
+    if (selectedDisposition.value === 'addressComments' && !remarksValue) {
+        showAlert('Please enter remarks when selecting "Address Comments"', 'warning');
+        document.getElementById('remarksTextarea').focus();
+        return;
+    }
+
+    // Show success message
+    const dispositionText = selectedDisposition.value === 'addressComments'
+        ? 'Address Comments'
+        : 'Acceptable, Inspection Requested';
+
+    showAlert(`Disposition "${dispositionText}" sent successfully!`, 'success');
+
+    // In a real implementation, you would send this data to your server
+    console.log('Disposition:', dispositionText);
+    console.log('Remarks:', remarksValue);
+}
+
+// Functions for Inspection Assignment section
+function selectInspector(type) {
+
+        showEmployeeSelectionModal(type);
+    // In a real implementation, this would open a modal or dropdown to select an inspector
+    // const inspectorName = prompt('Enter inspector name:');
+    // if (inspectorName) {
+    //     if (type === 'principle') {
+    //         document.getElementById('principleInspectorName').value = inspectorName;
+    //     } else if (type === 'additional1') {
+    //         document.getElementById('additionalInspector1Name').value = inspectorName;
+    //     }
+    //     showAlert('Inspector selected: ' + inspectorName, 'success');
+    // }
+}
+
+    function showEmployeeSelectionModal(type) {
+        // Fetch employees from the server
+        fetch('/Employee/GetEmployees')
+            .then(response => response.json())
+            .then(employees => {
+                // Create options HTML for select dropdown
+                alert(JSON.stringify(employees));
+                const options = employees.map(emp =>
+                    `<option value="${emp.id}">${emp.name} (${emp.id})</option>`
+                ).join('');
+
+                Swal.fire({
+                    title: 'Select an Employee',
+                    width: '800px', 
+                    html: `
+                        <select id="employee-select" class="swal2-select" style="width: 70%; padding: 8px; font-size: 16px;">
+                            <option value="">-- Select Employee --</option>
+                            ${options}
+                        </select>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Select',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    preConfirm: () => {
+                        const selectedEmployeeId = document.getElementById('employee-select').value;
+                        const selectedEmployeeOption = document.getElementById('employee-select').selectedOptions[0];
+
+                        if (!selectedEmployeeId) {
+                            Swal.showValidationMessage('Please select an employee');
+                            return false;
+                        }
+
+
+                        // Extract name from the option text (remove the ID part)
+                        const employeeName = selectedEmployeeOption.text.split(' (')[0];
+
+                        if (type === 'principle') {
+                                    document.getElementById('principleInspectorName').value = employeeName;
+                                } else if (type === 'additional1') {
+                            document.getElementById('additionalInspector1Name').value = employeeName;
+                                }
+
+                        // Return employee id and name directly
+                        return {
+                            id: selectedEmployeeId,
+                            name: employeeName
+                        };
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Use the selected employee ID and name
+                        console.log('Selected Employee:', result.value);
+
+                        // Call your function with employee data
+                        handleEmployeeSelection(result.value.id, result.value.name);
+
+                        // Or set values to form fields
+                        // document.getElementById('employeeId').value = result.value.id;
+                        // document.getElementById('employeeName').value = result.value.name;
+                    }
+                });
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to load employees!',
+                    footer: error.message
+                });
+            });
+    }
+
+
+
+function selectVerifier(type) {
+    // In a real implementation, this would open a modal or dropdown to select a verifier
+    const verifierName = prompt('Enter verifier name:');
+    if (verifierName) {
+        if (type === 'wbs') {
+            document.getElementById('wbsVerifierName').value = verifierName;
+        } else if (type === 'boq') {
+            document.getElementById('boqVerifierName').value = verifierName;
+        }
+        showAlert('Verifier selected: ' + verifierName, 'success');
+    }
+}
+
+function selectLead() {
+    // In a real implementation, this would open a modal or dropdown to select a lead
+    const leadName = prompt('Enter lead name:');
+    if (leadName) {
+        document.getElementById('leadName').value = leadName;
+        showAlert('Lead selected: ' + leadName, 'success');
+    }
+}
+
+function sendAssignment() {
+    // Validate inspection assignment
+    const principleInspector = document.getElementById('principleInspectorName').value;
+    const inspectionMode = document.querySelector('input[name="inspectionMode"]:checked');
+    
+    if (!principleInspector) {
+        showAlert('Please select a Principle Inspector', 'warning');
+        return;
+    }
+    
+    if (!inspectionMode) {
+        showAlert('Please select an Inspection Mode', 'warning');
+        return;
+    }
+    
+    // Collect all assignment data
+    const assignmentData = {
+        principleInspector: principleInspector,
+        additionalInspector1: document.getElementById('additionalInspector1Name').value,
+        wbsVerifier: document.getElementById('wbsVerifierName').value,
+        boqVerifier: document.getElementById('boqVerifierName').value,
+        finalDispositionBy: document.getElementById('leadName').value,
+        inspectionMode: inspectionMode.value
+    };
+    
+    console.log('Assignment Data:', assignmentData);
+    showAlert('Inspection assignment sent successfully!', 'success');
+}
+
+
+// Inspection Proceedings functionality
+let proceedingRowCount = 2; // Starting with 2 existing rows
+
+function addProceedingRow() {
+    proceedingRowCount++;
+    const tableBody = document.getElementById('proceedingsTableBody');
+    const newRow = document.createElement('tr');
+    
+ newRow.innerHTML = `
+        <td style="text-align: center; padding: 8px;">
+            <input type="text" class="form-control" style="width: 50px; text-align: center;" value="${proceedingRowCount}" readonly>
+        </td>
+        <td style="padding: 8px;">
+            <input type="text" class="form-control" placeholder="Enter comment">
+        </td>
+        <td style="padding: 8px;">
+            <input type="text" class="form-control" value="auto populate" readonly style="background-color: #f5f5f5;">
+        </td>
+        <td style="padding: 8px;">
+            <textarea class="form-control" rows="2" placeholder="Enter response"></textarea>
+        </td>
+        <td style="padding: 8px;">
+            <select class="form-control">
+                <option>Open</option>
+                <option>Closed</option>
+            </select>
+        </td>
+        <td style="padding: 8px;">
+            <input type="text" class="form-control" value="auto populate" readonly style="background-color: #f5f5f5;">
+        </td>
+        <td style="text-align: center; padding: 8px;">
+            <button type="button" class="btn-delete-row" onclick="deleteProceedingRow('proceedingRow${proceedingRowCount}')">
+                <i class="fa fa-trash"></i>
+            </button>
+        </td>
+    `;
+    
+    tableBody.appendChild(newRow);
+    
+    // Animate the new row
+    newRow.style.animation = 'fadeIn 0.3s ease-out';
+    
+    showAlert('New entry added to proceedings', 'info');
+}
+
+function deleteProceedingRow(rowId) {
+    const row = document.getElementById(rowId);
+    const tableBody = document.getElementById('proceedingsTableBody');
+    const remainingRows = tableBody.querySelectorAll('tr').length;
+    
+    if (remainingRows <= 1) {
+        showAlert('Cannot delete the last row', 'warning');
+        return;
+    }
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete ! ",
+            icon: 'question',
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                row.remove();
+
+                // Renumber remaining rows
+                const rows = tableBody.querySelectorAll('tr');
+                rows.forEach((row, index) => {
+                    const slNoInput = row.querySelector('td:first-child input');
+                    if (slNoInput) {
+                        slNoInput.value = index + 1;
+                    }
+                    row.id = `proceedingRow${index + 1}`;
+                });
+                showAlert('Row deleted successfully', 'success');
+            } else {
+                return false;
+            }
+        });
+    
+   
+}
+
+// Handle BOQ radio button changes
+document.addEventListener('change', function(e) {
+    if (e.target.name === 'boqCorrect') {
+        const boqNotesInput = document.getElementById('boqNotes');
+        const boqError = document.getElementById('boqError');
+        
+        if (e.target.value === 'no') {
+            // Enable and make required
+            boqNotesInput.disabled = false;
+            boqNotesInput.required = true;
+            boqNotesInput.style.backgroundColor = '#fff';
+            boqNotesInput.style.borderColor = '#f44336';
+            boqNotesInput.placeholder = 'Please explain why BOQ is incorrect (Required)';
+            boqNotesInput.focus();
+        } else {
+            // Disable and clear
+            boqNotesInput.disabled = true;
+            boqNotesInput.required = false;
+            boqNotesInput.value = '';
+            boqNotesInput.style.backgroundColor = '#f5f5f5';
+            boqNotesInput.style.borderColor = '#e1e6ef';
+            boqNotesInput.placeholder = 'Additional notes...';
+            boqError.style.display = 'none';
+        }
+    }
+    
+    if (e.target.name === 'wbsCorrect') {
+        const wbsNotesInput = document.getElementById('wbsNotes');
+        const wbsError = document.getElementById('wbsError');
+        
+        if (e.target.value === 'no') {
+            // Enable and make required
+            wbsNotesInput.disabled = false;
+            wbsNotesInput.required = true;
+            wbsNotesInput.style.backgroundColor = '#fff';
+            wbsNotesInput.style.borderColor = '#f44336';
+            wbsNotesInput.placeholder = 'Please explain why WBS is incorrect (Required)';
+            wbsNotesInput.focus();
+        } else {
+            // Disable and clear
+            wbsNotesInput.disabled = true;
+            wbsNotesInput.required = false;
+            wbsNotesInput.value = '';
+            wbsNotesInput.style.backgroundColor = '#f5f5f5';
+            wbsNotesInput.style.borderColor = '#e1e6ef';
+            wbsNotesInput.placeholder = 'Additional notes...';
+            wbsError.style.display = 'none';
+        }
+    }
+});
+
+// Clear error on input
+document.getElementById('boqNotes').addEventListener('input', function() {
+    if (this.value.trim()) {
+        document.getElementById('boqError').style.display = 'none';
+        this.style.borderColor = '#e1e6ef';
+    }
+});
+
+document.getElementById('wbsNotes').addEventListener('input', function() {
+    if (this.value.trim()) {
+        document.getElementById('wbsError').style.display = 'none';
+        this.style.borderColor = '#e1e6ef';
+    }
+});
+
+function saveProceedingsData() {
+    // Validate mandatory fields
+    let isValid = true;
+    
+    const boqCorrect = document.querySelector('input[name="boqCorrect"]:checked');
+    const wbsCorrect = document.querySelector('input[name="wbsCorrect"]:checked');
+    const boqNotes = document.getElementById('boqNotes');
+    const wbsNotes = document.getElementById('wbsNotes');
+    
+    // Check BOQ validation
+    if (boqCorrect && boqCorrect.value === 'no' && !boqNotes.value.trim()) {
+        document.getElementById('boqError').style.display = 'block';
+        boqNotes.style.borderColor = '#f44336';
+        isValid = false;
+    }
+    
+    // Check WBS validation
+    if (wbsCorrect && wbsCorrect.value === 'no' && !wbsNotes.value.trim()) {
+        document.getElementById('wbsError').style.display = 'block';
+        wbsNotes.style.borderColor = '#f44336';
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        showAlert('Please complete all required fields', 'warning');
+        return;
+    }
+    
+    // Collect all proceedings data
+    const proceedingsData = [];
+    const rows = document.querySelectorAll('#proceedingsTableBody tr');
+    
+    rows.forEach((row, index) => {
+        const comment = row.querySelector('td:nth-child(2) input').value;
+        const response = row.querySelector('td:nth-child(4) textarea').value;
+        const status = row.querySelector('td:nth-child(5) select').value;
+        
+        if (comment || response) {
+            proceedingsData.push({
+                slNo: index + 1,
+                comment: comment,
+                raisedBy: 'auto populate',
+                response: response,
+                status: status,
+                statusUpdatedBy: 'auto populate'
+            });
+        }
+    });
+    
+    const proceedingsInfo = {
+        proceedings: proceedingsData,
+        boqCorrect: boqCorrect ? boqCorrect.value : null,
+        boqNotes: boqNotes.value,
+        wbsCorrect: wbsCorrect ? wbsCorrect.value : null,
+        wbsNotes: wbsNotes.value
+    };
+    
+    console.log('Proceedings Data:', proceedingsInfo);
+    
+    // Show success message
+    showAlert('Inspection proceedings saved successfully!', 'success');
+}
+
+// Auto-number the rows on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('#proceedingsTableBody tr');
+    rows.forEach((row, index) => {
+        const slNoInput = row.querySelector('td:first-child input');
+        if (slNoInput) {
+            slNoInput.value = index + 1;
+        }
+    });
+});
+
+
+// Additional Inspector Invitation functionality
+let additionalInspectors = [];
+
+function selectAdditionalInspector() {
+    // In a real implementation, this would open a modal with a list of inspectors
+    const inspectorName = prompt('Enter inspector name:');
+    if (inspectorName) {
+        document.getElementById('additionalInspectorNameOptional').value = inspectorName;
+        
+        // Add to the list if not already present
+        if (!additionalInspectors.includes(inspectorName)) {
+            additionalInspectors.push(inspectorName);
+            updateInspectorsList();
+        }
+    }
+}
+
+function addAnotherInspector() {
+    const currentInspector = document.getElementById('additionalInspectorNameOptional').value;
+    
+    if (currentInspector) {
+        // Clear the input for new selection
+        document.getElementById('additionalInspectorNameOptional').value = '';
+        showAlert('You can now select another inspector', 'info');
+    } else {
+        showAlert('Please select an inspector first', 'warning');
+    }
+}
+
+function updateInspectorsList() {
+    const listContainer = document.getElementById('multipleInspectorsList');
+    
+    if (additionalInspectors.length > 0) {
+        let listHTML = '<h5 style="font-size: 14px; color: #666; margin-bottom: 10px;">Selected Inspectors:</h5>';
+        listHTML += '<div class="inspector-list">';
+        
+        additionalInspectors.forEach((inspector, index) => {
+            listHTML += `
+                <div class="inspector-item" style="background: #f8f9fa; padding: 10px 15px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #3c8dbc; font-weight: 500;">
+                        <i class="fa fa-user" style="margin-right: 8px;"></i>
+                        ${inspector}
+                    </span>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeInspector(${index})" style="padding: 4px 10px;">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            `;
+        });
+        
+        listHTML += '</div>';
+        listContainer.innerHTML = listHTML;
+    } else {
+        listContainer.innerHTML = '';
+    }
+}
+
+function removeInspector(index) {
+    const inspectorName = additionalInspectors[index];
+    
+    if (confirm(`Remove ${inspectorName} from the invitation list?`)) {
+        additionalInspectors.splice(index, 1);
+        updateInspectorsList();
+        showAlert('Inspector removed from list', 'info');
+        
+        // Clear the input if it contains the removed inspector
+        if (document.getElementById('additionalInspectorNameOptional').value === inspectorName) {
+            document.getElementById('additionalInspectorNameOptional').value = '';
+        }
+    }
+}
+
+function sendInspectorInvitations() {
+    const currentInspector = document.getElementById('additionalInspectorNameOptional').value;
+    
+    // Add current inspector if not in list
+    if (currentInspector && !additionalInspectors.includes(currentInspector)) {
+        additionalInspectors.push(currentInspector);
+    }
+    
+    if (additionalInspectors.length === 0) {
+        showAlert('Please select at least one inspector to invite', 'warning');
+        return;
+    }
+    
+    // Show loading state
+    const sendBtn = event.target;
+    const originalText = sendBtn.innerHTML;
+    sendBtn.innerHTML = '<span class="loading"></span> Sending...';
+    sendBtn.disabled = true;
+    
+    // Simulate sending invitations
+    setTimeout(() => {
+        // Create invitation data
+        const invitationData = {
+            inspectionRequestId: document.querySelector('.info-bar .label').textContent,
+            invitedInspectors: additionalInspectors,
+            invitedBy: 'Current User', // This would be the logged-in user
+            invitationDate: new Date().toISOString(),
+            message: 'Please participate to complete inspection on this Inspection Request'
+        };
+        
+        console.log('Invitation Data:', invitationData);
+        
+        // Show success message
+        let message = additionalInspectors.length === 1 
+            ? `Invitation sent to ${additionalInspectors[0]}` 
+            : `Invitations sent to ${additionalInspectors.length} inspectors`;
+            
+        showAlert(message, 'success');
+        
+        // Reset the button
+        sendBtn.innerHTML = originalText;
+        sendBtn.disabled = false;
+        
+        // Optionally clear the list after sending
+        if (confirm('Invitations sent successfully. Clear the list?')) {
+            additionalInspectors = [];
+            document.getElementById('additionalInspectorNameOptional').value = '';
+            updateInspectorsList();
+        }
+    }, 1500);
+}
+
+// Style for hover effect on inspector items
+document.addEventListener('DOMContentLoaded', function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .inspector-item:hover {
+            background: #e9ecef !important;
+            transform: translateX(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .inspector-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .inspector-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .inspector-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .inspector-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        
+        .inspector-list::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+// Principle Inspectors Page functionality
+document.addEventListener('change', function(e) {
+    if (e.target.name === 'proposedDisposition') {
+        const commentsSection = document.getElementById('dispositionComments');
+        const commentsTextarea = document.getElementById('principleInspectorComments');
+        const commentError = document.getElementById('commentError');
+        
+        // Define which dispositions require comments
+        const requiresComments = ['addressComments', 'workNotReady', 'reviseResubmit', 'rejected', 'resubmitTest'];
+        
+        if (requiresComments.includes(e.target.value)) {
+            // Show comments section
+            commentsSection.style.display = 'block';
+            commentsTextarea.required = true;
+            commentsTextarea.focus();
+            
+            // Update placeholder based on disposition
+            switch(e.target.value) {
+                case 'addressComments':
+                    commentsTextarea.placeholder = 'Please specify what comments need to be addressed...';
+                    break;
+                case 'workNotReady':
+                    commentsTextarea.placeholder = 'Please explain why the work is not ready...';
+                    break;
+                case 'reviseResubmit':
+                    commentsTextarea.placeholder = 'Please specify what needs to be revised...';
+                    break;
+                case 'rejected':
+                    commentsTextarea.placeholder = 'Please provide reason for rejection...';
+                    break;
+                case 'resubmitTest':
+                    commentsTextarea.placeholder = 'Please specify which test records are required...';
+                    break;
+            }
+        } else {
+            // Hide comments section
+            commentsSection.style.display = 'none';
+            commentsTextarea.required = false;
+            commentsTextarea.value = '';
+            commentError.style.display = 'none';
+        }
+    }
+});
+
+// Clear error on input
+document.getElementById('principleInspectorComments').addEventListener('input', function() {
+    if (this.value.trim()) {
+        document.getElementById('commentError').style.display = 'none';
+    }
+});
+
+function sendProposedDisposition() {
+    const selectedDisposition = document.querySelector('input[name="proposedDisposition"]:checked');
+    const commentsTextarea = document.getElementById('principleInspectorComments');
+    const commentError = document.getElementById('commentError');
+    
+    if (!selectedDisposition) {
+        showAlert('Please select a proposed disposition', 'warning');
+        return;
+    }
+    
+    // Check if comments are required and provided
+    const requiresComments = ['addressComments', 'workNotReady', 'reviseResubmit', 'rejected', 'resubmitTest'];
+    if (requiresComments.includes(selectedDisposition.value) && !commentsTextarea.value.trim()) {
+        commentError.style.display = 'block';
+        commentsTextarea.focus();
+        showAlert('Please provide comments for this disposition', 'warning');
+        return;
+    }
+    
+    // Get disposition text
+    const dispositionText = selectedDisposition.parentElement.querySelector('span').textContent.trim();
+    
+    // Prepare data
+    const dispositionData = {
+        disposition: selectedDisposition.value,
+        dispositionText: dispositionText,
+        comments: commentsTextarea.value,
+        submittedBy: 'Principle Inspector', // This would be the logged-in user
+        submittedDate: new Date().toISOString(),
+        inspectionRequestId: document.querySelector('.info-bar .label').textContent
+    };
+    
+    console.log('Disposition Data:', dispositionData);
+    
+    // Show loading state
+    const sendBtn = event.target;
+    const originalText = sendBtn.innerHTML;
+    sendBtn.innerHTML = '<span class="loading"></span> Sending...';
+    sendBtn.disabled = true;
+    
+    // Simulate sending
+    setTimeout(() => {
+        showAlert(`Disposition "${dispositionText}" sent successfully!`, 'success');
+        
+        // Reset button
+        sendBtn.innerHTML = originalText;
+        sendBtn.disabled = false;
+        
+        // Optionally reset form
+        if (confirm('Disposition sent successfully. Clear the form?')) {
+            document.querySelector('input[name="proposedDisposition"]:checked').checked = false;
+            commentsTextarea.value = '';
+            document.getElementById('dispositionComments').style.display = 'none';
+        }
+    }, 1500);
+}
+
+// Add hover effect for disposition options
+document.addEventListener('DOMContentLoaded', function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .disposition-option:hover {
+            background-color: #f8f9fa;
+            padding-left: 15px !important;
+            transition: all 0.3s ease;
+        }
+        
+        .disposition-option input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: #2c6ca0;
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+
+// Additional Inspectors Page functionality
+document.addEventListener('change', function(e) {
+    if (e.target.name === 'commentsProvided') {
+        const commentsSection = document.getElementById('additionalInspectorComments');
+        const commentsTextarea = document.getElementById('additionalComments');
+        const commentError = document.getElementById('additionalCommentError');
+        
+        if (e.target.value === 'yes') {
+            // Show comments section for "Yes"
+            commentsSection.style.display = 'block';
+            commentsTextarea.required = true;
+            commentsTextarea.focus();
+        } else {
+            // Hide comments section for other options
+            commentsSection.style.display = 'none';
+            commentsTextarea.required = false;
+            commentsTextarea.value = '';
+            commentError.style.display = 'none';
+        }
+    }
+});
+
+// Clear error on input
+document.getElementById('additionalComments').addEventListener('input', function() {
+    if (this.value.trim()) {
+        document.getElementById('additionalCommentError').style.display = 'none';
+    }
+});
+
+function returnInspectorResponse() {
+    const selectedOption = document.querySelector('input[name="commentsProvided"]:checked');
+    const commentsTextarea = document.getElementById('additionalComments');
+    const commentError = document.getElementById('additionalCommentError');
+    
+    if (!selectedOption) {
+        showAlert('Please select an option', 'warning');
+        return;
+    }
+    
+    // Check if comments are required and provided
+    if (selectedOption.value === 'yes' && !commentsTextarea.value.trim()) {
+        commentError.style.display = 'block';
+        commentsTextarea.focus();
+        showAlert('Please provide your inspection comments', 'warning');
+        return;
+    }
+    
+    // Get option text
+    const optionText = selectedOption.parentElement.querySelector('span').textContent.trim();
+    
+    // Prepare response data
+    const responseData = {
+        commentsProvided: selectedOption.value,
+        responseText: optionText,
+        inspectorComments: commentsTextarea.value,
+        inspectorName: 'Current Inspector Name', // This would be the logged-in user
+        responseDate: new Date().toISOString(),
+        inspectionRequestId: document.querySelector('.info-bar .label').textContent
+    };
+    
+    console.log('Inspector Response Data:', responseData);
+    
+    // Show loading state
+    const returnBtn = event.target;
+    const originalText = returnBtn.innerHTML;
+    returnBtn.innerHTML = '<span class="loading"></span> Returning...';
+    returnBtn.disabled = true;
+    
+    // Simulate sending response
+    setTimeout(() => {
+        showAlert('Inspector response returned successfully!', 'success');
+        
+        // Reset button
+        returnBtn.innerHTML = originalText;
+        returnBtn.disabled = false;
+        
+        // Show confirmation
+        if (selectedOption.value === 'yes') {
+            showAlert('Your inspection comments have been recorded and returned to the principle inspector', 'info');
+        } else if (selectedOption.value === 'noComments') {
+            showAlert('Response returned with "No Comments" status', 'info');
+        } else {
+            showAlert('Response returned with "Not Applicable" status', 'info');
+        }
+        
+        // Optionally reset form
+        setTimeout(() => {
+            if (confirm('Response sent successfully. Clear the form?')) {
+                document.querySelector('input[name="commentsProvided"]:checked').checked = false;
+                commentsTextarea.value = '';
+                document.getElementById('additionalInspectorComments').style.display = 'none';
+            }
+        }, 1000);
+    }, 1500);
+}
+
+// Set current date and time
+document.addEventListener('DOMContentLoaded', function() {
+    // Set inspection date and time
+    const now = new Date();
+    const dateTimeString = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const dateTimeInput = document.getElementById('inspectionDateTime');
+    if (dateTimeInput) {
+        dateTimeInput.value = dateTimeString;
+    }
+    
+    // Add hover effect for response options
+    const style = document.createElement('style');
+    style.textContent = `
+        .response-option:hover {
+            background-color: #f8f9fa;
+            padding-left: 20px !important;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .response-option input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: #2c6ca0;
+        }
+        
+        #additionalInspectorComments {
+            animation: fadeIn 0.3s ease-out;
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+// Final Disposition functionality
+document.addEventListener('change', function(e) {
+    if (e.target.name === 'finalDisposition') {
+        const commentsSection = document.getElementById('finalDispositionComments');
+        const commentsTextarea = document.getElementById('finalComments');
+        const commentLabel = document.getElementById('commentLabel');
+        const commentError = document.getElementById('finalCommentError');
+        
+        // Define which dispositions require comments
+        const requiresComments = ['clarificationRequired', 'addressComments', 'workNotReady', 'reviseResubmit', 'rejected', 'resubmitTest'];
+        
+        if (requiresComments.includes(e.target.value)) {
+            // Show comments section
+            commentsSection.style.display = 'block';
+            commentsTextarea.required = true;
+            commentsTextarea.focus();
+            
+            // Update label and placeholder based on disposition
+            if (e.target.value === 'clarificationRequired') {
+                commentLabel.textContent = 'Clarification Details';
+                commentsTextarea.placeholder = 'Please specify what clarification is needed...';
+            } else {
+                commentLabel.textContent = 'Comments';
+                switch(e.target.value) {
+                    case 'addressComments':
+                        commentsTextarea.placeholder = 'Please specify what comments need to be addressed...';
+                        break;
+                    case 'workNotReady':
+                        commentsTextarea.placeholder = 'Please explain why the work is not ready...';
+                        break;
+                    case 'reviseResubmit':
+                        commentsTextarea.placeholder = 'Please specify what needs to be revised...';
+                        break;
+                    case 'rejected':
+                        commentsTextarea.placeholder = 'Please provide reason for rejection...';
+                        break;
+                    case 'resubmitTest':
+                        commentsTextarea.placeholder = 'Please specify which test records are required...';
+                        break;
+                }
+            }
+        } else {
+            // Hide comments section
+            commentsSection.style.display = 'none';
+            commentsTextarea.required = false;
+            commentsTextarea.value = '';
+            commentError.style.display = 'none';
+        }
+        
+        // Clear item closed checkbox when changing disposition
+        document.getElementById('itemClosed').checked = false;
+    }
+});
+
+// Handle item closed checkbox
+document.getElementById('itemClosed').addEventListener('change', function() {
+    if (this.checked) {
+        // Uncheck all radio buttons
+        const radioButtons = document.querySelectorAll('input[name="finalDisposition"]');
+        radioButtons.forEach(radio => radio.checked = false);
+        
+        // Hide comments section
+        document.getElementById('finalDispositionComments').style.display = 'none';
+        document.getElementById('finalComments').value = '';
+        document.getElementById('finalCommentError').style.display = 'none';
+    }
+});
+
+// Clear error on input
+document.getElementById('finalComments').addEventListener('input', function() {
+    if (this.value.trim()) {
+        document.getElementById('finalCommentError').style.display = 'none';
+    }
+});
+
+function returnDisposition() {
+    const selectedDisposition = document.querySelector('input[name="finalDisposition"]:checked');
+    const itemClosedChecked = document.getElementById('itemClosed').checked;
+    const commentsTextarea = document.getElementById('finalComments');
+    const commentError = document.getElementById('finalCommentError');
+    
+    // Validate that either a disposition is selected or item is closed
+    if (!selectedDisposition && !itemClosedChecked) {
+        showAlert('Please select a disposition or mark item as closed', 'warning');
+        return;
+    }
+    
+    // Check if comments are required and provided
+    const requiresComments = ['clarificationRequired', 'addressComments', 'workNotReady', 'reviseResubmit', 'rejected', 'resubmitTest'];
+    if (selectedDisposition && requiresComments.includes(selectedDisposition.value) && !commentsTextarea.value.trim()) {
+        commentError.style.display = 'block';
+        commentsTextarea.focus();
+        showAlert('Please provide required details', 'warning');
+        return;
+    }
+    
+    // Prepare disposition data
+    let dispositionData;
+    
+    if (itemClosedChecked) {
+        dispositionData = {
+            disposition: 'itemClosed',
+            dispositionText: 'Item closed - Resubmission not required',
+            comments: '',
+            itemClosed: true,
+            submittedBy: 'Current User',
+            submittedDate: new Date().toISOString(),
+            inspectionRequestId: document.querySelector('.info-bar .label').textContent
+        };
+    } else {
+        const dispositionText = selectedDisposition.parentElement.querySelector('span:last-child').textContent.trim();
+        dispositionData = {
+            disposition: selectedDisposition.value,
+            dispositionText: dispositionText,
+            comments: commentsTextarea.value,
+            itemClosed: false,
+            submittedBy: 'Current User',
+            submittedDate: new Date().toISOString(),
+            inspectionRequestId: document.querySelector('.info-bar .label').textContent
+        };
+    }
+    
+    console.log('Final Disposition Data:', dispositionData);
+    
+    // Show loading state
+    const returnBtn = event.target;
+    const originalText = returnBtn.innerHTML;
+    returnBtn.innerHTML = '<span class="loading"></span> Returning...';
+    returnBtn.disabled = true;
+    
+    // Simulate sending
+    setTimeout(() => {
+        if (itemClosedChecked) {
+            showAlert('Item closed successfully! No resubmission required.', 'success');
+        } else {
+            showAlert(`Disposition "${dispositionData.dispositionText}" returned successfully!`, 'success');
+        }
+        
+        // Reset button
+        returnBtn.innerHTML = originalText;
+        returnBtn.disabled = false;
+        
+        // Optionally reset form
+        setTimeout(() => {
+            if (confirm('Disposition sent successfully. Clear the form?')) {
+                if (selectedDisposition) {
+                    selectedDisposition.checked = false;
+                }
+                document.getElementById('itemClosed').checked = false;
+                commentsTextarea.value = '';
+                document.getElementById('finalDispositionComments').style.display = 'none';
+            }
+        }, 1000);
+    }, 1500);
+}
+
+// Add additional styling
+document.addEventListener('DOMContentLoaded', function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        #itemClosed:checked + span {
+            text-decoration: line-through;
+        }
+        
+        .disposition-option input[type="radio"]:checked + span span:last-child {
+            font-weight: 600;
+            color: #2c6ca0;
+        }
+        
+        #finalDispositionComments {
+            animation: fadeIn 0.3s ease-out;
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+// Remove error on input
+document.addEventListener('input', function (e) {
+    if (e.target.matches('input, select, textarea')) {
+        e.target.closest('.form-group').classList.remove('has-error');
+    }
+});
+
+// Auto-save every 60 seconds
+setInterval(() => {
+    console.log('Auto-saving...');
+    // Implement auto-save logic here
+}, 60000);
+
+
+// Make sections collapsible
+// document.addEventListener('DOMContentLoaded', function() {
+//     // Add collapse functionality to all sections
+//     const sections = document.querySelectorAll('.section');
+    
+//     sections.forEach((section, index) => {
+//         const sectionTitle = section.querySelector('.section-title');
+//         if (sectionTitle) {
+//             // Add collapse button
+//             const collapseBtn = document.createElement('button');
+//             collapseBtn.className = 'collapse-toggle';
+//             collapseBtn.innerHTML = '<i class="fa fa-minus"></i>';
+//             collapseBtn.onclick = function(e) {
+//                 e.stopPropagation();
+//                 toggleSection(section, collapseBtn);
+//             };
+            
+//             // Make header clickable
+//             sectionTitle.classList.add('section-header-collapse');
+//             sectionTitle.appendChild(collapseBtn);
+            
+//             // Get all content after section title
+//             const sectionContent = document.createElement('div');
+//             sectionContent.className = 'section-content';
+            
+//             // Move all elements after section title into content div
+//             while (sectionTitle.nextElementSibling) {
+//                 sectionContent.appendChild(sectionTitle.nextElementSibling);
+//             }
+            
+//             section.appendChild(sectionContent);
+            
+//             // Make header clickable
+//             sectionTitle.onclick = function(e) {
+//                 if (e.target.closest('.collapse-toggle')) return;
+//                 toggleSection(section, collapseBtn);
+//             };
+//         }
+//     });
+// });
+
+// function toggleSection(section, btn) {
+//     const content = section.querySelector('.section-content');
+//     if (content.classList.contains('collapsed')) {
+//         content.classList.remove('collapsed');
+//         btn.innerHTML = '<i class="fa fa-minus"></i>';
+//     } else {
+//         content.classList.add('collapsed');
+//         btn.innerHTML = '<i class="fa fa-plus"></i>';
+//     }
+//}
+    </script>

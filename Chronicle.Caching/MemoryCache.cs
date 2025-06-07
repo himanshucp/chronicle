@@ -24,8 +24,9 @@ namespace Chronicle.Caching
         private static readonly string DisciplineKey = nameof(DisciplineKey);
         private static readonly string CompanyRoleKey = nameof(CompanyRoleKey);
         private static readonly string HierarchyLevelKey = nameof(HierarchyLevelKey);
+        private static readonly string ContractEmployeelRoleKey = nameof(ContractEmployeelRoleKey);
 
-   
+
 
 
         // Keeps track of used keys
@@ -443,7 +444,198 @@ namespace Chronicle.Caching
             CacheCleared?.Invoke(HierarchyLevelKey);
         }
 
-        #endregion 
+        #endregion
+
+
+        #region ContractEmployeeRole
+
+        public Dictionary<int, ContractEmployeeRole> ContractEmployeeRoles
+        {
+            get
+            {
+                // Lazy load pattern 
+                if (_memoryCache.Get(ContractEmployeelRoleKey) is not Dictionary<int, ContractEmployeeRole> dictionary)
+                {
+                    lock (_locker)
+                    {
+                        // Double-check inside lock
+                        dictionary = _memoryCache.Get(ContractEmployeelRoleKey) as Dictionary<int, ContractEmployeeRole>;
+                        if (dictionary == null)
+                        {
+                            dictionary = LoadContractEmployeeRoleFromDatabase();
+                            Add(CompanyRoleKey, dictionary, DateTime.UtcNow.Add(DefaultExpiration));
+                        }
+                    }
+                }
+
+                return dictionary;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Loads companies from database
+        /// </summary>
+        private Dictionary<int, ContractEmployeeRole> LoadContractEmployeeRoleFromDatabase()
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                // Load companies with appropriate ordering
+                const string sql = @"
+                     SELECT c.*, t.* 
+                          FROM ContractEmployeeRoles c
+                          LEFT JOIN Tenants t ON c.TenantID = t.TenantID
+                          ORDER BY c.RoleName";
+
+                var contracrEmployeeRoleDictionary = new Dictionary<int, ContractEmployeeRole>();
+                var contractEmployRoles = connection.Query<ContractEmployeeRole, Tenant, ContractEmployeeRole>(
+                    sql,
+                    (contractEmployeeRole, tenant) =>
+                    {
+                        if (contractEmployeeRole != null)
+                        {
+                            contractEmployeeRole.Tenant = tenant;
+                        }
+                        return contractEmployeeRole;
+                    },
+                    splitOn: "TenantID");
+
+                foreach (var contractEmployeeRole in contractEmployRoles)
+                {
+                    contracrEmployeeRoleDictionary[contractEmployeeRole.ContractRoleID] = contractEmployeeRole;
+                }
+
+                return contracrEmployeeRoleDictionary;
+            }
+        }
+
+        private async Task<Dictionary<int, ContractEmployeeRole>> LoadContractEmployeeRoleFromDatabaseAsync()
+        {
+            Dictionary<int, ContractEmployeeRole> dictionary = null;
+
+            // Use a semaphore or similar to prevent multiple concurrent loads
+            lock (_locker)
+            {
+                // Double-check inside lock
+                dictionary = _memoryCache.Get(ContractEmployeelRoleKey) as Dictionary<int, ContractEmployeeRole>;
+                if (dictionary != null)
+                {
+                    return dictionary;
+                }
+            }
+
+            using (var connection = await _context.CreateConnectionAsync())
+            {
+                const string sql = @"
+                     SELECT c.*, t.* 
+                          FROM ContractEmployeeRoles c
+                          LEFT JOIN Tenants t ON c.TenantID = t.TenantID
+                          ORDER BY c.RoleName";
+
+                var contracrEmployeeRoleDictionary = new Dictionary<int, ContractEmployeeRole>();
+                var contractEmployRoles = connection.Query<ContractEmployeeRole, Tenant, ContractEmployeeRole>(
+                    sql,
+                    (contractEmployeeRole, tenant) =>
+                    {
+                        if (contractEmployeeRole != null)
+                        {
+                            contractEmployeeRole.Tenant = tenant;
+                        }
+                        return contractEmployeeRole;
+                    },
+                    splitOn: "TenantID");
+
+                foreach (var contractEmployeeRole in contractEmployRoles)
+                {
+                    contracrEmployeeRoleDictionary[contractEmployeeRole.ContractRoleID] = contractEmployeeRole;
+                }
+
+                dictionary = contracrEmployeeRoleDictionary;
+
+                // Add to cache
+                lock (_locker)
+                {
+                    Add(CompanyRoleKey, dictionary, DateTime.UtcNow.Add(DefaultExpiration));
+                }
+
+                return dictionary;
+            }
+        }
+
+
+        public async Task RefreshContractEmployeeRolesAsync()
+        {
+            var contractEmployeeRole = await LoadContractEmployeeRoleFromDatabaseAsync();
+
+            lock (_locker)
+            {
+                // Replace existing cache with fresh data
+                _memoryCache.Remove(ContractEmployeelRoleKey);
+                Add(ContractEmployeelRoleKey, contractEmployeeRole, DateTime.UtcNow.Add(DefaultExpiration));
+            }
+
+            // Notify listeners
+            CacheCleared?.Invoke(CompanyRoleKey);
+        }
+
+        /// <summary>
+        /// Updates a specific company in the cache
+        /// </summary>
+        public void UpdateContractEmployeeRoleInCache(ContractEmployeeRole  contractEmployeeRole)
+        {
+            lock (_locker)
+            {
+                if (_memoryCache.Get(ContractEmployeelRoleKey) is Dictionary<int, ContractEmployeeRole> dictionary)
+                {
+                    dictionary[contractEmployeeRole.ContractRoleID] = contractEmployeeRole;
+
+                    // Reset expiration time
+                    _memoryCache.Remove(CompanyRoleKey);
+                    Add(ContractEmployeelRoleKey, dictionary, DateTime.UtcNow.Add(DefaultExpiration));
+
+                    // Notify listeners of update
+                    CacheCleared?.Invoke(ContractEmployeelRoleKey);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes a company from the cache
+        /// </summary>
+        public void RemoveContractEmployeeRoleFromCache(int contractRoleId)
+        {
+            lock (_locker)
+            {
+                if (_memoryCache.Get(CompanyRoleKey) is Dictionary<int, ContractEmployeeRole> dictionary)
+                {
+                    if (dictionary.ContainsKey(contractRoleId))
+                    {
+                        dictionary.Remove(contractRoleId);
+
+                        // Reset expiration time
+                        _memoryCache.Remove(CompanyRoleKey);
+                        Add(CompaniesKey, dictionary, DateTime.UtcNow.Add(DefaultExpiration));
+
+                        // Notify listeners of update
+                        CacheCleared?.Invoke(CompanyRoleKey);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clears the companies cache
+        /// </summary>
+        public void ClearContractEmployeeRoles()
+        {
+            Clear(ContractEmployeelRoleKey);
+            CacheCleared?.Invoke(ContractEmployeelRoleKey);
+        }
+
+        #endregion
+
+  
 
         #region Cache Helpers
 

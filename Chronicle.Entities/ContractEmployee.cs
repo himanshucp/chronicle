@@ -9,6 +9,7 @@ namespace Chronicle.Entities
     public class ContractEmployee
     {
         public int ContractEmployeeID { get; set; }
+        public int TenantID { get; set; }
         public int ContractID { get; set; }
         public int EmployeeID { get; set; }
         public int RoleID { get; set; }
@@ -16,7 +17,7 @@ namespace Chronicle.Entities
         public decimal? HourlyRate { get; set; }
         public int? EstimatedHours { get; set; }
         public int? ActualHours { get; set; }
-        public DateTime DateActivated { get; set; }
+        public DateTime? DateActivated { get; set; }
         public DateTime? DateDeactivated { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }

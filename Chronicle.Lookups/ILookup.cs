@@ -26,6 +26,8 @@ namespace Chronicle.Lookups
 
         List<SelectListItem> GetHierarchyLevelsItems(bool includeEmpty = true, string emptyText = "-- Select Hierarchy Levels --");
 
+        List<SelectListItem> GetContractEmployeeRoleItems(bool includeEmpty = true, string emptyText = "-- Select Individual Role --");
+
 
         List<SelectListItem> StatusItems { get; }
 

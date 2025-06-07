@@ -1,0 +1,45 @@
+﻿@using Chronicle.Entities
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+
+
+
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                <ul style="padding-left: 0;">
+
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only">Home</span>
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Workflow
+                    </li>
+
+                </ul>
+
+            </h1>
+
+            <div class="pull-right">
+                <a href="/Workflow/Create" class="btn btn-primary pull-right">
+                    Create New Workflow
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>

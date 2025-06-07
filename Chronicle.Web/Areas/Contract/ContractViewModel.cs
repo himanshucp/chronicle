@@ -42,6 +42,11 @@ namespace Chronicle.Web.Areas.Contract
 
         [DateRange("StartDate", ErrorMessage = "End date must be greater than start date")]
         public DateTime? EndDate { get; set; }
+
+        public string? InspectionAgencyContractNumber { get; set; }
+
+        public string? ManagingAgencyContractNumber { get; set; }
+
         public DateTime? SignDate { get; set; }
         public string? Status { get; set; }
         public int? ContractManagerID { get; set; }
@@ -52,7 +57,7 @@ namespace Chronicle.Web.Areas.Contract
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         public virtual ICollection<ContractViewModel> ChildContracts { get; set; }
         public virtual ICollection<ContractEmployeeViewModel> ContractEmployees { get; set; }

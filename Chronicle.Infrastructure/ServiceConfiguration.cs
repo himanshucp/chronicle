@@ -48,6 +48,12 @@ namespace Chronicle.Infrastructure
             services.AddScoped<IContractEmployeeRepository, ContractEmployeeRepository>();
             services.AddScoped<IContractEmployeeRoleRepository, ContractEmployeeRoleRepository>();
 
+            services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+            services.AddScoped<IWorkflowStepRepository, WorkflowStepRepository>();
+            services.AddScoped<IWorkflowTransitionRepository, WorkflowTransitionRepository>();
+            services.AddScoped<IWorkflowAssignmentRepository, WorkflowAssignmentRepository>();
+            services.AddScoped<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
+            services.AddScoped<IWorkflowHistoryRepository, WorkflowHistoryRepository>();
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -60,6 +66,13 @@ namespace Chronicle.Infrastructure
             services.AddScoped<IContractService, ContractService>();
             services.AddScoped<ICompanyRoleService, CompanyRoleService>();
             services.AddScoped<IContractEmployeeRoleService, ContractEmployeeRoleService>();
+
+            services.AddScoped<IWorkflowService, WorkflowService>();
+            services.AddScoped<IWorkflowStepService, WorkflowStepService>();
+            services.AddScoped<IWorkflowTransitionService, WorkflowTransitionService>();
+            services.AddScoped<IWorkflowAssignmentService, WorkflowAssignmentService>();
+            services.AddScoped<IWorkflowInstanceService, WorkflowInstanceService>();
+            services.AddScoped<IWorkflowHistoryService, WorkflowHistoryService>();
 
             return services;
         }

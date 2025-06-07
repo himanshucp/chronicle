@@ -135,13 +135,13 @@ namespace Chronicle.Repositories
                     CompanyRoleID, ParentContractID, HierarchyLevelID, ContractType, ContractAmount, 
                     RetentionPercentage, RetentionAmount, StartDate, EndDate, SignDate, Status, 
                     ContractManagerID, PaymentTerms, InsuranceRequired, InsuranceVerified, 
-                    InsuranceExpiryDate, Location,Notes,CreatedDate, ModifiedDate, IsActive)
+                    InsuranceExpiryDate, Location,Notes,CreatedDate, ModifiedDate, IsActive,InspectionAgencyContractNumber,ManagingAgencyContractNumber)
                 VALUES (
                     @TenantID, @ContractExternalID, @ContractTitle, @ProjectID, @SectionID, @CompanyID, 
                     @CompanyRoleID, @ParentContractID, @HierarchyLevelID, @ContractType, @ContractAmount, 
                     @RetentionPercentage, @RetentionAmount, @StartDate, @EndDate, @SignDate, @Status, 
                     @ContractManagerID, @PaymentTerms, @InsuranceRequired, @InsuranceVerified, 
-                    @InsuranceExpiryDate,@Location,@Notes, @CreatedDate, @ModifiedDate, 1);
+                    @InsuranceExpiryDate,@Location,@Notes, @CreatedDate, @ModifiedDate, @IsActive,@InspectionAgencyContractNumber,@ManagingAgencyContractNumber);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
             // Set creation date if not set
@@ -184,7 +184,10 @@ namespace Chronicle.Repositories
                     InsuranceExpiryDate = @InsuranceExpiryDate,
                     Location = @Location,
                     Notes = @Notes,
-                    ModifiedDate = @ModifiedDate
+                    ModifiedDate = @ModifiedDate,
+                    InspectionAgencyContractNumber = @InspectionAgencyContractNumber,
+                    ManagingAgencyContractNumber = @ManagingAgencyContractNumber,
+                    IsActive = @IsActive
                 WHERE ContractID = @ContractID AND TenantID = @TenantID";
 
             // Set modification date
@@ -241,6 +244,26 @@ namespace Chronicle.Repositories
                 _unitOfWork.Transaction);
 
             return rowsAffected > 0;
+        }
+
+
+        public async Task<Contract> GetByInspectionAgencyContracAsync(string inspectionAgencyContract, int tenantId)
+        {
+            const string sql = "SELECT * FROM Contracts WHERE InspectionAgencyContractNumber = @InspectionAgencyContractNumber AND TenantID = @TenantID";
+            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Contract>(
+                sql,
+                new { InspectionAgencyContractNumber = inspectionAgencyContract, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<Contract> GetByManagingAgencyContractAsync(string managingAgencyContract, int tenantId)
+        {
+            const string sql = "SELECT * FROM Contracts WHERE ManagingAgencyContractNumber = @ManagingAgencyContractNumber AND TenantID = @TenantID";
+            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Contract>(
+                sql,
+                new { ManagingAgencyContractNumber = managingAgencyContract, TenantID = tenantId },
+                _unitOfWork.Transaction);
+
         }
     }
 

@@ -1,8 +1,8 @@
 ﻿@model Chronicle.Web.Areas.Contract.ContractViewModel
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <style>
     .employee-card {
         border: 1px solid #ddd;
@@ -219,6 +219,39 @@
                                 <select asp-for="HierarchyLevelID" asp-items="Lookup.GetHierarchyLevelsItems()" id="HierarchyLevelID" name="HierarchyLevelID" class="form-control" value="@Model.HierarchyLevelID" required>
                                 </select>
                                 <span asp-validation-for="HierarchyLevelID" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Location" class="col-md-3 control-label">Location</label>
+                            <div class="col-md-8 col-sm-12">
+                                <input asp-for="Location" class="form-control"/>
+                                <span asp-validation-for="Location" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="InspectionAgencyContractNumber" class="col-md-3 control-label">Inspection Agency Contract Number</label>
+                            <div class="col-md-8 col-sm-12">
+                                <input asp-for="InspectionAgencyContractNumber" class="form-control"/>
+                                <span asp-validation-for="InspectionAgencyContractNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ManagingAgencyContractNumber" class="col-md-3 control-label">Managing Agency Contract Number</label>
+                            <div class="col-md-8 col-sm-12">
+                                <input asp-for="ManagingAgencyContractNumber" class="form-control"/>
+                                <span asp-validation-for="ManagingAgencyContractNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group ">
+                            <label for="name" class="col-md-3 control-label">Active</label>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="icheck-danger d-inline">
+                                    <input type="checkbox" asp-for="IsActive" id="IsActive" name="IsActive" value="true">
+                                </div>
                             </div>
                         </div>
 

@@ -71,7 +71,7 @@ namespace Chronicle.Services
                 // Set audit fields
                 company.CreatedDate = DateTime.UtcNow;
                 company.LastModifiedDate = DateTime.UtcNow;
-                company.IsActive = true;
+                //company.IsActive = true;
 
                 int id = await _companyRepository.InsertAsync(company);
                 await _unitOfWork.CommitAsync();

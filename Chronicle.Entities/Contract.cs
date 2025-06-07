@@ -26,6 +26,10 @@ namespace Chronicle.Entities
         public decimal? RetentionPercentage { get; set; }
         public decimal? RetentionAmount { get; set; }
 
+        public string? InspectionAgencyContractNumber { get; set; }
+
+        public string? ManagingAgencyContractNumber { get; set; }
+
         [Display(Name = "Start Date")]
         [DataType(DataType.Date)]
         public DateTime? StartDate { get; set; }

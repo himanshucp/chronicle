@@ -68,11 +68,12 @@ namespace Chronicle.Web.Areas.Contract
         [HttpPost("/Contract/Edit/{id?}")]
         public async Task<IActionResult> Edit([FromForm] ContractViewModel model, int id)
         {
+            ContractViewModel oldModel = model; 
 
             if (!ModelState.IsValid)
             {
                 // Reload the view with validation errors
-                model = await GetAsync(model);
+                //model = await GetAsync(model);
                 return View("Create", model);
             }
 
@@ -94,7 +95,7 @@ namespace Chronicle.Web.Areas.Contract
                 model = await GetAsync(model);
             }
 
-            return View("Create", model);
+            return View("Create", oldModel);
         }
 
 

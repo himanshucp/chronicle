@@ -39,10 +39,6 @@
     <Folder Include="Areas\Users\Controllers\" />
     <Folder Include="Areas\Users\Data\" />
     <Folder Include="Areas\Users\Models\" />
-    <Folder Include="Areas\WorkFlow\Controllers\" />
-    <Folder Include="Areas\WorkFlow\Data\" />
-    <Folder Include="Areas\WorkFlow\Models\" />
-    <Folder Include="Areas\WorkFlow\Views\" />
     <Folder Include="Code\Caching\" />
   </ItemGroup>
 

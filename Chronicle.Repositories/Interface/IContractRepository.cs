@@ -22,6 +22,10 @@ namespace Chronicle.Repositories
         Task<PagedResult<Contract>> GetPagedAsync(int page, int pageSize, int tenantId, string searchTerm = null);
         Task<bool> DeleteAsync(int id, int tenantId);
 
+        Task<Contract> GetByInspectionAgencyContracAsync(string inspectionAgencyContract, int tenantId);
+
+        Task<Contract> GetByManagingAgencyContractAsync(string managingAgencyContract, int tenantId);
+
 
     }
 }

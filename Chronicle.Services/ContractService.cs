@@ -143,10 +143,23 @@ namespace Chronicle.Services
                     return ServiceResult<int>.FailureResult("Contract with this title already exists");
                 }
 
+
+                //var inspectionAgencyContract = await _contractRepository.GetByInspectionAgencyContracAsync(contract.InspectionAgencyContractNumber, tenantId);
+                //if (inspectionAgencyContract != null && inspectionAgencyContract.ContractID != contract.ContractID)
+                //{
+                //    return ServiceResult<int>.FailureResult("Inspection Agency Contract number already exists");
+                //}
+
+                //var ManagingAgencyContract = await _contractRepository.GetByInspectionAgencyContracAsync(contract.ManagingAgencyContractNumber, tenantId);
+                //if (ManagingAgencyContract != null && ManagingAgencyContract.ContractID != contract.ContractID)
+                //{
+                //    return ServiceResult<int>.FailureResult("Managing Agency Contract number already exists");
+                //}
+
                 // Set default values
                 contract.CreatedDate = DateTime.UtcNow;
                 contract.ModifiedDate = DateTime.UtcNow;
-                contract.IsActive = true;
+                //contract.IsActive = true;
 
                 _unitOfWork.BeginTransaction();
 
@@ -256,6 +269,19 @@ namespace Chronicle.Services
                 {
                     return ServiceResult<bool>.FailureResult("Contract title already exists");
                 }
+
+
+                //var inspectionAgencyContract = await _contractRepository.GetByInspectionAgencyContracAsync(contract.InspectionAgencyContractNumber, tenantId);
+                //if (inspectionAgencyContract != null && inspectionAgencyContract.ContractID != contract.ContractID)
+                //{
+                //    return ServiceResult<bool>.FailureResult("Inspection Agency Contract number already exists");
+                //}
+
+                //var ManagingAgencyContract = await _contractRepository.GetByInspectionAgencyContracAsync(contract.ManagingAgencyContractNumber, tenantId);
+                //if (ManagingAgencyContract != null && ManagingAgencyContract.ContractID != contract.ContractID)
+                //{
+                //    return ServiceResult<bool>.FailureResult("Managing Agency Contract number already exists");
+                //}
 
                 contract.ModifiedDate = DateTime.UtcNow;
 

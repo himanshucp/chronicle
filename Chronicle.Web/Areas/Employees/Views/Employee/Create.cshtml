@@ -97,7 +97,7 @@
                                 <div class="form-group">
                                     <label asp-for="CompanyID" class="required-field col-md-3 control-label">Company</label>
                                     <div class="col-md-8 col-sm-12">
-                                        <select asp-for="CompanyID" asp-items="Lookup.GetActiveCompanyItems()" id="CompanyID" name="CompanyID" class="form-control" value="@Model.CompanyID" required>
+                                        <select asp-for="CompanyID" asp-items="Lookup.GetActiveCompanyItems()" id="CompanyID" name="CompanyID" class="form-control select2" value="@Model.CompanyID" required>
                                         </select>
                                         <span asp-validation-for="CompanyID" class="text-danger"></span>
                                     </div>

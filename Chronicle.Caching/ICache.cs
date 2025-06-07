@@ -34,12 +34,25 @@ namespace Chronicle.Caching
 
         #endregion
 
-        #region CompanyRoles 
+        #region HierarchyLevel 
         Dictionary<int, HierarchyLevel> HierarchyLevels { get; }
         void UpdateHierarchyLevelInCache(HierarchyLevel hierarchyLevel);
 
         void ClearHierarchyLevels();
 
-        #endregion 
+        #endregion
+
+
+        #region ContractEmployeeRoles 
+        Dictionary<int, ContractEmployeeRole> ContractEmployeeRoles { get; }
+        void UpdateContractEmployeeRoleInCache(ContractEmployeeRole contractEmployeeRole);
+
+        void ClearContractEmployeeRoles();
+
+        #endregion
+
+
+
+
     }
 }

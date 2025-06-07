@@ -135,11 +135,11 @@
                                 <th>Title</th>
                                 <th>Company</th>
                                 <th>Location</th>
-                                <th>Type</th>
+                                <th>Company Role</th>
                                 <th>Hierarchy Level</th>
                                 <th>Status</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
+                              @*   <th>Start Date</th>
+                                <th>End Date</th> *@
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -158,7 +158,7 @@
                                     <tr>
                                         <td>@contract.ContractID</td>
                                         <td>@contract.ContractExternalID</td>
-                                        <td>@contract.ContractType</td>
+                                        <td>@contract.ContractTitle</td>
                                         <td>@companyName</td>
                                         <td>@contract.Location</td>
                                         <td>@companyRole</td>
@@ -175,12 +175,12 @@
 
                                             @*  <span class="contract-status-active"><i class="fa fa-check-circle"></i> Active</span> *@
                                         </td>
-                                        <td>@(contract.StartDate?.ToString("MM/dd/yyyy") ?? "Not set")</td>
-                                        <td>@(contract.EndDate?.ToString("MM/dd/yyyy") ?? "Not set")</td>
+                                       @*  <td>@(contract.StartDate?.ToString("MM/dd/yyyy") ?? "Not set")</td>
+                                        <td>@(contract.EndDate?.ToString("MM/dd/yyyy") ?? "Not set")</td> *@
                                         <td>
-                                            <button class="btn btn-xs btn-info edit-contract" data-id="1">
+                                            <a href="/Contract/Edit/@contract.ContractID" class="btn btn-xs btn-info edit-contract" data-id="1">
                                                 <i class="fa fa-edit"></i>
-                                            </button>
+                                            </a>
                                             <button class="btn btn-xs btn-warning view-contract" data-id="1">
                                                 <i class="fa fa-eye"></i>
                                             </button>

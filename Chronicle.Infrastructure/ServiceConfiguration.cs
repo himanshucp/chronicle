@@ -42,7 +42,12 @@ namespace Chronicle.Infrastructure
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IDisciplineRepository, DisciplineRepository>();
             services.AddScoped<ISubDisciplineRepository, SubDisciplineRepository>();
-            services.AddScoped<IContractRepository, ContractRepository>();  
+            services.AddScoped<IContractRepository, ContractRepository>();
+            services.AddScoped<ICompanyRoleRepository, CompanyRoleRepository>();
+            services.AddScoped<ICompanyRoleRepository, CompanyRoleRepository>();
+            services.AddScoped<IContractEmployeeRepository, ContractEmployeeRepository>();
+            services.AddScoped<IContractEmployeeRoleRepository, ContractEmployeeRoleRepository>();
+
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -52,7 +57,9 @@ namespace Chronicle.Infrastructure
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IDisciplineService, DisciplineService>();
             services.AddScoped<ISubDisciplineService, SubDisciplineService>();  
-            services.AddScoped<IContractService, ContractService>();    
+            services.AddScoped<IContractService, ContractService>();
+            services.AddScoped<ICompanyRoleService, CompanyRoleService>();
+            services.AddScoped<IContractEmployeeRoleService, ContractEmployeeRoleService>();
 
             return services;
         }

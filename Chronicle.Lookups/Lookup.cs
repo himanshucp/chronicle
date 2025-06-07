@@ -23,6 +23,7 @@ namespace Chronicle.Lookups
         private const string DisciplineItemsKey = "Lookup_Discipline";
         private const string CompanyRoleItemsKey = "Lookup_CompanyRole";
         private const string HierarchyLevelItemsKey = "Lookup_HierarchyLevel";
+        private const string ContractEmployeeRoleItemsKey = "Lookup_ContractEmployeeRole";
 
         public Lookup(ICache cache, IMemoryCache memoryCache)
         {
@@ -273,6 +274,39 @@ namespace Chronicle.Lookups
                     {
                         Value = hierarchyLevel.LevelID.ToString(),  // Make sure this matches your property name
                         Text = hierarchyLevel.LevelName  // Make sure this matches your property name
+                    });
+                }
+
+                return list;
+            });
+        }
+
+        public List<SelectListItem> GetContractEmployeeRoleItems(bool includeEmpty = true, string emptyText = "-- Select Individual Role --")
+        {
+            string cacheKey = $"{ContractEmployeeRoleItemsKey}_{includeEmpty}_{emptyText}";
+
+            return _lookupCache.GetOrCreate(cacheKey, entry =>
+            {
+                entry.SlidingExpiration = _lookupCacheDuration;
+
+                var list = new List<SelectListItem>();
+
+                if (includeEmpty)
+                {
+                    list.Add(new SelectListItem { Value = "", Text = emptyText, Selected = true });
+                }
+
+                // Get from main cache
+                var hierarchyLevels = _cache.ContractEmployeeRoles.Values
+                                      .OrderBy(c => c.RoleName)  // Make sure this matches your property name
+                                      .ToList();
+
+                foreach (var hierarchyLevel in hierarchyLevels)
+                {
+                    list.Add(new SelectListItem
+                    {
+                        Value = hierarchyLevel.ContractRoleID.ToString(),  // Make sure this matches your property name
+                        Text = hierarchyLevel.RoleName  // Make sure this matches your property name
                     });
                 }
 

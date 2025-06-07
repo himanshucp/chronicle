@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Chronicle.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Chronicle.Web.Areas.Contract
 {
@@ -13,7 +14,9 @@ namespace Chronicle.Web.Areas.Contract
         [Required(ErrorMessage = "Contract Title is required")]
         [StringLength(200, ErrorMessage = "Contract Title cannot be longer than 200 characters")]
         public string ContractTitle { get; set; }
+       
         public int ProjectID { get; set; }
+     
         public int? SectionID { get; set; }
 
         [Required(ErrorMessage = "Company is required")]
@@ -21,14 +24,17 @@ namespace Chronicle.Web.Areas.Contract
 
         [Required(ErrorMessage = "Company Role is required")]
         public int CompanyRoleID { get; set; }
+        
+        
         public int? ParentContractID { get; set; }
 
         [Required(ErrorMessage = "Contract Hierarchy level is required")]
-       
-        public int HierarchyLevelID { get; set; }
+       public int HierarchyLevelID { get; set; }
 
-        public string Location { get; set; }
-        public string ContractType { get; set; }
+        public string? Location { get; set; }
+
+        public string? ContractType { get; set; }
+
         public decimal? ContractAmount { get; set; }
         public decimal? RetentionPercentage { get; set; }
         public decimal? RetentionAmount { get; set; }
@@ -46,7 +52,18 @@ namespace Chronicle.Web.Areas.Contract
         public DateTime? CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        public string Notes { get; set; }
         public bool? IsActive { get; set; }
+
+        public virtual ICollection<ContractViewModel> ChildContracts { get; set; }
+        public virtual ICollection<ContractEmployeeViewModel> ContractEmployees { get; set; }
+
+        public ContractViewModel()
+        {
+            ChildContracts = new HashSet<ContractViewModel>();
+            ContractEmployees = new HashSet<ContractEmployeeViewModel>();
+        }
+
+
+
     }
 }

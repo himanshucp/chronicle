@@ -12,12 +12,14 @@ namespace Chronicle.Entities
     public class Role
     {
         public int RoleId { get; set; }
+        public int TenantID { get; set; }
         public string Name { get; set; }
+        public string NormalizedName { get; set; }
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
 
-        // Navigation property
-        public ICollection<User> Users { get; set; } = new List<User>();
+        public ICollection<UserRole> UserRoles { get; set; }
+        public ICollection<RoleClaim> RoleClaims { get; set; }
     }
 }

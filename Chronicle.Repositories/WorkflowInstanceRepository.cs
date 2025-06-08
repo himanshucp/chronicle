@@ -13,125 +13,272 @@ namespace Chronicle.Repositories
     public class WorkflowInstanceRepository : DapperRepository<WorkflowInstance, int>, IWorkflowInstanceRepository
     {
         public WorkflowInstanceRepository(IUnitOfWork unitOfWork)
-            : base(unitOfWork, "WorkflowInstance", "InstanceId")
+            : base(unitOfWork, "WorkflowInstances", "InstanceId")
         {
         }
 
-        public async Task<WorkflowInstance> GetByIdAsync(int instanceId)
-        {
-            const string sql = "SELECT * FROM WorkflowInstance WHERE InstanceId = @InstanceId";
-            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<WorkflowInstance>(
-                sql,
-                new { InstanceId = instanceId },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<IEnumerable<WorkflowInstance>> GetByWorkflowIdAsync(int workflowId)
-        {
-            const string sql = "SELECT * FROM WorkflowInstance WHERE WorkflowId = @WorkflowId ORDER BY CreatedDate DESC";
-            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
-                sql,
-                new { WorkflowId = workflowId },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<IEnumerable<WorkflowInstance>> GetByEntityAsync(string entityType, int entityId)
-        {
-            const string sql = "SELECT * FROM WorkflowInstance WHERE EntityType = @EntityType AND EntityId = @EntityId ORDER BY CreatedDate DESC";
-            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
-                sql,
-                new { EntityType = entityType, EntityId = entityId },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<IEnumerable<WorkflowInstance>> GetByStatusAsync(string status)
-        {
-            const string sql = "SELECT * FROM WorkflowInstance WHERE Status = @Status ORDER BY CreatedDate DESC";
-            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
-                sql,
-                new { Status = status },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<IEnumerable<WorkflowInstance>> GetByAssignedToAsync(string assignedTo)
-        {
-            const string sql = "SELECT * FROM WorkflowInstance WHERE AssignedTo = @AssignedTo ORDER BY CreatedDate DESC";
-            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
-                sql,
-                new { AssignedTo = assignedTo },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<IEnumerable<WorkflowInstance>> GetActiveInstancesAsync()
-        {
-            const string sql = "SELECT * FROM WorkflowInstance WHERE Status = @Status ORDER BY CreatedDate DESC";
-            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
-                sql,
-                new { Status = WorkflowStatusConstants.Active },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<IEnumerable<WorkflowInstance>> GetOverdueInstancesAsync()
-        {
-            const string sql = "SELECT * FROM WorkflowInstance WHERE DueDate < @Now AND Status = @Status";
-            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
-                sql,
-                new { Now = DateTime.UtcNow, Status = WorkflowStatusConstants.Active },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<PagedResult<WorkflowInstance>> GetPagedAsync(int page, int pageSize, string searchTerm = null)
-        {
-            string whereClause = null;
-            object parameters = null;
-
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                whereClause = @"
-                    EntityType LIKE @SearchTerm OR 
-                    Status LIKE @SearchTerm OR
-                    AssignedTo LIKE @SearchTerm OR
-                    CreatedBy LIKE @SearchTerm";
-
-                parameters = new { SearchTerm = $"%{searchTerm}%" };
-            }
-
-            return await _unitOfWork.Connection.QueryPagedAsync<WorkflowInstance>(
-                "WorkflowInstance",
-                "CreatedDate DESC",
-                page,
-                pageSize,
-                whereClause,
-                parameters,
-                _unitOfWork.Transaction);
-        }
-
-        public override async Task<int> InsertAsync(WorkflowInstance instance)
+        public async Task<WorkflowInstance> GetByIdAsync(int id, int tenantId)
         {
             const string sql = @"
-                INSERT INTO WorkflowInstance (
-                    WorkflowId, EntityId, EntityType, CurrentStepId, Status, CreatedDate, CreatedBy,
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.InstanceId = @InstanceId AND w.TenantID = @TenantID";
+
+            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<WorkflowInstance>(
+                sql,
+                new { InstanceId = id, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<WorkflowInstance> GetByIdWithHistoryAsync(int id, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.*, wh.*
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                LEFT JOIN WorkflowHistory wh ON wi.InstanceId = wh.InstanceId
+                WHERE wi.InstanceId = @InstanceId AND w.TenantID = @TenantID
+                ORDER BY wh.TransitionDate DESC";
+
+            var instanceDictionary = new Dictionary<int, WorkflowInstance>();
+
+            var instances = await _unitOfWork.Connection.QueryAsync<WorkflowInstance, WorkflowHistory, WorkflowInstance>(
+                sql,
+                (instance, history) =>
+                {
+                    if (!instanceDictionary.TryGetValue(instance.InstanceId, out WorkflowInstance instanceEntry))
+                    {
+                        instanceEntry = instance;
+                        instanceEntry.History = new List<WorkflowHistory>();
+                        instanceDictionary.Add(instance.InstanceId, instanceEntry);
+                    }
+
+                    if (history != null)
+                    {
+                        instanceEntry.History.Add(history);
+                    }
+
+                    return instanceEntry;
+                },
+                new { InstanceId = id, TenantID = tenantId },
+                _unitOfWork.Transaction,
+                splitOn: "HistoryId");
+
+            return instances.FirstOrDefault();
+        }
+
+        public async Task<WorkflowInstance> GetByEntityAsync(int entityId, string entityType, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.EntityId = @EntityId AND wi.EntityType = @EntityType 
+                AND wi.Status = @Status AND w.TenantID = @TenantID";
+
+            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<WorkflowInstance>(
+                sql,
+                new { EntityId = entityId, EntityType = entityType, Status = WorkflowStatusConstants.Active, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetByWorkflowIdAsync(int workflowId, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.WorkflowId = @WorkflowId AND w.TenantID = @TenantID
+                ORDER BY wi.CreatedDate DESC";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { WorkflowId = workflowId, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetByCurrentStepAsync(int stepId, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.CurrentStepId = @StepId AND wi.Status = @Status AND w.TenantID = @TenantID";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { StepId = stepId, Status = WorkflowStatusConstants.Active, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetByStatusAsync(string status, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.Status = @Status AND w.TenantID = @TenantID
+                ORDER BY wi.CreatedDate DESC";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { Status = status, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetActiveInstancesAsync(int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.Status = @Status AND w.TenantID = @TenantID
+                ORDER BY wi.Priority DESC, wi.CreatedDate";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { Status = WorkflowStatusConstants.Active, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetByAssignedToAsync(string assignedTo, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.AssignedTo = @AssignedTo AND wi.Status = @Status AND w.TenantID = @TenantID
+                ORDER BY wi.Priority DESC, wi.DueDate";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { AssignedTo = assignedTo, Status = WorkflowStatusConstants.Active, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetOverdueInstancesAsync(int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.DueDate < @CurrentDate AND wi.Status = @Status AND w.TenantID = @TenantID
+                ORDER BY wi.DueDate, wi.Priority DESC";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { CurrentDate = DateTime.UtcNow, Status = WorkflowStatusConstants.Active, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetByPriorityAsync(int priority, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.Priority = @Priority AND wi.Status = @Status AND w.TenantID = @TenantID
+                ORDER BY wi.CreatedDate";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { Priority = priority, Status = WorkflowStatusConstants.Active, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetByCreatedByAsync(string createdBy, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.CreatedBy = @CreatedBy AND w.TenantID = @TenantID
+                ORDER BY wi.CreatedDate DESC";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { CreatedBy = createdBy, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.CreatedDate >= @StartDate AND wi.CreatedDate <= @EndDate AND w.TenantID = @TenantID
+                ORDER BY wi.CreatedDate DESC";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { StartDate = startDate, EndDate = endDate, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<int> GetActiveInstanceCountAsync(int workflowId, int tenantId)
+        {
+            const string sql = @"
+                SELECT COUNT(1)
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.WorkflowId = @WorkflowId AND wi.Status = @Status AND w.TenantID = @TenantID";
+
+            return await _unitOfWork.Connection.QuerySingleAsync<int>(
+                sql,
+                new { WorkflowId = workflowId, Status = WorkflowStatusConstants.Active, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetStuckInstancesAsync(int daysThreshold, int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.Status = @Status 
+                AND wi.LastTransitionDate < @ThresholdDate
+                AND w.TenantID = @TenantID
+                ORDER BY wi.LastTransitionDate";
+
+            var thresholdDate = DateTime.UtcNow.AddDays(-daysThreshold);
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { Status = WorkflowStatusConstants.Active, ThresholdDate = thresholdDate, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public override async Task<int> InsertAsync(WorkflowInstance workflowInstance)
+        {
+            const string sql = @"
+                INSERT INTO WorkflowInstances (
+                    WorkflowId, EntityId, EntityType, CurrentStepId, Status,
+                    CreatedDate, CompletedDate, LastTransitionDate, CreatedBy, CompletedBy,
                     Data, Variables, Priority, Notes, AssignedTo, DueDate)
                 VALUES (
-                    @WorkflowId, @EntityId, @EntityType, @CurrentStepId, @Status, @CreatedDate, @CreatedBy,
+                    @WorkflowId, @EntityId, @EntityType, @CurrentStepId, @Status,
+                    @CreatedDate, @CompletedDate, @LastTransitionDate, @CreatedBy, @CompletedBy,
                     @Data, @Variables, @Priority, @Notes, @AssignedTo, @DueDate);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
-            if (instance.CreatedDate == default)
+            // Set creation date if not set
+            if (workflowInstance.CreatedDate == default(DateTime))
             {
-                instance.CreatedDate = DateTime.UtcNow;
+                workflowInstance.CreatedDate = DateTime.UtcNow;
             }
 
             return await _unitOfWork.Connection.QuerySingleAsync<int>(
                 sql,
-                instance,
+                workflowInstance,
                 _unitOfWork.Transaction);
         }
 
-        public override async Task<bool> UpdateAsync(WorkflowInstance instance)
+        public override async Task<bool> UpdateAsync(WorkflowInstance workflowInstance)
         {
             const string sql = @"
-                UPDATE WorkflowInstance
+                UPDATE WorkflowInstances
                 SET CurrentStepId = @CurrentStepId,
                     Status = @Status,
                     CompletedDate = @CompletedDate,
@@ -147,7 +294,66 @@ namespace Chronicle.Repositories
 
             int rowsAffected = await _unitOfWork.Connection.ExecuteAsync(
                 sql,
-                instance,
+                workflowInstance,
+                _unitOfWork.Transaction);
+
+            return rowsAffected > 0;
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetAllAsync(int tenantId)
+        {
+            const string sql = @"
+                SELECT wi.* 
+                FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE w.TenantID = @TenantID";
+
+            return await _unitOfWork.Connection.QueryAsync<WorkflowInstance>(
+                sql,
+                new { TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<PagedResult<WorkflowInstance>> GetPagedAsync(int page, int pageSize, int tenantId, string searchTerm = null)
+        {
+            string whereClause = @"wi.InstanceId IN (
+                SELECT wi2.InstanceId FROM WorkflowInstances wi2
+                INNER JOIN Workflows w ON wi2.WorkflowId = w.WorkflowId
+                WHERE w.TenantID = @TenantID)";
+
+            object parameters = new { TenantID = tenantId };
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                whereClause += @" AND (
+                    wi.EntityType LIKE @SearchTerm OR 
+                    wi.CreatedBy LIKE @SearchTerm OR
+                    wi.AssignedTo LIKE @SearchTerm OR
+                    wi.Notes LIKE @SearchTerm)";
+
+                parameters = new { TenantID = tenantId, SearchTerm = $"%{searchTerm}%" };
+            }
+
+            return await _unitOfWork.Connection.QueryPagedAsync<WorkflowInstance>(
+                "WorkflowInstances wi",
+                "wi.Priority DESC, wi.CreatedDate DESC",
+                page,
+                pageSize,
+                whereClause,
+                parameters,
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<bool> DeleteAsync(int id, int tenantId)
+        {
+            const string sql = @"
+                DELETE wi FROM WorkflowInstances wi
+                INNER JOIN Workflows w ON wi.WorkflowId = w.WorkflowId
+                WHERE wi.InstanceId = @InstanceId AND w.TenantID = @TenantID";
+
+            int rowsAffected = await _unitOfWork.Connection.ExecuteAsync(
+                sql,
+                new { InstanceId = id, TenantID = tenantId },
                 _unitOfWork.Transaction);
 
             return rowsAffected > 0;

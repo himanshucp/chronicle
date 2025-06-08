@@ -3,6 +3,7 @@ using Chronicle.Data;
 using Chronicle.Lookups;
 using Chronicle.Repositories;
 using Chronicle.Services;
+using Chronicle.Services.Interface;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

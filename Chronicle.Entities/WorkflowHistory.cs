@@ -45,6 +45,10 @@ namespace Chronicle.Entities
         public WorkflowInstance? Instance { get; set; }
         public WorkflowStep? FromStep { get; set; }
         public WorkflowStep? ToStep { get; set; }
+
+        public int TransitionId { get; set; }
+
+        public string? PerformedBy { get; set; } 
     }
 
 }

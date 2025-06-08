@@ -5,19 +5,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chronicle.Services
+namespace Chronicle.Services.Interface
 {
     public interface IWorkflowTransitionService
     {
-        Task<ServiceResult<WorkflowTransition>> GetTransitionByIdAsync(int transitionId);
-        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetByWorkflowIdAsync(int workflowId);
-        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetByFromStepIdAsync(int fromStepId);
-        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetByToStepIdAsync(int toStepId);
-        Task<ServiceResult<WorkflowTransition>> GetByActionCodeAsync(int workflowId, string actionCode);
-        Task<ServiceResult<PagedResult<WorkflowTransition>>> GetTransitionsAsync(int page, int pageSize, string searchTerm = null);
-        Task<ServiceResult<int>> CreateTransitionAsync(WorkflowTransition transition);
-        Task<ServiceResult<bool>> UpdateAsync(WorkflowTransition transition);
+        Task<ServiceResult<WorkflowTransition>> GetWorkflowTransitionByIdAsync(int transitionId, int tenantId);
+        Task<ServiceResult<WorkflowTransition>> GetTransitionWithStepsAsync(int transitionId, int tenantId);
+        Task<ServiceResult<WorkflowTransition>> GetByActionCodeAsync(string actionCode, int fromStepId, int tenantId);
+        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetTransitionsByWorkflowIdAsync(int workflowId, int tenantId);
+        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetAvailableTransitionsAsync(int fromStepId, int tenantId, string userRole = null);
+        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetIncomingTransitionsAsync(int toStepId, int tenantId);
+        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetActiveTransitionsByWorkflowAsync(int workflowId, int tenantId);
+        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetTransitionsByRoleAsync(string role, int workflowId, int tenantId);
+        Task<ServiceResult<int>> CreateWorkflowTransitionAsync(WorkflowTransition workflowTransition, int tenantId);
+        Task<ServiceResult<bool>> UpdateAsync(WorkflowTransition workflowTransition, int tenantId);
         Task<ServiceResult<bool>> DeleteAsync(int transitionId, int tenantId);
+        Task<ServiceResult<bool>> DeleteByWorkflowIdAsync(int workflowId, int tenantId);
+        Task<IEnumerable<WorkflowTransition>> GetWorkflowTransitionsAsync(int tenantId);
+        Task<ServiceResult<PagedResult<WorkflowTransition>>> GetPagedWorkflowTransitionsAsync(int page, int pageSize, int tenantId, string searchTerm = null);
+        Task<ServiceResult<IEnumerable<WorkflowTransition>>> GetTransitionsRequiringApprovalAsync(int workflowId, int tenantId);
+        Task<ServiceResult<WorkflowTransition>> GetHighestPriorityTransitionAsync(int fromStepId, int tenantId);
+        Task<ServiceResult<bool>> ActivateTransitionAsync(int transitionId, int tenantId);
+        Task<ServiceResult<bool>> DeactivateTransitionAsync(int transitionId, int tenantId);
+        Task<ServiceResult<bool>> UpdateTransitionPriorityAsync(int transitionId, int newPriority, int tenantId);
+        Task<ServiceResult<bool>> ValidateTransitionAsync(WorkflowTransition transition, int tenantId);
     }
-
 }

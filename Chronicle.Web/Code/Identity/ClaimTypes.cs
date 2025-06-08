@@ -1,4 +1,4 @@
-﻿namespace Chronicle.Web.Code.Identity
+﻿namespace Chronicle.Web
 {
     public static class ClaimTypes
     {

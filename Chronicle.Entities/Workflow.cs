@@ -14,6 +14,8 @@ namespace Chronicle.Entities
     {
         public int WorkflowId { get; set; }
 
+        public int TenantID {  get; set; }  
+
         [Required, MaxLength(255)]
         public string WorkflowName { get; set; } = string.Empty;
 

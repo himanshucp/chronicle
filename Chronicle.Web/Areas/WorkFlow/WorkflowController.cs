@@ -1,5 +1,5 @@
 ﻿using Chronicle.Services;
-using Chronicle.Web.Areas.WorkFlow.Views;
+using Chronicle.Services.Interface;
 using Chronicle.Web.Code;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +14,7 @@ namespace Chronicle.Web.Areas.WorkFlow
         private readonly IWorkflowInstanceService _instanceService;
         private readonly IWorkflowAssignmentService _assignmentService;
         private readonly ILogger<WorkflowController> _logger;
+        private int _tenantId;
 
 
         public WorkflowController(
@@ -30,13 +31,18 @@ namespace Chronicle.Web.Areas.WorkFlow
             _instanceService = instanceService;
             _assignmentService = assignmentService;
             _logger = logger;
+            _tenantId = 1;
         }
 
         #region Page 
 
         [HttpGet("Workflow")]
-        public IActionResult WorkFlowList()
+        public async Task<IActionResult> WorkFlowListAsync(string searchTerm = "",
+        int page = 1,
+        int pageSize = 10)
         {
+
+            var result = await _workflowService.GetPagedWorkflowsAsync(page, pageSize, _tenantId, searchTerm);
             return View();
         }
 

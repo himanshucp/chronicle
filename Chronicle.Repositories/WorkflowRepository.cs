@@ -13,86 +13,88 @@ namespace Chronicle.Repositories
     public class WorkflowRepository : DapperRepository<Workflow, int>, IWorkflowRepository
     {
         public WorkflowRepository(IUnitOfWork unitOfWork)
-            : base(unitOfWork, "Workflow", "WorkflowId")
+            : base(unitOfWork, "Workflows", "WorkflowId")
         {
         }
 
-        public async Task<Workflow> GetByNameAsync(string workflowName)
+        public async Task<Workflow> GetByIdAsync(int id, int tenantId)
         {
-            const string sql = "SELECT * FROM Workflow WHERE WorkflowName = @WorkflowName";
+            const string sql = "SELECT * FROM Workflows WHERE WorkflowId = @WorkflowId AND TenantID = @TenantID";
             return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Workflow>(
                 sql,
-                new { WorkflowName = workflowName },
+                new { WorkflowId = id, TenantID = tenantId },
                 _unitOfWork.Transaction);
         }
 
-        public async Task<IEnumerable<Workflow>> GetByModuleAsync(string module)
+        public async Task<Workflow> GetByNameAsync(string workflowName, int tenantId)
         {
-            const string sql = "SELECT * FROM Workflow WHERE Module = @Module AND IsActive = 1";
-            return await _unitOfWork.Connection.QueryAsync<Workflow>(
-                sql,
-                new { Module = module },
-                _unitOfWork.Transaction);
-        }
-
-        public async Task<Workflow> GetByIdAsync(int workflowId)
-        {
-            const string sql = "SELECT * FROM Workflow WHERE WorkflowId = @WorkflowId";
+            const string sql = "SELECT * FROM Workflows WHERE WorkflowName = @WorkflowName AND TenantID = @TenantID";
             return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Workflow>(
                 sql,
-                new { WorkflowId = workflowId },
+                new { WorkflowName = workflowName, TenantID = tenantId },
                 _unitOfWork.Transaction);
         }
 
-        public async Task<IEnumerable<Workflow>> GetActiveWorkflowsAsync()
+        public async Task<IEnumerable<Workflow>> GetByModuleAsync(string module, int tenantId)
         {
-            const string sql = "SELECT * FROM Workflow WHERE IsActive = 1 ORDER BY WorkflowName";
+            const string sql = "SELECT * FROM Workflows WHERE Module = @Module AND TenantID = @TenantID AND IsActive = 1";
             return await _unitOfWork.Connection.QueryAsync<Workflow>(
                 sql,
-                null,
+                new { Module = module, TenantID = tenantId },
                 _unitOfWork.Transaction);
         }
 
-        public async Task<PagedResult<Workflow>> GetPagedAsync(int page, int pageSize, string searchTerm = null)
+        public async Task<IEnumerable<Workflow>> GetActiveWorkflowsAsync(int tenantId)
         {
-            string whereClause = null;
-            object parameters = null;
+            const string sql = "SELECT * FROM Workflows WHERE TenantID = @TenantID AND IsActive = 1";
+            return await _unitOfWork.Connection.QueryAsync<Workflow>(
+                sql,
+                new { TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
 
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                whereClause = @"
-                    WorkflowName LIKE @SearchTerm OR 
-                    Module LIKE @SearchTerm OR
-                    Description LIKE @SearchTerm";
+        public async Task<IEnumerable<Workflow>> GetByCreatedByAsync(string createdBy, int tenantId)
+        {
+            const string sql = "SELECT * FROM Workflows WHERE CreatedBy = @CreatedBy AND TenantID = @TenantID";
+            return await _unitOfWork.Connection.QueryAsync<Workflow>(
+                sql,
+                new { CreatedBy = createdBy, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
 
-                parameters = new { SearchTerm = $"%{searchTerm}%" };
-            }
+        public async Task<Workflow> GetByNameAndModuleAsync(string workflowName, string module, int tenantId)
+        {
+            const string sql = "SELECT * FROM Workflows WHERE WorkflowName = @WorkflowName AND Module = @Module AND TenantID = @TenantID";
+            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Workflow>(
+                sql,
+                new { WorkflowName = workflowName, Module = module, TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
 
-            return await _unitOfWork.Connection.QueryPagedAsync<Workflow>(
-                "Workflow",
-                "WorkflowName",
-                page,
-                pageSize,
-                whereClause,
-                parameters,
+        public async Task<IEnumerable<Workflow>> GetByVersionAsync(int version, int tenantId)
+        {
+            const string sql = "SELECT * FROM Workflows WHERE Version = @Version AND TenantID = @TenantID";
+            return await _unitOfWork.Connection.QueryAsync<Workflow>(
+                sql,
+                new { Version = version, TenantID = tenantId },
                 _unitOfWork.Transaction);
         }
 
         public override async Task<int> InsertAsync(Workflow workflow)
         {
             const string sql = @"
-                INSERT INTO Workflow (
-                    WorkflowName, Description, Module, CreatedDate, IsActive, CreatedBy, 
-                    Configuration, Version, LastModified, LastModifiedBy)
+                INSERT INTO Workflows (
+                    TenantID, WorkflowName, Description, Module, CreatedDate, 
+                    IsActive, CreatedBy, Configuration, Version, LastModified, LastModifiedBy)
                 VALUES (
-                    @WorkflowName, @Description, @Module, @CreatedDate, @IsActive, @CreatedBy, 
-                    @Configuration, @Version, @LastModified, @LastModifiedBy);
+                    @TenantID, @WorkflowName, @Description, @Module, @CreatedDate, 
+                    @IsActive, @CreatedBy, @Configuration, @Version, @LastModified, @LastModifiedBy);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
-            if (workflow.CreatedDate == default)
+            // Set creation date if not set
+            if (workflow.CreatedDate == default(DateTime))
             {
                 workflow.CreatedDate = DateTime.UtcNow;
-                workflow.LastModified = DateTime.UtcNow;
             }
 
             return await _unitOfWork.Connection.QuerySingleAsync<int>(
@@ -104,7 +106,7 @@ namespace Chronicle.Repositories
         public override async Task<bool> UpdateAsync(Workflow workflow)
         {
             const string sql = @"
-                UPDATE Workflow
+                UPDATE Workflows
                 SET WorkflowName = @WorkflowName,
                     Description = @Description,
                     Module = @Module,
@@ -113,13 +115,60 @@ namespace Chronicle.Repositories
                     Version = @Version,
                     LastModified = @LastModified,
                     LastModifiedBy = @LastModifiedBy
-                WHERE WorkflowId = @WorkflowId";
+                WHERE WorkflowId = @WorkflowId AND TenantID = @TenantID";
 
+            // Set modification date
             workflow.LastModified = DateTime.UtcNow;
 
             int rowsAffected = await _unitOfWork.Connection.ExecuteAsync(
                 sql,
                 workflow,
+                _unitOfWork.Transaction);
+
+            return rowsAffected > 0;
+        }
+
+        public async Task<IEnumerable<Workflow>> GetAllAsync(int tenantId)
+        {
+            const string sql = "SELECT * FROM Workflows WHERE TenantID = @TenantID";
+            return await _unitOfWork.Connection.QueryAsync<Workflow>(
+                sql,
+                new { TenantID = tenantId },
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<PagedResult<Workflow>> GetPagedAsync(int page, int pageSize, int tenantId, string searchTerm = null)
+        {
+            string whereClause = "TenantID = @TenantID";
+            object parameters = new { TenantID = tenantId };
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                whereClause += @" AND (
+                    WorkflowName LIKE @SearchTerm OR 
+                    Module LIKE @SearchTerm OR
+                    Description LIKE @SearchTerm OR
+                    CreatedBy LIKE @SearchTerm)";
+
+                parameters = new { TenantID = tenantId, SearchTerm = $"%{searchTerm}%" };
+            }
+
+            return await _unitOfWork.Connection.QueryPagedAsync<Workflow>(
+                "Workflows",
+                "WorkflowName",
+                page,
+                pageSize,
+                whereClause,
+                parameters,
+                _unitOfWork.Transaction);
+        }
+
+        public async Task<bool> DeleteAsync(int id, int tenantId)
+        {
+            const string sql = "DELETE FROM Workflows WHERE WorkflowId = @WorkflowId AND TenantID = @TenantID";
+            int rowsAffected = await _unitOfWork.Connection.ExecuteAsync(
+                sql,
+                new { WorkflowId = id, TenantID = tenantId },
                 _unitOfWork.Transaction);
 
             return rowsAffected > 0;

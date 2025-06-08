@@ -5,43 +5,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Chronicle.Services
 {
     public class WorkflowInstanceService : IWorkflowInstanceService
     {
-        private readonly IWorkflowInstanceRepository _instanceRepository;
+        private readonly IWorkflowInstanceRepository _workflowInstanceRepository;
         private readonly IWorkflowRepository _workflowRepository;
-        private readonly IWorkflowStepRepository _stepRepository;
-        private readonly IWorkflowTransitionRepository _transitionRepository;
-        private readonly IWorkflowHistoryRepository _historyRepository;
-        private readonly IWorkflowAssignmentRepository _assignmentRepository;
+        private readonly IWorkflowStepRepository _workflowStepRepository;
+        private readonly IWorkflowTransitionRepository _workflowTransitionRepository;
+        private readonly IWorkflowHistoryRepository _workflowHistoryRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public WorkflowInstanceService(
-            IWorkflowInstanceRepository instanceRepository,
+            IWorkflowInstanceRepository workflowInstanceRepository,
             IWorkflowRepository workflowRepository,
-            IWorkflowStepRepository stepRepository,
-            IWorkflowTransitionRepository transitionRepository,
-            IWorkflowHistoryRepository historyRepository,
-            IWorkflowAssignmentRepository assignmentRepository,
+            IWorkflowStepRepository workflowStepRepository,
+            IWorkflowTransitionRepository workflowTransitionRepository,
+            IWorkflowHistoryRepository workflowHistoryRepository,
             IUnitOfWork unitOfWork)
         {
-            _instanceRepository = instanceRepository;
+            _workflowInstanceRepository = workflowInstanceRepository;
             _workflowRepository = workflowRepository;
-            _stepRepository = stepRepository;
-            _transitionRepository = transitionRepository;
-            _historyRepository = historyRepository;
-            _assignmentRepository = assignmentRepository;
+            _workflowStepRepository = workflowStepRepository;
+            _workflowTransitionRepository = workflowTransitionRepository;
+            _workflowHistoryRepository = workflowHistoryRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ServiceResult<WorkflowInstance>> GetInstanceByIdAsync(int instanceId)
+        public async Task<ServiceResult<WorkflowInstance>> GetWorkflowInstanceByIdAsync(int instanceId, int tenantId)
         {
             try
             {
-                var instance = await _instanceRepository.GetByIdAsync(instanceId);
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
                 if (instance == null)
                 {
                     return ServiceResult<WorkflowInstance>.FailureResult("Workflow instance not found");
@@ -55,11 +53,47 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetByWorkflowIdAsync(int workflowId)
+        public async Task<ServiceResult<WorkflowInstance>> GetInstanceWithHistoryAsync(int instanceId, int tenantId)
         {
             try
             {
-                var instances = await _instanceRepository.GetByWorkflowIdAsync(workflowId);
+                var instance = await _workflowInstanceRepository.GetByIdWithHistoryAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<WorkflowInstance>.FailureResult("Workflow instance not found");
+                }
+
+                return ServiceResult<WorkflowInstance>.SuccessResult(instance);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<WorkflowInstance>.FailureResult($"Error retrieving workflow instance with history: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<WorkflowInstance>> GetByEntityAsync(int entityId, string entityType, int tenantId)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByEntityAsync(entityId, entityType, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<WorkflowInstance>.FailureResult("No active workflow instance found for this entity");
+                }
+
+                return ServiceResult<WorkflowInstance>.SuccessResult(instance);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<WorkflowInstance>.FailureResult($"Error retrieving workflow instance: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetInstancesByWorkflowIdAsync(int workflowId, int tenantId)
+        {
+            try
+            {
+                var instances = await _workflowInstanceRepository.GetByWorkflowIdAsync(workflowId, tenantId);
                 return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
             }
             catch (Exception ex)
@@ -68,11 +102,11 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetByEntityAsync(string entityType, int entityId)
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetInstancesByCurrentStepAsync(int stepId, int tenantId)
         {
             try
             {
-                var instances = await _instanceRepository.GetByEntityAsync(entityType, entityId);
+                var instances = await _workflowInstanceRepository.GetByCurrentStepAsync(stepId, tenantId);
                 return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
             }
             catch (Exception ex)
@@ -81,11 +115,11 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetByStatusAsync(string status)
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetInstancesByStatusAsync(string status, int tenantId)
         {
             try
             {
-                var instances = await _instanceRepository.GetByStatusAsync(status);
+                var instances = await _workflowInstanceRepository.GetByStatusAsync(status, tenantId);
                 return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
             }
             catch (Exception ex)
@@ -94,24 +128,11 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetByAssignedToAsync(string assignedTo)
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetActiveInstancesAsync(int tenantId)
         {
             try
             {
-                var instances = await _instanceRepository.GetByAssignedToAsync(assignedTo);
-                return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
-            }
-            catch (Exception ex)
-            {
-                return ServiceResult<IEnumerable<WorkflowInstance>>.FailureResult($"Error retrieving workflow instances: {ex.Message}");
-            }
-        }
-
-        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetActiveInstancesAsync()
-        {
-            try
-            {
-                var instances = await _instanceRepository.GetActiveInstancesAsync();
+                var instances = await _workflowInstanceRepository.GetActiveInstancesAsync(tenantId);
                 return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
             }
             catch (Exception ex)
@@ -120,11 +141,24 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetOverdueInstancesAsync()
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetInstancesByAssignedToAsync(string assignedTo, int tenantId)
         {
             try
             {
-                var instances = await _instanceRepository.GetOverdueInstancesAsync();
+                var instances = await _workflowInstanceRepository.GetByAssignedToAsync(assignedTo, tenantId);
+                return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<IEnumerable<WorkflowInstance>>.FailureResult($"Error retrieving assigned instances: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetOverdueInstancesAsync(int tenantId)
+        {
+            try
+            {
+                var instances = await _workflowInstanceRepository.GetOverdueInstancesAsync(tenantId);
                 return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
             }
             catch (Exception ex)
@@ -133,43 +167,63 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<PagedResult<WorkflowInstance>>> GetInstancesAsync(int page, int pageSize, string searchTerm = null)
+        public async Task<ServiceResult<WorkflowInstance>> StartWorkflowAsync(int workflowId, int entityId, string entityType, string createdBy, int tenantId, string data = null, string variables = null)
         {
             try
             {
-                var instances = await _instanceRepository.GetPagedAsync(page, pageSize, searchTerm);
-                return ServiceResult<PagedResult<WorkflowInstance>>.SuccessResult(instances);
-            }
-            catch (Exception ex)
-            {
-                return ServiceResult<PagedResult<WorkflowInstance>>.FailureResult($"Error retrieving workflow instances: {ex.Message}");
-            }
-        }
-
-        public async Task<ServiceResult<int>> StartWorkflowAsync(int workflowId, int entityId, string entityType, string startedBy)
-        {
-            try
-            {
-                var workflow = await _workflowRepository.GetByIdAsync(workflowId);
+                // Verify workflow exists and is active
+                var workflow = await _workflowRepository.GetByIdAsync(workflowId, tenantId);
                 if (workflow == null)
                 {
-                    return ServiceResult<int>.FailureResult("Workflow not found");
+                    return ServiceResult<WorkflowInstance>.FailureResult("Workflow not found");
                 }
 
                 if (!workflow.IsActive)
                 {
-                    return ServiceResult<int>.FailureResult("Workflow is not active");
+                    return ServiceResult<WorkflowInstance>.FailureResult("Workflow is not active");
                 }
 
-                var initialStep = await _stepRepository.GetInitialStepAsync(workflowId);
+                // Check if an active instance already exists for this entity
+                var existingInstance = await _workflowInstanceRepository.GetByEntityAsync(entityId, entityType, tenantId);
+                if (existingInstance != null)
+                {
+                    return ServiceResult<WorkflowInstance>.FailureResult("An active workflow instance already exists for this entity");
+                }
+
+                // Get the initial step
+                var initialStep = await _workflowStepRepository.GetInitialStepAsync(workflowId, tenantId);
                 if (initialStep == null)
                 {
-                    return ServiceResult<int>.FailureResult("Initial step not found for workflow");
+                    return ServiceResult<WorkflowInstance>.FailureResult("Workflow has no initial step defined");
                 }
 
-                _unitOfWork.BeginTransaction();
+                // Validate JSON data if provided
+                if (!string.IsNullOrEmpty(data))
+                {
+                    try
+                    {
+                        JsonDocument.Parse(data);
+                    }
+                    catch
+                    {
+                        return ServiceResult<WorkflowInstance>.FailureResult("Invalid JSON format for data");
+                    }
+                }
 
-                var instance = new WorkflowInstance
+                if (!string.IsNullOrEmpty(variables))
+                {
+                    try
+                    {
+                        JsonDocument.Parse(variables);
+                    }
+                    catch
+                    {
+                        return ServiceResult<WorkflowInstance>.FailureResult("Invalid JSON format for variables");
+                    }
+                }
+
+                // Create new workflow instance
+                var workflowInstance = new WorkflowInstance
                 {
                     WorkflowId = workflowId,
                     EntityId = entityId,
@@ -177,42 +231,51 @@ namespace Chronicle.Services
                     CurrentStepId = initialStep.StepId,
                     Status = WorkflowStatusConstants.Active,
                     CreatedDate = DateTime.UtcNow,
-                    CreatedBy = startedBy,
-                    Priority = WorkflowPriorityConstants.Normal
+                    CreatedBy = createdBy,
+                    Data = data,
+                    Variables = variables,
+                    Priority = WorkflowPriorityConstants.Normal,
+                    LastTransitionDate = DateTime.UtcNow
                 };
 
-                int instanceId = await _instanceRepository.InsertAsync(instance);
+                _unitOfWork.BeginTransaction();
+
+                // Insert the instance
+                int instanceId = await _workflowInstanceRepository.InsertAsync(workflowInstance);
+                workflowInstance.InstanceId = instanceId;
 
                 // Create initial history entry
-                var history = new WorkflowHistory
+                var historyEntry = new WorkflowHistory
                 {
                     InstanceId = instanceId,
-                    FromStepId = 0, // No previous step
+                    FromStepId = 0, // Use 0 instead of null for non-nullable int
                     ToStepId = initialStep.StepId,
+                    Action = "START",
                     ActionCode = "START",
-                    Action = "Workflow Started",
+                    ActionBy = createdBy,
                     TransitionDate = DateTime.UtcNow,
-                    ActionBy = startedBy
+                    Comments = "Workflow started"
                 };
 
-                await _historyRepository.InsertAsync(history);
+                await _workflowHistoryRepository.InsertAsync(historyEntry);
 
                 _unitOfWork.Commit();
 
-                return ServiceResult<int>.SuccessResult(instanceId, "Workflow started successfully");
+                return ServiceResult<WorkflowInstance>.SuccessResult(workflowInstance, "Workflow started successfully");
             }
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                return ServiceResult<int>.FailureResult($"Error starting workflow: {ex.Message}");
+                return ServiceResult<WorkflowInstance>.FailureResult($"Error starting workflow: {ex.Message}");
             }
         }
 
-        public async Task<ServiceResult<bool>> TransitionAsync(int instanceId, string actionCode, string actionBy, string comments = null)
+        public async Task<ServiceResult<bool>> TransitionWorkflowAsync(int instanceId, int transitionId, string performedBy, int tenantId, string comments = null)
         {
             try
             {
-                var instance = await _instanceRepository.GetByIdAsync(instanceId);
+                // Get the instance
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
                 if (instance == null)
                 {
                     return ServiceResult<bool>.FailureResult("Workflow instance not found");
@@ -223,15 +286,27 @@ namespace Chronicle.Services
                     return ServiceResult<bool>.FailureResult("Workflow instance is not active");
                 }
 
-                var transitions = await _transitionRepository.GetByFromStepIdAsync(instance.CurrentStepId);
-                var transition = transitions.FirstOrDefault(t => t.ActionCode == actionCode && t.IsActive);
-
+                // Get the transition
+                var transition = await _workflowTransitionRepository.GetByIdAsync(transitionId, tenantId);
                 if (transition == null)
                 {
-                    return ServiceResult<bool>.FailureResult("Invalid transition");
+                    return ServiceResult<bool>.FailureResult("Transition not found");
                 }
 
-                var toStep = await _stepRepository.GetByIdAsync(transition.ToStepId);
+                // Verify transition is from current step
+                if (transition.FromStepId != instance.CurrentStepId)
+                {
+                    return ServiceResult<bool>.FailureResult("Invalid transition for current step");
+                }
+
+                // Check if comments are required
+                if (transition.RequiresComments && string.IsNullOrWhiteSpace(comments))
+                {
+                    return ServiceResult<bool>.FailureResult("Comments are required for this transition");
+                }
+
+                // Get the target step
+                var toStep = await _workflowStepRepository.GetByIdAsync(transition.ToStepId, tenantId);
                 if (toStep == null)
                 {
                     return ServiceResult<bool>.FailureResult("Target step not found");
@@ -240,42 +315,34 @@ namespace Chronicle.Services
                 _unitOfWork.BeginTransaction();
 
                 // Update instance
-                var previousStepId = instance.CurrentStepId;
                 instance.CurrentStepId = transition.ToStepId;
                 instance.LastTransitionDate = DateTime.UtcNow;
 
+                // Check if target step is final
                 if (toStep.IsFinal)
                 {
                     instance.Status = WorkflowStatusConstants.Completed;
                     instance.CompletedDate = DateTime.UtcNow;
-                    instance.CompletedBy = actionBy;
+                    instance.CompletedBy = performedBy;
                 }
 
-                await _instanceRepository.UpdateAsync(instance);
+                await _workflowInstanceRepository.UpdateAsync(instance);
 
                 // Create history entry
-                var history = new WorkflowHistory
+                var historyEntry = new WorkflowHistory
                 {
                     InstanceId = instanceId,
-                    FromStepId = previousStepId,
+                    FromStepId = transition.FromStepId,
                     ToStepId = transition.ToStepId,
-                    ActionCode = actionCode,
-                    Action = transition.ActionName,
-                    Comments = comments,
+                    Action = transition.ActionCode,
+                    ActionCode = transition.ActionCode,
+                    ActionBy = performedBy,
                     TransitionDate = DateTime.UtcNow,
-                    ActionBy = actionBy
+                    Comments = comments,
+                    AdditionalData = instance.Data
                 };
 
-                await _historyRepository.InsertAsync(history);
-
-                // Complete previous assignments
-                var activeAssignment = await _assignmentRepository.GetActiveAssignmentAsync(instanceId, previousStepId);
-                if (activeAssignment != null)
-                {
-                    activeAssignment.CompletedDate = DateTime.UtcNow;
-                    activeAssignment.IsActive = false;
-                    await _assignmentRepository.UpdateAsync(activeAssignment);
-                }
+                await _workflowHistoryRepository.InsertAsync(historyEntry);
 
                 _unitOfWork.Commit();
 
@@ -288,19 +355,52 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<bool>> UpdateAsync(WorkflowInstance instance)
+        public async Task<ServiceResult<bool>> UpdateInstanceAsync(WorkflowInstance workflowInstance, int tenantId)
         {
             try
             {
-                var existingInstance = await _instanceRepository.GetByIdAsync(instance.InstanceId);
+                // Verify instance exists and belongs to tenant
+                var existingInstance = await _workflowInstanceRepository.GetByIdAsync(workflowInstance.InstanceId, tenantId);
                 if (existingInstance == null)
                 {
                     return ServiceResult<bool>.FailureResult("Workflow instance not found");
                 }
 
+                // Preserve immutable fields
+                workflowInstance.WorkflowId = existingInstance.WorkflowId;
+                workflowInstance.EntityId = existingInstance.EntityId;
+                workflowInstance.EntityType = existingInstance.EntityType;
+                workflowInstance.CreatedDate = existingInstance.CreatedDate;
+                workflowInstance.CreatedBy = existingInstance.CreatedBy;
+
+                // Validate JSON fields if provided
+                if (!string.IsNullOrEmpty(workflowInstance.Data))
+                {
+                    try
+                    {
+                        JsonDocument.Parse(workflowInstance.Data);
+                    }
+                    catch
+                    {
+                        return ServiceResult<bool>.FailureResult("Invalid JSON format for data");
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(workflowInstance.Variables))
+                {
+                    try
+                    {
+                        JsonDocument.Parse(workflowInstance.Variables);
+                    }
+                    catch
+                    {
+                        return ServiceResult<bool>.FailureResult("Invalid JSON format for variables");
+                    }
+                }
+
                 _unitOfWork.BeginTransaction();
 
-                bool result = await _instanceRepository.UpdateAsync(instance);
+                bool result = await _workflowInstanceRepository.UpdateAsync(workflowInstance);
 
                 _unitOfWork.Commit();
 
@@ -313,19 +413,260 @@ namespace Chronicle.Services
             }
         }
 
-        public async Task<ServiceResult<bool>> DeleteAsync(int instanceId,int tenantId)
+        public async Task<ServiceResult<bool>> CompleteWorkflowAsync(int instanceId, string completedBy, int tenantId)
         {
             try
             {
-                var existingInstance = await _instanceRepository.GetByIdAsync(instanceId);
-                if (existingInstance == null)
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance not found");
+                }
+
+                if (instance.Status != WorkflowStatusConstants.Active)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance is not active");
+                }
+
+                // Check if current step is final
+                var currentStep = await _workflowStepRepository.GetByIdAsync(instance.CurrentStepId, tenantId);
+                if (currentStep == null || !currentStep.IsFinal)
+                {
+                    return ServiceResult<bool>.FailureResult("Current step is not a final step");
+                }
+
+                _unitOfWork.BeginTransaction();
+
+                instance.Status = WorkflowStatusConstants.Completed;
+                instance.CompletedDate = DateTime.UtcNow;
+                instance.CompletedBy = completedBy;
+
+                await _workflowInstanceRepository.UpdateAsync(instance);
+
+                // Create history entry
+                var historyEntry = new WorkflowHistory
+                {
+                    InstanceId = instanceId,
+                    FromStepId = instance.CurrentStepId,
+                    ToStepId = 0, // Use 0 instead of null for non-nullable int
+                    Action = "COMPLETE",
+                    ActionCode = "COMPLETE",
+                    ActionBy = completedBy,
+                    TransitionDate = DateTime.UtcNow,
+                    Comments = "Workflow completed"
+                };
+
+                await _workflowHistoryRepository.InsertAsync(historyEntry);
+
+                _unitOfWork.Commit();
+
+                return ServiceResult<bool>.SuccessResult(true, "Workflow completed successfully");
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ServiceResult<bool>.FailureResult($"Error completing workflow: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> CancelWorkflowAsync(int instanceId, string cancelledBy, int tenantId, string reason = null)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance not found");
+                }
+
+                if (instance.Status != WorkflowStatusConstants.Active)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance is not active");
+                }
+
+                _unitOfWork.BeginTransaction();
+
+                instance.Status = WorkflowStatusConstants.Cancelled;
+                instance.CompletedDate = DateTime.UtcNow;
+                instance.CompletedBy = cancelledBy;
+                instance.Notes = string.IsNullOrEmpty(reason) ? "Workflow cancelled" : $"Cancelled: {reason}";
+
+                await _workflowInstanceRepository.UpdateAsync(instance);
+
+                // Create history entry
+                var historyEntry = new WorkflowHistory
+                {
+                    InstanceId = instanceId,
+                    FromStepId = instance.CurrentStepId,
+                    ToStepId = 0, // Use 0 instead of null for non-nullable int
+                    Action = "CANCEL",
+                    ActionCode = "CANCEL",
+                    ActionBy = cancelledBy,
+                    TransitionDate = DateTime.UtcNow,
+                    Comments = reason ?? "Workflow cancelled"
+                };
+
+                await _workflowHistoryRepository.InsertAsync(historyEntry);
+
+                _unitOfWork.Commit();
+
+                return ServiceResult<bool>.SuccessResult(true, "Workflow cancelled successfully");
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ServiceResult<bool>.FailureResult($"Error cancelling workflow: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> AssignWorkflowAsync(int instanceId, string assignedTo, int tenantId)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance not found");
+                }
+
+                if (instance.Status != WorkflowStatusConstants.Active)
+                {
+                    return ServiceResult<bool>.FailureResult("Cannot assign inactive workflow");
+                }
+
+                _unitOfWork.BeginTransaction();
+
+                instance.AssignedTo = assignedTo;
+
+                await _workflowInstanceRepository.UpdateAsync(instance);
+
+                _unitOfWork.Commit();
+
+                return ServiceResult<bool>.SuccessResult(true, "Workflow assigned successfully");
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ServiceResult<bool>.FailureResult($"Error assigning workflow: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> UpdatePriorityAsync(int instanceId, int priority, int tenantId)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance not found");
+                }
+
+                if (priority < 0)
+                {
+                    return ServiceResult<bool>.FailureResult("Priority cannot be negative");
+                }
+
+                _unitOfWork.BeginTransaction();
+
+                instance.Priority = priority;
+
+                await _workflowInstanceRepository.UpdateAsync(instance);
+
+                _unitOfWork.Commit();
+
+                return ServiceResult<bool>.SuccessResult(true, "Priority updated successfully");
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ServiceResult<bool>.FailureResult($"Error updating priority: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> UpdateDueDateAsync(int instanceId, DateTime? dueDate, int tenantId)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
                 {
                     return ServiceResult<bool>.FailureResult("Workflow instance not found");
                 }
 
                 _unitOfWork.BeginTransaction();
 
-                bool result = await _instanceRepository.DeleteAsync(instanceId, tenantId);
+                instance.DueDate = dueDate;
+
+                await _workflowInstanceRepository.UpdateAsync(instance);
+
+                _unitOfWork.Commit();
+
+                return ServiceResult<bool>.SuccessResult(true, "Due date updated successfully");
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ServiceResult<bool>.FailureResult($"Error updating due date: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> UpdateVariablesAsync(int instanceId, string variables, int tenantId)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance not found");
+                }
+
+                // Validate JSON format
+                if (!string.IsNullOrEmpty(variables))
+                {
+                    try
+                    {
+                        JsonDocument.Parse(variables);
+                    }
+                    catch
+                    {
+                        return ServiceResult<bool>.FailureResult("Invalid JSON format for variables");
+                    }
+                }
+
+                _unitOfWork.BeginTransaction();
+
+                instance.Variables = variables;
+
+                await _workflowInstanceRepository.UpdateAsync(instance);
+
+                _unitOfWork.Commit();
+
+                return ServiceResult<bool>.SuccessResult(true, "Variables updated successfully");
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ServiceResult<bool>.FailureResult($"Error updating variables: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> DeleteAsync(int instanceId, int tenantId)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance not found");
+                }
+
+                _unitOfWork.BeginTransaction();
+
+                // Delete history entries first
+                await _workflowHistoryRepository.DeleteByInstanceIdAsync(instanceId, tenantId);
+
+                // Delete the instance
+                bool result = await _workflowInstanceRepository.DeleteAsync(instanceId, tenantId);
 
                 _unitOfWork.Commit();
 
@@ -335,6 +676,133 @@ namespace Chronicle.Services
             {
                 _unitOfWork.Rollback();
                 return ServiceResult<bool>.FailureResult($"Error deleting workflow instance: {ex.Message}");
+            }
+        }
+
+        public async Task<IEnumerable<WorkflowInstance>> GetWorkflowInstancesAsync(int tenantId)
+        {
+            return await _workflowInstanceRepository.GetAllAsync(tenantId);
+        }
+
+        public async Task<ServiceResult<PagedResult<WorkflowInstance>>> GetPagedWorkflowInstancesAsync(int page, int pageSize, int tenantId, string searchTerm = null)
+        {
+            try
+            {
+                var instances = await _workflowInstanceRepository.GetPagedAsync(page, pageSize, tenantId, searchTerm);
+                return ServiceResult<PagedResult<WorkflowInstance>>.SuccessResult(instances);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<PagedResult<WorkflowInstance>>.FailureResult($"Error retrieving workflow instances: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetInstancesByDateRangeAsync(DateTime startDate, DateTime endDate, int tenantId)
+        {
+            try
+            {
+                if (startDate > endDate)
+                {
+                    return ServiceResult<IEnumerable<WorkflowInstance>>.FailureResult("Start date must be before end date");
+                }
+
+                var instances = await _workflowInstanceRepository.GetByDateRangeAsync(startDate, endDate, tenantId);
+                return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<IEnumerable<WorkflowInstance>>.FailureResult($"Error retrieving workflow instances: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<int>> GetActiveInstanceCountAsync(int workflowId, int tenantId)
+        {
+            try
+            {
+                var count = await _workflowInstanceRepository.GetActiveInstanceCountAsync(workflowId, tenantId);
+                return ServiceResult<int>.SuccessResult(count);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<int>.FailureResult($"Error retrieving active instance count: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<IEnumerable<WorkflowInstance>>> GetStuckInstancesAsync(int daysThreshold, int tenantId)
+        {
+            try
+            {
+                if (daysThreshold <= 0)
+                {
+                    return ServiceResult<IEnumerable<WorkflowInstance>>.FailureResult("Days threshold must be greater than zero");
+                }
+
+                var instances = await _workflowInstanceRepository.GetStuckInstancesAsync(daysThreshold, tenantId);
+                return ServiceResult<IEnumerable<WorkflowInstance>>.SuccessResult(instances);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<IEnumerable<WorkflowInstance>>.FailureResult($"Error retrieving stuck instances: {ex.Message}");
+            }
+        }
+
+        public async Task<ServiceResult<bool>> RestartWorkflowAsync(int instanceId, string restartedBy, int tenantId)
+        {
+            try
+            {
+                var instance = await _workflowInstanceRepository.GetByIdAsync(instanceId, tenantId);
+                if (instance == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance not found");
+                }
+
+                if (instance.Status == WorkflowStatusConstants.Active)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow instance is already active");
+                }
+
+                // Get the initial step
+                var initialStep = await _workflowStepRepository.GetInitialStepAsync(instance.WorkflowId, tenantId);
+                if (initialStep == null)
+                {
+                    return ServiceResult<bool>.FailureResult("Workflow has no initial step defined");
+                }
+
+                _unitOfWork.BeginTransaction();
+
+                // Reset instance to initial state
+                instance.CurrentStepId = initialStep.StepId;
+                instance.Status = WorkflowStatusConstants.Active;
+                instance.CompletedDate = null;
+                instance.CompletedBy = null;
+                instance.LastTransitionDate = DateTime.UtcNow;
+                instance.Notes = "Workflow restarted";
+
+                await _workflowInstanceRepository.UpdateAsync(instance);
+
+                // Create history entry
+                var historyEntry = new WorkflowHistory
+                {
+                    InstanceId = instanceId,
+                    FromStepId = 0, // Use 0 instead of null for non-nullable int
+                    ToStepId = initialStep.StepId,
+                    Action = "RESTART",
+                    ActionCode = "RESTART",
+                    ActionBy = restartedBy,
+                    TransitionDate = DateTime.UtcNow,
+                    Comments = "Workflow restarted"
+                };
+
+                await _workflowHistoryRepository.InsertAsync(historyEntry);
+
+                _unitOfWork.Commit();
+
+                return ServiceResult<bool>.SuccessResult(true, "Workflow restarted successfully");
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ServiceResult<bool>.FailureResult($"Error restarting workflow: {ex.Message}");
             }
         }
     }

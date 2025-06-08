@@ -9,13 +9,24 @@ namespace Chronicle.Repositories
 {
     public interface IWorkflowInstanceRepository : IRepository<WorkflowInstance, int>
     {
-        Task<WorkflowInstance> GetByIdAsync(int instanceId);
-        Task<IEnumerable<WorkflowInstance>> GetByWorkflowIdAsync(int workflowId);
-        Task<IEnumerable<WorkflowInstance>> GetByEntityAsync(string entityType, int entityId);
-        Task<IEnumerable<WorkflowInstance>> GetByStatusAsync(string status);
-        Task<IEnumerable<WorkflowInstance>> GetByAssignedToAsync(string assignedTo);
-        Task<IEnumerable<WorkflowInstance>> GetActiveInstancesAsync();
-        Task<IEnumerable<WorkflowInstance>> GetOverdueInstancesAsync();
-        Task<PagedResult<WorkflowInstance>> GetPagedAsync(int page, int pageSize, string searchTerm = null);
+        Task<WorkflowInstance> GetByIdAsync(int id, int tenantId);
+        Task<WorkflowInstance> GetByIdWithHistoryAsync(int id, int tenantId);
+        Task<WorkflowInstance> GetByEntityAsync(int entityId, string entityType, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetByWorkflowIdAsync(int workflowId, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetByCurrentStepAsync(int stepId, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetByStatusAsync(string status, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetActiveInstancesAsync(int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetByAssignedToAsync(string assignedTo, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetOverdueInstancesAsync(int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetByPriorityAsync(int priority, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetByCreatedByAsync(string createdBy, int tenantId);
+        Task<int> InsertAsync(WorkflowInstance workflowInstance);
+        Task<bool> UpdateAsync(WorkflowInstance workflowInstance);
+        Task<IEnumerable<WorkflowInstance>> GetAllAsync(int tenantId);
+        Task<PagedResult<WorkflowInstance>> GetPagedAsync(int page, int pageSize, int tenantId, string searchTerm = null);
+        Task<bool> DeleteAsync(int id, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetByDateRangeAsync(DateTime startDate, DateTime endDate, int tenantId);
+        Task<int> GetActiveInstanceCountAsync(int workflowId, int tenantId);
+        Task<IEnumerable<WorkflowInstance>> GetStuckInstancesAsync(int daysThreshold, int tenantId);
     }
 }

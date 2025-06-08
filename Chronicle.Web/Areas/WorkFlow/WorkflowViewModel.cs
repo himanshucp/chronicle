@@ -2,7 +2,7 @@
 using Chronicle.Web.Code;
 using System.ComponentModel.DataAnnotations;
 
-namespace Chronicle.Web.Areas.WorkFlow.Views
+namespace Chronicle.Web.Areas.WorkFlow
 {
     public class WorkflowViewModel
     {

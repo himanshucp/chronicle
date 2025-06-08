@@ -13,9 +13,10 @@ namespace Chronicle.Entities
     {
         public const string Active = "Active";
         public const string Completed = "Completed";
-        public const string Canceled = "Canceled";
+        public const string Cancelled = "Canceled";
         public const string Suspended = "Suspended";
         public const string Error = "Error";
+     
     }
 
 }

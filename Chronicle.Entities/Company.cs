@@ -49,7 +49,7 @@ namespace Chronicle.Entities
 
         public long TotalEmployee { get; set; }
 
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         // Navigation properties
         public virtual Tenant Tenant { get; set; }

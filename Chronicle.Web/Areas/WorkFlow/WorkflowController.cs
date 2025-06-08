@@ -43,7 +43,18 @@ namespace Chronicle.Web.Areas.WorkFlow
         {
 
             var result = await _workflowService.GetPagedWorkflowsAsync(page, pageSize, _tenantId, searchTerm);
-            return View();
+
+            var viewModel = new PagedViewModel<Entities.Workflow>
+            {
+                Items = result.Data.Items,
+                TotalCount = result.Data.TotalCount,
+                PageSize = pageSize,
+                CurrentPage = page
+            };
+
+
+            return View(viewModel);
+      
         }
 
         #endregion

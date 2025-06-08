@@ -54,7 +54,7 @@ namespace Chronicle.Web.Areas.Companies
 
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public int TenantID { get; set; } = 1;
 
     }

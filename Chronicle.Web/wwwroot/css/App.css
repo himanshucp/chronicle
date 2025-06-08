@@ -615,6 +615,43 @@ div.fixed-table-scroll-outer {
     animation: errorShake 0.6s;
 }
 
+.swal2-popup-custom {
+    font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.swal2-popup {
+    border-radius: 6px !important;
+}
+
+.swal2-title {
+    font-size: 1.5em !important;
+    font-weight: 600 !important;
+}
+
+.swal2-content {
+    font-size: 1.1em !important;
+}
+
+.swal2-confirm {
+    font-weight: 600 !important;
+    border-radius: 4px !important;
+    padding: 8px 20px !important;
+}
+
+.swal2-cancel {
+    font-weight: 600 !important;
+    border-radius: 4px !important;
+    padding: 8px 20px !important;
+}
+
+.swal2-progress-steps .swal2-progress-step {
+    background: #3c8dbc !important;
+}
+
+.swal2-timer-progress-bar {
+    background: #00a65a !important;
+}
+
 /*input[type="checkbox"] {
     -webkit-appearance: none;
     -moz-appearance: none;

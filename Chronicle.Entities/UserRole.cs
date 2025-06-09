@@ -11,11 +11,16 @@ namespace Chronicle.Entities
     /// </summary>
     public class UserRole
     {
-        public int UserId { get; set; }
-        public int RoleId { get; set; }
+        public int UserRoleID { get; set; }
+        public int UserID { get; set; }
+        public int RoleID { get; set; }
         public int TenantID { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public bool IsActive { get; set; }
 
-        public User User { get; set; }
-        public Role Role { get; set; }
+        // Navigation properties
+        public virtual User User { get; set; }
+        public virtual Role Role { get; set; }
     }
 }

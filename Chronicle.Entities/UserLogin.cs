@@ -8,11 +8,17 @@ namespace Chronicle.Entities
 {
     public class UserLogin
     {
+        public int UserLoginID { get; set; }
+        public int UserID { get; set; }
+        public int TenantID { get; set; }
         public string LoginProvider { get; set; }
         public string ProviderKey { get; set; }
         public string ProviderDisplayName { get; set; }
-        public int UserId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public bool IsActive { get; set; }
 
-        public User User { get; set; }
+        // Navigation property
+        public virtual User User { get; set; }
     }
 }

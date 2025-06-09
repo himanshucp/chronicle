@@ -1,0 +1,770 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+        .workflow-header {
+            background-color: #f4f4f4;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .workflow-id-builder {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .workflow-id-builder input {
+            max-width: 150px;
+        }
+        
+        .workflow-id-result {
+            background-color: #e7f3ff;
+            padding: 10px;
+            border: 1px solid #3c8dbc;
+            font-weight: bold;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .workflow-step {
+            background-color: #fff;
+            border: 2px solid #3c8dbc;
+            padding: 15px;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .workflow-step:hover {
+            background-color: #e7f3ff;
+            transform: scale(1.05);
+        }
+        
+        .workflow-step.skip-enabled {
+            padding-bottom: 40px;
+        }
+        
+        .skip-toggle {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .step-arrow {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: #3c8dbc;
+            z-index: 1;
+        }
+        
+        .step-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid #3c8dbc;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+        
+        .role-selection-box {
+            border: 2px solid #3c8dbc;
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        
+        .role-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .role-item:hover {
+            background-color: #e7f3ff;
+            border-color: #3c8dbc;
+        }
+        
+        .role-item.mandatory {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .role-item.selected {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+        }
+        
+        .workflow-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        /* Flow Box Styles */
+        .flow-box {
+            background-color: #fff;
+            border: 2px solid #3c8dbc;
+            padding: 15px 30px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 80px;
+        }
+        
+        .flow-box:hover {
+            background-color: #e7f3ff;
+            transform: scale(1.05);
+        }
+        
+        .flow-box.drag-over {
+            background-color: #d4edda;
+            border-color: #28a745;
+            transform: scale(1.1);
+        }
+        
+        .flow-box .assigned-users {
+            margin-top: 10px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+        
+        .flow-box .user-tag {
+            display: inline-block;
+            background-color: #f0f0f0;
+            padding: 3px 8px;
+            margin: 2px;
+            border-radius: 12px;
+            font-size: 11px;
+            position: relative;
+            cursor: default;
+        }
+        
+        .flow-box .user-tag .remove-user {
+            margin-left: 5px;
+            cursor: pointer;
+            color: #dc3545;
+        }
+        
+        /* User Pool Styles */
+        .user-pool {
+            background-color: #f9f9f9;
+            border: 2px dashed #999;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .user-pool-item {
+            display: inline-block;
+            background-color: #3c8dbc;
+            color: white;
+            padding: 5px 10px;
+            margin: 3px;
+            border-radius: 15px;
+            cursor: move;
+            transition: all 0.3s;
+        }
+        
+        .user-pool-item:hover {
+            background-color: #2c6aa0;
+            transform: scale(1.05);
+        }
+        
+        .user-pool-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .flow-arrow {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #3c8dbc;
+            position: relative;
+            margin: 0 -10px;
+            z-index: 1;
+        }
+        
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid #3c8dbc;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+        
+        .notification-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        /* Modal Styles */
+        .modal-body .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .step-type-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #5bc0de;
+            color: white;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        .timeout-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #f39c12;
+            color: white;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        /* Drag and Drop Styles */
+        .sortable-ghost {
+            opacity: 0.5;
+        }
+        
+        .sortable-drag {
+            opacity: 0.8;
+            transform: rotate(2deg);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .sortable-chosen {
+            background-color: #f0f0f0;
+        }
+        
+        .drop-zone {
+            min-height: 50px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            color: #999;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: #3c8dbc;
+            background-color: #e7f3ff;
+        }
+        
+        /* Step Controls */
+        .step-controls {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            display: none;
+            z-index: 10;
+        }
+        
+        .workflow-step:hover .step-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .step-controls .btn {
+            width: 25px;
+            height: 25px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .drag-handle {
+            cursor: move;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            color: #999;
+            display: none;
+        }
+        
+        .workflow-step:hover .drag-handle {
+            display: block;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3c8dbc;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .action-buttons .btn {
+            margin-left: 10px;
+        }
+        
+        /* Workflow Summary Panel */
+        .workflow-summary {
+            position: fixed;
+            top: 100px;
+            right: -300px;
+            width: 300px;
+            height: calc(100vh - 120px);
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transition: right 0.3s;
+            z-index: 999;
+            overflow-y: auto;
+        }
+        
+        .workflow-summary.open {
+            right: 0;
+        }
+        
+        .summary-toggle {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #3c8dbc;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px 0 0 5px;
+        }
+        
+        /* Animation for drop effect */
+        @@keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .role-item.drag-over {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            transform: scale(1.05);
+        }
+    </style>
+
+<section class="content-header">
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom: 0px;">
+            <style>
+                .breadcrumb-item {
+                    display: inline;
+                    list-style: none;
+                }
+            </style>
+
+            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+                <ul style="padding-left: 0;">
+                    <li class="breadcrumb-item">
+                        <a href="/Home/Index">
+                            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only"></span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/Contract">
+                            Contract
+                        </a>
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Create New Contract
+                    </li>
+                </ul>
+            </h1>
+
+            <a style="padding-left: 5px; font-size: 15px;" class="text-dark-gray hidden-print" data-trigger="focus" tabindex="0" role="button" data-toggle="popover" title="" data-placement="right" data-html="true" data-content="Companies can be used as a simple identifier field, or can be used to limit visibility of assets, users, etc if full company support is enabled in your Admin settings." data-original-title="More Info">
+                <i class="far fa-life-ring" style="padding-top: 9px;" aria-hidden="true"></i>    <span class="sr-only">More Info</span>
+            </a>
+            <div class="pull-right">
+                <a href="/Contract" class="btn btn-primary pull-right">
+                    Back
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content-header">
+    <h1>
+        Workflow Configuration
+        <small>Design and manage workflow steps</small>
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Workflow Name Builder -->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Workflow Name Configuration</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="workflow-id-builder">
+                        <input type="text" class="form-control" placeholder="3-digit Company Abbreviation" maxlength="3" data-toggle="tooltip" title="Enter company code (e.g., ABC)">
+                        <span>-</span>
+                        <input type="text" class="form-control" placeholder="Area/Unit/Asset ID" maxlength="4" data-toggle="tooltip" title="Enter area/unit ID (e.g., 1234)">
+                        <span>-</span>
+                        <input type="text" class="form-control" placeholder="3-digit Discipline ID" maxlength="3" data-toggle="tooltip" title="Enter discipline code (e.g., CIV)">
+                        <span>-</span>
+                        <input type="text" class="form-control" placeholder="3-digit Module ID" maxlength="3" data-toggle="tooltip" title="Enter module code (e.g., INR)">
+                        <span>-</span>
+                        <input type="text" class="form-control" placeholder="4-digit Sequence Number" maxlength="4" data-toggle="tooltip" title="Enter sequence number (e.g., 0001)">
+                        <div class="workflow-id-result">
+                            <label style="margin: 0;">Workflow Name Auto Populate</label>
+                            <div id="workflowName">ABC-1234-CIV-INR-0001</div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Workflow Description</label>
+                                <textarea class="form-control" id="workflowDescription" rows="2" placeholder="Enter workflow description...">Complete workflow for managing inspection requests from draft to completion</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Steps -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Workflow Steps Configuration</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addNewStep()"><i class="fa fa-plus"></i> Add Step</button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="workflow-steps" id="workflowStepsContainer">
+                        <div class="step-arrow"></div>
+
+                        <div class="workflow-step" data-step="1" onclick="editStep(1)">
+                            <div class="step-number">1</div>
+                            <i class="fa fa-arrows drag-handle"></i>
+                            <div class="step-controls">
+                                <button class="btn btn-xs btn-primary" onclick="event.stopPropagation(); editStep(1)" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); deleteStep(1)" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <strong>DRAFT</strong>
+                            <div class="step-type-badge">UserInput</div>
+                            <div class="timeout-badge">72h</div>
+                        </div>
+
+                        <div class="workflow-step skip-enabled" data-step="2" onclick="editStep(2)">
+                            <div class="step-number">2</div>
+                            <i class="fa fa-arrows drag-handle"></i>
+                            <div class="step-controls">
+                                <button class="btn btn-xs btn-primary" onclick="event.stopPropagation(); editStep(2)" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); deleteStep(2)" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <strong>INTERNAL_APPROVAL</strong>
+                            <div class="step-type-badge">Approval</div>
+                            <div class="timeout-badge">48h</div>
+                            <div class="skip-toggle">
+                                <label style="margin: 0;">Skip <input type="checkbox" onclick="event.stopPropagation()"></label>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step skip-enabled" data-step="3" onclick="editStep(3)">
+                            <div class="step-number">3</div>
+                            <i class="fa fa-arrows drag-handle"></i>
+                            <div class="step-controls">
+                                <button class="btn btn-xs btn-primary" onclick="event.stopPropagation(); editStep(3)" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); deleteStep(3)" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <strong>INSPECTION_ASSIGNMENT</strong>
+                            <div class="step-type-badge">Assignment</div>
+                            <div class="timeout-badge">24h</div>
+                            <div class="skip-toggle">
+                                <label style="margin: 0;">Skip <input type="checkbox" onclick="event.stopPropagation()"></label>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step skip-enabled" data-step="4" onclick="editStep(4)">
+                            <div class="step-number">4</div>
+                            <i class="fa fa-arrows drag-handle"></i>
+                            <div class="step-controls">
+                                <button class="btn btn-xs btn-primary" onclick="event.stopPropagation(); editStep(4)" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); deleteStep(4)" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <strong>INSPECTION_ONGOING</strong>
+                            <div class="step-type-badge">Process</div>
+                            <div class="timeout-badge">120h</div>
+                            <div class="skip-toggle">
+                                <label style="margin: 0;">Skip <input type="checkbox" onclick="event.stopPropagation()"></label>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step skip-enabled" data-step="5" onclick="editStep(5)">
+                            <div class="step-number">5</div>
+                            <i class="fa fa-arrows drag-handle"></i>
+                            <div class="step-controls">
+                                <button class="btn btn-xs btn-primary" onclick="event.stopPropagation(); editStep(5)" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); deleteStep(5)" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <strong>RETURNED_TO_INITIATOR</strong>
+                            <div class="step-type-badge">UserInput</div>
+                            <div class="timeout-badge">72h</div>
+                            <div class="skip-toggle">
+                                <label style="margin: 0;">Skip <input type="checkbox" onclick="event.stopPropagation()"></label>
+                            </div>
+                        </div>
+
+                        <div class="workflow-step" data-step="6" onclick="editStep(6)">
+                            <div class="step-number">6</div>
+                            <i class="fa fa-arrows drag-handle"></i>
+                            <div class="step-controls">
+                                <button class="btn btn-xs btn-primary" onclick="event.stopPropagation(); editStep(6)" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); deleteStep(6)" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <strong>COMPLETED</strong>
+                            <div class="step-type-badge">Final</div>
+                        </div>
+
+                        <div class="workflow-step skip-enabled" data-step="7" onclick="editStep(7)">
+                            <div class="step-number">7</div>
+                            <i class="fa fa-arrows drag-handle"></i>
+                            <div class="step-controls">
+                                <button class="btn btn-xs btn-primary" onclick="event.stopPropagation(); editStep(7)" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); deleteStep(7)" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <strong>REJECTED</strong>
+                            <div class="step-type-badge">Final</div>
+                            <div class="skip-toggle">
+                                <label style="margin: 0;">Skip <input type="checkbox" onclick="event.stopPropagation()"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Assignment -->
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Workflow Assignment</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-success btn-sm" onclick="openAssignmentModal()"><i class="fa fa-user-plus"></i> Assign Users</button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Current Assignments</h4>
+                            <div id="currentAssignments" style="max-height: 300px; overflow-y: auto;">
+                                <!-- Assignments will be displayed here -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Assignment Summary</h4>
+                            <div class="info-box">
+                                <span class="info-box-icon bg-green"><i class="fa fa-users"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Total Assigned Users</span>
+                                    <span class="info-box-number" id="totalAssignedUsers">0</span>
+                                </div>
+                            </div>
+                            <div class="info-box">
+                                <span class="info-box-icon bg-blue"><i class="fa fa-tasks"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Active Assignments</span>
+                                    <span class="info-box-number" id="activeAssignments">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Flow -->
+            @* <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Workflow Process Flow</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-warning btn-sm" onclick="configureTransitions()"><i class="fa fa-arrows"></i> Configure Transitions</button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <!-- User Pool for Drag and Drop -->
+                    <div class="user-pool" id="userPool">
+                        <h4 style="margin-top: 0;"><i class="fa fa-users"></i> Available Users (Drag to assign)</h4>
+                        <div id="userPoolItems">
+                            <!-- Users will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="workflow-flow">
+                        <div class="flow-box" data-role="Initiator" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <strong>Initiator</strong>
+                            <div style="font-size: 12px; color: #666;">Creates & Submits</div>
+                            <div class="assigned-users" id="assigned-Initiator"></div>
+                        </div>
+                        <div class="flow-arrow"></div>
+
+                        <div class="flow-box" data-role="InternalApprover" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <strong>Internal Approver</strong>
+                            <div style="font-size: 12px; color: #666;">Reviews & Approves</div>
+                            <div class="assigned-users" id="assigned-InternalApprover"></div>
+                        </div>
+                        <div class="flow-arrow"></div>
+
+                        <div class="flow-box" data-role="RecipientDC" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <strong>Recipient DC</strong>
+                            <div class="notification-box">
+                                <i class="fa fa-bell"></i> Notified
+                            </div>
+                            <div class="assigned-users" id="assigned-RecipientDC"></div>
+                        </div>
+                        <div class="flow-arrow"></div>
+
+                        <div class="flow-box" style="background-color: #e7f3ff;">
+                            <div class="role-selection-box">
+                                <h4 style="margin-top: 0;">Inspector Assignment</h4>
+                                <div class="role-item mandatory" data-role="PrincipalInspector" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                                    <i class="fa fa-user"></i> Principal Inspector (Mandatory)
+                                    <div class="assigned-users" id="assigned-PrincipalInspector" style="margin-top: 5px;"></div>
+                                </div>
+                                <div class="role-item" data-role="SupportInspector1" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                                    <i class="fa fa-user-o"></i> Support Inspector 1
+                                    <div class="assigned-users" id="assigned-SupportInspector1" style="margin-top: 5px;"></div>
+                                </div>
+                                <div class="role-item" data-role="SupportInspector2" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                                    <i class="fa fa-user-o"></i> Support Inspector 2
+                                    <div class="assigned-users" id="assigned-SupportInspector2" style="margin-top: 5px;"></div>
+                                </div>
+                                <div class="role-item" data-role="SupportInspector3" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                                    <i class="fa fa-user-o"></i> Support Inspector 3
+                                    <div class="assigned-users" id="assigned-SupportInspector3" style="margin-top: 5px;"></div>
+                                </div>
+                                <div class="role-item" data-role="SupportInspector4" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                                    <i class="fa fa-user-o"></i> Support Inspector 4
+                                    <div class="assigned-users" id="assigned-SupportInspector4" style="margin-top: 5px;"></div>
+                                </div>
+                                <div class="role-item" data-role="WBSVerifier" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                                    <i class="fa fa-check-square-o"></i> WBS Verifier
+                                    <div class="assigned-users" id="assigned-WBSVerifier" style="margin-top: 5px;"></div>
+                                </div>
+                                <div class="role-item" data-role="BOQVerifier" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                                    <i class="fa fa-check-square-o"></i> BOQ Verifier
+                                    <div class="assigned-users" id="assigned-BOQVerifier" style="margin-top: 5px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flow-arrow"></div>
+
+                        <div class="flow-box" data-role="Reviewer" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <strong>Reviewer</strong>
+                            <div style="font-size: 12px; color: #666;">Quality Check</div>
+                            <div class="assigned-users" id="assigned-Reviewer"></div>
+                        </div>
+                        <div class="flow-arrow"></div>
+
+                        <div class="flow-box" data-role="Approver" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <strong>Approver</strong>
+                            <div style="font-size: 12px; color: #666;">Final Approval</div>
+                            <div class="assigned-users" id="assigned-Approver"></div>
+                        </div>
+                        <div class="flow-arrow"></div>
+
+                        <div class="flow-box" data-role="InitiatorDC" ondrop="dropUser(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                            <strong>Initiator /</strong><br>
+                            <strong>Initiator DC</strong>
+                            <div class="notification-box">
+                                <i class="fa fa-bell"></i> Notified
+                            </div>
+                            <div class="assigned-users" id="assigned-InitiatorDC"></div>
+                        </div>
+                    </div>
+                </div>
+            </div> *@
+        </div>
+    </div>
+</section>
+

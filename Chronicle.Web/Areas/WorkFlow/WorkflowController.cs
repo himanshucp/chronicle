@@ -57,13 +57,20 @@ namespace Chronicle.Web.Areas.WorkFlow
       
         }
 
+        [HttpGet("Workflow/Create")]
+        public async Task<IActionResult> CreateAsync()
+        {
+            return View();
+        }
+
+
         #endregion
 
 
         #region Handler
-        
 
-        #endregion 
+
+        #endregion
 
 
     }

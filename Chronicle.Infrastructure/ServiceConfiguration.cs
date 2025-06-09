@@ -1,9 +1,14 @@
 ﻿using Chronicle.Caching;
 using Chronicle.Data;
+using Chronicle.Entities;
 using Chronicle.Lookups;
 using Chronicle.Repositories;
+using Chronicle.Repositories.RoleRepositories;
+using Chronicle.Repositories.UsersRepositories;
 using Chronicle.Services;
 using Chronicle.Services.Interface;
+using Chronicle.Services.RoleServices;
+using Chronicle.Services.UserServices;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -36,8 +41,7 @@ namespace Chronicle.Infrastructure
 
 
             // Register repositories
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
+           
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
@@ -49,16 +53,23 @@ namespace Chronicle.Infrastructure
             services.AddScoped<IContractEmployeeRepository, ContractEmployeeRepository>();
             services.AddScoped<IContractEmployeeRoleRepository, ContractEmployeeRoleRepository>();
 
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRoleClaimRepository, RoleClaimRepository>();
+            services.AddScoped<IUserLoginRepository, UserLoginRepository>();
+            services.AddScoped<IUserClaimRepository, UserClaimRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+
             services.AddScoped<IWorkflowRepository, WorkflowRepository>();
             services.AddScoped<IWorkflowStepRepository, WorkflowStepRepository>();
             services.AddScoped<IWorkflowTransitionRepository, WorkflowTransitionRepository>();
             services.AddScoped<IWorkflowAssignmentRepository, WorkflowAssignmentRepository>();
             services.AddScoped<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
             services.AddScoped<IWorkflowHistoryRepository, WorkflowHistoryRepository>();
+           
 
             // Register services
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
+
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
@@ -67,6 +78,13 @@ namespace Chronicle.Infrastructure
             services.AddScoped<IContractService, ContractService>();
             services.AddScoped<ICompanyRoleService, CompanyRoleService>();
             services.AddScoped<IContractEmployeeRoleService, ContractEmployeeRoleService>();
+
+            services.AddScoped<IRoleClaimService, RoleClaimService>();
+            services.AddScoped<IUserLoginService, UserLoginService>();
+            services.AddScoped<IUserClaimService, UserClaimService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
 
             services.AddScoped<IWorkflowService, WorkflowService>();
             services.AddScoped<IWorkflowStepService, WorkflowStepService>();

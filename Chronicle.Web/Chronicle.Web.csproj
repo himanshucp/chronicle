@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chronicle.Infrastructure\Chronicle.Infrastructure.csproj" />
+    <ProjectReference Include="..\chronicle.Model\chronicle.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
     <Folder Include="Areas\Auth\Controllers\" />
     <Folder Include="Areas\Auth\Data\" />
     <Folder Include="Areas\Auth\Models\" />
+    <Folder Include="Areas\Auth\Views\Auth\" />
     <Folder Include="Areas\Contract\Controllers\" />
     <Folder Include="Areas\Contract\Data\" />
     <Folder Include="Areas\Contract\Models\" />

@@ -201,6 +201,8 @@ namespace Chronicle.Services
             return await _companyRepository.GetPagedAsync(page, pageSize, searchTerm, tenantId);
         }
 
+
+
         public async Task<IEnumerable<Company>> GetActiveCompaniesAsync(int tenantId)
         {
             return await _companyRepository.GetActiveCompaniesAsync(tenantId);

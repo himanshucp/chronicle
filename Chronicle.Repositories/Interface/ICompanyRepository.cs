@@ -22,3 +22,4 @@ namespace Chronicle.Repositories
         Task<PagedResult<Company>> GetPagedAsync(int page, int pageSize, string searchTerm, int tenantId);
     }
 }
+   

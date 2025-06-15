@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronicle.Web", "Chronicle.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronicle.Infrastructure", "Chronicle.Infrastructure\Chronicle.Infrastructure.csproj", "{C35045C1-8C97-46C9-8284-368C0E355FE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronicle.Caching", "Chronicle.Caching\Chronicle.Caching.csproj", "{A951777B-98F8-44D9-8AB0-8443D966A003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronicle.Caching", "Chronicle.Caching\Chronicle.Caching.csproj", "{A951777B-98F8-44D9-8AB0-8443D966A003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronicle.Lookups", "Chronicle.Lookups\Chronicle.Lookups.csproj", "{FDD8D647-45A9-4681-9D03-3FC61FA76A5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronicle.Lookups", "Chronicle.Lookups\Chronicle.Lookups.csproj", "{FDD8D647-45A9-4681-9D03-3FC61FA76A5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chronicle.Model", "chronicle.Model\chronicle.Model.csproj", "{DE748960-47DE-4078-9C3D-84D6BD21BDCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{FDD8D647-45A9-4681-9D03-3FC61FA76A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDD8D647-45A9-4681-9D03-3FC61FA76A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDD8D647-45A9-4681-9D03-3FC61FA76A5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE748960-47DE-4078-9C3D-84D6BD21BDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE748960-47DE-4078-9C3D-84D6BD21BDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE748960-47DE-4078-9C3D-84D6BD21BDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE748960-47DE-4078-9C3D-84D6BD21BDCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

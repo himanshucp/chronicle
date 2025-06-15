@@ -1,0 +1,310 @@
+﻿@model Chronicle.Entities.Company
+
+@{
+    ViewData["Title"] = "Company Details - " + Model.Name;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="fas fa-building"></i> Company Details</h2>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.CompanyID" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Company Information Card -->
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <div class="d-flex align-items-center">
+                        <div class="company-logo me-3">
+                            @if (!string.IsNullOrEmpty(Model.Abbrivation))
+                            {
+                                <span class="badge bg-light text-primary rounded-circle p-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                    @Model.Abbrivation.Substring(0, Math.Min(2, Model.Abbrivation.Length)).ToUpper()
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-primary rounded-circle p-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                    @Model.Name.Substring(0, Math.Min(2, Model.Name.Length)).ToUpper()
+                                </span>
+                            }
+                        </div>
+                        <div>
+                            @Model.Name
+                            <br><small class="opacity-75">@Model.Abbrivation</small>
+                        </div>
+                    </div>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-3">Basic Information</h6>
+                        <dl class="row">
+                            <dt class="col-sm-4">Company Name:</dt>
+                            <dd class="col-sm-8">@Model.Name</dd>
+
+                            <dt class="col-sm-4">Abbreviation:</dt>
+                            <dd class="col-sm-8">@(Model.Abbrivation ?? "N/A")</dd>
+
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">
+                                <a href="mailto:@Model.Email">@Model.Email</a>
+                            </dd>
+
+                            <dt class="col-sm-4">Website:</dt>
+                            <dd class="col-sm-8">
+                                @if (!string.IsNullOrEmpty(Model.WebSite))
+                                {
+                                    <a href="@Model.WebSite" target="_blank" class="text-decoration-none">
+                                        @Model.WebSite <i class="fas fa-external-link-alt ms-1"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-3">Contact Information</h6>
+                        <dl class="row">
+                            <dt class="col-sm-4">Contact Person:</dt>
+                            <dd class="col-sm-8">@(Model.ContactPerson ?? "N/A")</dd>
+
+                            <dt class="col-sm-4">Phone:</dt>
+                            <dd class="col-sm-8">
+                                @if (!string.IsNullOrEmpty(Model.Phone))
+                                {
+                                    <a href="tel:@Model.Phone">@Model.Phone</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">Fax:</dt>
+                            <dd class="col-sm-8">@(Model.Fax ?? "N/A")</dd>
+
+                            <dt class="col-sm-4">Location:</dt>
+                            <dd class="col-sm-8">@(Model.Location ?? "N/A")</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Address))
+                {
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <h6 class="text-muted mb-2">Address</h6>
+                            <p class="mb-0">@Model.Address</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Legal Information Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-legal"></i> Legal Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-5">Tax Number:</dt>
+                            <dd class="col-sm-7">@(Model.TaxNumber ?? "N/A")</dd>
+
+                            <dt class="col-sm-5">License Number:</dt>
+                            <dd class="col-sm-7">@(Model.LicenseNumber ?? "N/A")</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-5">License Expiry:</dt>
+                            <dd class="col-sm-7">
+                                @if (Model.LicenseExpiryDate.HasValue)
+                                {
+                                    var daysUntilExpiry = (Model.LicenseExpiryDate.Value - DateTime.UtcNow).Days;
+                                    if (daysUntilExpiry < 0)
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times"></i> Expired (@Model.LicenseExpiryDate.Value.ToString("dd/MM/yyyy"))
+                                        </span>
+                                    }
+                                    else if (daysUntilExpiry <= 30)
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-exclamation-triangle"></i> @Model.LicenseExpiryDate.Value.ToString("dd/MM/yyyy") (in @daysUntilExpiry days)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check"></i> @Model.LicenseExpiryDate.Value.ToString("dd/MM/yyyy")
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.InsuranceDetails))
+                {
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <h6 class="text-muted mb-2">Insurance Details</h6>
+                            <p class="mb-0">@Model.InsuranceDetails</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics and Actions Sidebar -->
+    <div class="col-md-4">
+        <!-- Status Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle"></i> Status & Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Status:</strong>
+                    @if (Model.IsActive == true)
+                    {
+                        <span class="badge bg-success ms-2">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger ms-2">
+                            <i class="fas fa-times-circle"></i> Inactive
+                        </span>
+                    }
+                </div>
+
+                <div class="d-grid gap-2">
+                    @if (Model.IsActive == true)
+                    {
+                        <form asp-action="Deactivate" asp-route-id="@Model.CompanyID" method="post" style="display: inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-warning w-100"
+                                    onclick="return confirm('Are you sure you want to deactivate this company?')">
+                                <i class="fas fa-ban"></i> Deactivate Company
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Activate" asp-route-id="@Model.CompanyID" method="post" style="display: inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success w-100"
+                                    onclick="return confirm('Are you sure you want to activate this company?')">
+                                <i class="fas fa-check"></i> Activate Company
+                            </button>
+                        </form>
+                    }
+
+                    <a asp-action="Delete" asp-route-id="@Model.CompanyID" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete Company
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar"></i> Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+            @*     <div class="row text-center">
+                    <div class="col-12 mb-3">
+                        <div class="border rounded p-3">
+                            <h4 class="text-primary mb-1">@(Model.TotalContract ?? 0)</h4>
+                            <small class="text-muted">Total Contracts</small>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="border rounded p-3">
+                            <h4 class="text-success mb-1">@(Model.TotalEmployee ?? 0)</h4>
+                            <small class="text-muted">Total Employees</small>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="border rounded p-3">
+                            <h4 class="text-info mb-1">@(Model.TotalUsers ?? 0)</h4>
+                            <small class="text-muted">System Users</small>
+                        </div>
+                    </div>
+                </div> *@
+            </div>
+        </div>
+
+        <!-- Dates Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar"></i> Important Dates
+                </h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-6">Created:</dt>
+                    <dd class="col-sm-6">
+                        @if (Model.CreatedDate.HasValue)
+                        {
+                            <small>@Model.CreatedDate.Value.ToString("dd/MM/yyyy")</small>
+                        }
+                        else
+                        {
+                            <small class="text-muted">N/A</small>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-6">Last Modified:</dt>
+                    <dd class="col-sm-6">
+                        @if (Model.LastModifiedDate.HasValue)
+                        {
+                            <small>@Model.LastModifiedDate.Value.ToString("dd/MM/yyyy")</small>
+                        }
+                        else
+                        {
+                            <small class="text-muted">N/A</small>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

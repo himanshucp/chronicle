@@ -6,15 +6,502 @@
     <title>@ViewData["Title"] - Trinity.AuditApproval.Web</title>
     <partial name="_Css" />
     <partial name="_Js" />
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            font-family: 'Source Sans Pro', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .construction-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.08;
+        }
+
+        .construction-element {
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .crane {
+            top: 15%;
+            right: 8%;
+            width: 80px;
+            height: 100px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23ffffff"><path d="M20 80 L20 20 L80 20 L80 25 L25 25 L25 80 Z M75 15 L85 15 L85 30 L75 30 Z"/></svg>');
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .building {
+            bottom: 5%;
+            left: 8%;
+            width: 70px;
+            height: 90px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23ffffff"><rect x="20" y="30" width="60" height="70"/><rect x="25" y="35" width="10" height="8"/><rect x="40" y="35" width="10" height="8"/><rect x="55" y="35" width="10" height="8"/><rect x="25" y="50" width="10" height="8"/><rect x="40" y="50" width="10" height="8"/><rect x="55" y="50" width="10" height="8"/><rect x="40" y="80" width="20" height="20"/></svg>');
+        }
+
+        .helmet {
+            top: 25%;
+            left: 12%;
+            width: 50px;
+            height: 50px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23ffffff"><path d="M50 20 A30 30 0 0 1 80 50 L20 50 A30 30 0 0 1 50 20 Z M20 50 L80 50 L75 60 L25 60 Z"/></svg>');
+            animation: float 4s ease-in-out infinite reverse;
+        }
+
+        @@keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .login-box {
+            width: 360px;
+            margin: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chronicle-logo {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .chronicle-logo::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                animation: shine 3s infinite;
+            }
+
+        @@keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .chronicle-logo i {
+            font-size: 32px;
+            color: #2c5aa0;
+            z-index: 1;
+        }
+
+        .login-logo a {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 300;
+            text-decoration: none;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: 300;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-box-body {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .login-box-body::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                animation: shimmer 2s infinite;
+            }
+
+        @@keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .login-box-msg {
+            margin: 0 0 20px 0;
+            text-align: center;
+            padding: 0;
+            font-size: 15px;
+            color: #444;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3c8dbc;
+            font-size: 14px;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e1e5e9;
+            height: 40px;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-left: 35px;
+            padding-right: 35px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+            .form-control:focus {
+                border-color: #3c8dbc;
+                box-shadow: 0 0 0 2px rgba(60, 141, 188, 0.1);
+                background: rgba(255, 255, 255, 1);
+                transform: translateY(-1px);
+            }
+
+                .form-control:focus + .input-icon {
+                    color: #2c5aa0;
+                    transform: translateY(-50%) scale(1.1);
+                }
+
+        .input-validation-error {
+            border-color: #d73925 !important;
+            box-shadow: 0 0 0 2px rgba(215, 57, 37, 0.1) !important;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 3;
+            transition: all 0.3s ease;
+            padding: 3px;
+        }
+
+            .password-toggle:hover {
+                color: #3c8dbc;
+                transform: translateY(-50%) scale(1.1);
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3c8dbc 0%, #5bc0de 100%);
+            border: none;
+            border-radius: 8px;
+            height: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(60, 141, 188, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(60, 141, 188, 0.4);
+                background: linear-gradient(135deg, #2c5aa0 0%, #4a9bc1 100%);
+            }
+
+        .btn-social {
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            height: 38px;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .btn-google {
+            background: linear-gradient(135deg, #dd4b39 0%, #ea6153 100%);
+            border-color: #dd4b39;
+        }
+
+        .btn-microsoft {
+            background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+            border-color: #0078d4;
+        }
+
+        .compact-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .compact-row .checkbox {
+                margin: 0;
+                flex: 1;
+            }
+
+            .compact-row .btn {
+                flex: 0 0 auto;
+                min-width: 100px;
+            }
+
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: none;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 15px;
+            font-size: 13px;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f56565 0%, #fc8181 100%);
+            color: white;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #48bb78 0%, #68d391 100%);
+            color: white;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #f6ad55 100%);
+            color: white;
+        }
+
+        .field-validation-error {
+            color: #d73925;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .validation-summary-errors {
+            background: linear-gradient(135deg, #f56565 0%, #fc8181 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .lockout-warning {
+            background: linear-gradient(135deg, #ed8936 0%, #f6ad55 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+            .divider::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #ddd, transparent);
+            }
+
+            .divider span {
+                background: rgba(255, 255, 255, 0.95);
+                padding: 0 15px;
+                color: #666;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 500;
+            }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 11px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .text-center a {
+            color: #3c8dbc;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+            .btn-loading::after {
+                content: '';
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                top: 50%;
+                left: 50%;
+                margin-left: -8px;
+                margin-top: -8px;
+                border: 2px solid transparent;
+                border-top-color: #ffffff;
+                border-radius: 50%;
+                animation: button-loading-spinner 1s ease infinite;
+            }
+
+        @@keyframes button-loading-spinner {
+            from {
+                transform: rotate(0turn);
+            }
+
+            to {
+                transform: rotate(1turn);
+            }
+        }
+
+        @@keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-3px);
+            }
+
+            20%, 40%, 60%, 80% {
+                transform: translateX(3px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @@media (max-width: 480px) {
+            .login-box {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .login-box-body {
+                padding: 20px;
+            }
+
+            .compact-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+                .compact-row .btn {
+                    width: 100%;
+                }
+
+            .construction-element {
+                display: none;
+            }
+        }
+    </style>
+
 </head>
 
 <body class="hold-transition login-page">
-    <div class="login-box">
+ @*    <div class="login-box">
         @Html.Partial("_Alert")
 
-        @RenderBody()
-    </div>
-
+       
+    </div> *@
+    @RenderBody()
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
